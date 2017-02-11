@@ -1,0 +1,123 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>org.kane</groupId>
+  <artifactId>base</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <packaging>jar</packaging>
+
+  <name>base</name>
+  <url>http://maven.apache.org</url>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+    	<groupId>com.thoughtworks.xstream</groupId>
+    	<artifactId>xstream</artifactId>
+    	<version>1.4.9</version>
+    </dependency>
+    <dependency>
+    	<groupId>org.reflections</groupId>
+    	<artifactId>reflections-maven</artifactId>
+    	<version>0.9.9-RC2</version>
+    </dependency>
+    <dependency>
+    	<groupId>org.hibernate</groupId>
+    	<artifactId>hibernate-validator</artifactId>
+    	<version>5.4.0.CR1</version>
+    </dependency>
+    <dependency>
+    	<groupId>javax.el</groupId>
+    	<artifactId>javax.el-api</artifactId>
+    	<version>2.2.4</version>
+    </dependency>
+    <dependency>
+    	<groupId>org.glassfish.web</groupId>
+    	<artifactId>javax.el</artifactId>
+    	<version>2.2.4</version>
+    </dependency>
+    <dependency>
+    	<groupId>org.hibernate</groupId>
+    	<artifactId>hibernate-validator-cdi</artifactId>
+    	<version>5.3.4.Final</version>
+    </dependency>
+    <dependency>
+    	<groupId>org.codehaus.jettison</groupId>
+    	<artifactId>jettison</artifactId>
+    	<version>1.2</version>
+    </dependency>
+    <dependency>
+    	<groupId>org.eclipse.jetty</groupId>
+    	<artifactId>jetty-alpn-server</artifactId>
+    	<version>9.4.0.v20161208</version>
+    	<classifier>config</classifier>
+    </dependency>
+  </dependencies>
+  
+  
+  <build>
+<plugins>
+<plugin>
+	<artifactId>maven-jar-plugin</artifactId>
+	<version>2.4</version>
+	
+	<configuration>
+		<archive>
+		<manifest>
+			<mainClass>org.kane.base.serialization.examples.TestApp</mainClass>
+		</manifest>
+		</archive>
+	</configuration>
+	
+	<executions>
+		<execution>
+		<id>default-jar</id>
+		<phase>package</phase>
+		<goals>
+			<goal>jar</goal>
+		</goals>
+	  </execution>
+	</executions>
+</plugin>
+
+<plugin>
+  <groupId>org.apache.maven.plugins</groupId>
+  <artifactId>maven-assembly-plugin</artifactId>
+  <configuration>
+  
+  	<descriptorRefs>
+    	<descriptorRef>jar-with-dependencies</descriptorRef>
+    </descriptorRefs>
+  
+    <archive>
+      <manifest>
+        <mainClass>org.kane.base.serialization.examples.TestApp</mainClass>
+      </manifest>
+    </archive>
+  </configuration>
+  <executions>
+     <execution>
+       <id>make-assembly</id> <!-- this is used for inheritance merges -->
+       <phase>package</phase> <!-- bind to the packaging phase -->
+       <goals>
+         <goal>single</goal>
+       </goals>
+     </execution>
+   </executions>
+</plugin>
+
+
+</plugins>
+</build>
+  
+</project>
