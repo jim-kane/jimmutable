@@ -1,26 +1,26 @@
 package org.kane.base.serialization.collections;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
 
 import org.kane.base.serialization.ImmutableException;
 import org.kane.base.serialization.StandardImmutableObject;
 
 /**
- * This is a utility class that makes it easy to create a properly behaved array
- * list field of an StandardImmutableObject.
+ * This is a utility class that makes it easy to create a properly behaved hash
+ * set field of an StandardImmutableObject.
  * 
  * What's hard about that? Well, you need to have a list that is mutable (when
  * the owning object is mutable) and then immutable when the owning object is
- * Immutable. Using Collection.unmodifiableList is clunky...
- * StandardImmutableFieldArrayList takes care of the heavy lifting for you!
+ * Immutable. Using Collection.unmodifiableSet is clunky...
+ * StandardImmutableFieldHashSet takes care of the heavy lifting for you!
  * 
  * @author jim.kane
  *
  * @param <T>
  */
-public class StandardImmutableFieldArrayList<T> extends ArrayList<T>
+public class StandardImmutableFieldHashSet<T> extends HashSet<T>
 {
 	/**
 	 * This object will be null when the field is serialized from either XML and
@@ -29,29 +29,20 @@ public class StandardImmutableFieldArrayList<T> extends ArrayList<T>
 	 */
 	transient private StandardImmutableObject parent;
 	
-	public StandardImmutableFieldArrayList(StandardImmutableObject parent)
+	
+	public StandardImmutableFieldHashSet(StandardImmutableObject parent)
 	{
 		super();
 		this.parent = parent;
 	}
 	
-	public StandardImmutableFieldArrayList(StandardImmutableObject parent, Collection<T> objs)
+	public StandardImmutableFieldHashSet(StandardImmutableObject parent, Collection<T> objs)
 	{
 		super();
 		
 		this.parent = parent;
 		
 		addAll(objs);
-	}
-	
-	public StandardImmutableFieldArrayList(StandardImmutableObject parent, T objs[])
-	{
-		super();
-		
-		this.parent = parent;
-		
-		for ( T obj : objs )
-			add(obj);
 	}
 	
 	private void assertNotComplete()
@@ -61,6 +52,7 @@ public class StandardImmutableFieldArrayList<T> extends ArrayList<T>
 		else 
 			parent.assertNotComplete();
 	}
+	
 	
 	public boolean add(T e) 
 	{
@@ -73,59 +65,31 @@ public class StandardImmutableFieldArrayList<T> extends ArrayList<T>
 		assertNotComplete();
 		return super.remove(o);
 	}
-
-	public boolean addAll(Collection<? extends T> c) 
+	
+	public boolean addAll(Collection c) 
 	{
 		assertNotComplete();
 		return super.addAll(c);
 	}
 
 	
-	public boolean addAll(int index, Collection<? extends T> c) 
-	{
-		assertNotComplete();
-		return super.addAll(index,c);
-	}
-
-	
-	public boolean removeAll(Collection<?> c) 
-	{
-		assertNotComplete();
-		return super.removeAll(c);
-	}
-
-	
-	public boolean retainAll(Collection<?> c) 
+	public boolean retainAll(Collection c) 
 	{
 		assertNotComplete();
 		return super.retainAll(c);
 	}
 
 	
+	public boolean removeAll(Collection c)
+	{
+		assertNotComplete();
+		return super.removeAll(c);
+	}
+
+
 	public void clear() 
 	{
 		assertNotComplete();
 		super.clear();
-	}
-
-	
-	public T set(int index, T element) 
-	{
-		assertNotComplete();
-		return super.set(index, element);
-	}
-
-	
-	public void add(int index, T element) 
-	{
-		assertNotComplete();
-		super.add(index,element);
-	}
-
-	
-	public T remove(int index) 
-	{
-		assertNotComplete();
-		return super.remove(index);
 	}
 }
