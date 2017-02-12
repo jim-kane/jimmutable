@@ -16,33 +16,26 @@ public class StandardImmutableFieldTest extends TestCase
 {
 	static private class StandardFieldTest extends StandardImmutableObject
 	{
-		private AbstractFieldList<String> array_list;
-		private StandardImmutableFieldHashSet<String> hash_set;
+		private AbstractStandardImmutableFieldList<String> array_list;
 		
 		public int compareTo(Object o) { return 0; }
 		public void normalize() {}
 		public void validate() {}
-		public int hashCode() { return array_list.hashCode() + hash_set.hashCode(); }
+		public int hashCode() { return array_list.hashCode(); }
 
-		public AbstractFieldList getSimpleArrayList() { return array_list; } 
-		public StandardImmutableFieldHashSet getSimpleHashSet() { return hash_set; }
-		
+		public AbstractStandardImmutableFieldList getSimpleArrayList() { return array_list; } 
 		
 		public StandardFieldTest()
 		{
-			array_list = new FieldArrayList(this);
-			hash_set = new StandardImmutableFieldHashSet(this);
+			array_list = new StandardImmutableFieldArrayList(this);
 			
 			verifyListMutable(array_list);
-			//verifySetMutable(hash_set);
 			
 			array_list.add("foo"); 
-			hash_set.add("foo");
 			
 			complete();
 			
 			verifyListImmutable(array_list);
-			//verifySetImmutable(hash_set);
 		}
 	
 		public boolean equals(Object obj) 
@@ -52,7 +45,6 @@ public class StandardImmutableFieldTest extends TestCase
 			StandardFieldTest other = (StandardFieldTest)obj;
 			
 			if ( !getSimpleArrayList().equals(other.getSimpleArrayList()) ) return false;
-			if ( !getSimpleHashSet().equals(other.getSimpleHashSet()) ) return false;
 			
 			return true;
 		}
@@ -116,8 +108,6 @@ public class StandardImmutableFieldTest extends TestCase
     		list.retainAll(quz_values);
     		
     		assertEquals(list,quz_values);
-    		
- 
     		
     		list.set(1, "quuuz");
     		

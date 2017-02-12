@@ -1,5 +1,20 @@
 package org.kane.base.serialization;
 
+import java.io.ByteArrayInputStream;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
+import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
+
 /**
  * Various static utility functions that are helpful when writing unit test etc. in Java
  * @author jim.kane
@@ -21,6 +36,18 @@ public class JavaCodeUtils
 	
 	static public String toJavaStringLiteral(String src)
 	{
+		Validator.notNull(src);
+		
+		if ( src.contains("\n") ) return toJavaStringLiteralMultiLine(src);
+		if ( src.contains("\r") ) return toJavaStringLiteralMultiLine(src);
+		
+		return toJavaStringLiteralSingleLine(src);
+	}
+	
+	static private String toJavaStringLiteralSingleLine(String src)
+	{
+		Validator.notNull(src);
+		
 		StringBuilder ret = new StringBuilder("\"");
 		
 		for ( char ch : src.toCharArray() )
@@ -42,5 +69,106 @@ public class JavaCodeUtils
 		ret.append("\"");
 		
 		return ret.toString();
+	}
+	
+	static private String toJavaStringLiteralMultiLine(String src)
+	{
+		Validator.notNull(src);
+		
+		List<String> lines = new ArrayList();
+		
+		StringBuilder format_string = new StringBuilder();
+		StringBuilder cur_line = new StringBuilder();
+		
+		for ( char ch : src.toCharArray() )
+		{
+			if ( ch == '\n' || ch == '\r' )
+			{
+				if ( cur_line.length() != 0 )
+				{
+					format_string.append("%s");
+					lines.add(cur_line.toString());
+					
+					cur_line = new StringBuilder();
+				}
+				
+				if ( ch == '\n' ) format_string.append("\\n");
+				if ( ch == '\r' ) format_string.append("\\r");
+				continue;
+			}
+			
+			cur_line.append(ch);
+		}
+		
+		if ( cur_line.length() != 0 )
+		{
+			format_string.append("%s");
+			lines.add(cur_line.toString());
+		}
+		
+		
+		StringBuilder ret = new StringBuilder("String.format(\"");
+		ret.append(format_string.toString());
+		ret.append("\"");
+		
+		for ( String line : lines )
+		{
+			ret.append("\n");
+			ret.append("     , ");
+			ret.append(toJavaStringLiteralSingleLine(line));
+		}
+		
+		ret.append("\n);");
+		
+		return ret.toString();
+	}
+	
+	static public String toJavaStringLiteral(StandardObject obj)
+	{
+		Validator.notNull(obj);
+		
+		String xml = prettyPrintXML(obj.toXML(),null);
+		if ( xml == null ) throw new ValidationException("Obj did not serialize to valid XML");
+		
+		return toJavaStringLiteral(xml);
+	}
+	
+	
+	static public String prettyPrintXML(String xml, String default_value)
+	{
+		try
+		{
+			Transformer transformer = TransformerFactory.newInstance().newTransformer();
+			
+			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+			transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "3");
+			
+			//initialize StreamResult with File object to save to file
+			StreamResult result = new StreamResult(new StringWriter());
+			
+			Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new InputSource(new ByteArrayInputStream(xml.getBytes("utf-8"))));
+			
+			DOMSource source = new DOMSource(doc);
+			transformer.transform(source, result);
+			
+			return result.getWriter().toString();
+		}
+		catch(Exception e)
+		{
+			return default_value;
+		}
+	}
+	
+	
+	
+	static public void main(String args[])
+	{
+		System.out.println(toJavaStringLiteral("a\n\rb"));
+		
+		String foo = String.format("%s\n%s"
+			     , "Hello"
+			     , "World");
+		
+		System.out.println(foo);
 	}
 }

@@ -6,19 +6,19 @@ import java.util.List;
 
 import org.kane.base.serialization.StandardImmutableObject;
 
-public class FieldArrayList<T> extends AbstractFieldList<T>
+public class StandardImmutableFieldArrayList<T> extends AbstractStandardImmutableFieldList<T>
 {
-	public FieldArrayList()
+	public StandardImmutableFieldArrayList()
 	{
 		super();
 	}
 	
-	public FieldArrayList(StandardImmutableObject parent)
+	public StandardImmutableFieldArrayList(StandardImmutableObject parent)
 	{
 		super(parent);
 	}
 	
-	public FieldArrayList(StandardImmutableObject parent, Iterable<T> objs)
+	public StandardImmutableFieldArrayList(StandardImmutableObject parent, Iterable<T> objs)
 	{
 		super(parent,objs);
 	}
@@ -32,7 +32,7 @@ public class FieldArrayList<T> extends AbstractFieldList<T>
 	
 	protected List createFieldSubList(StandardImmutableObject parent, Collection<T> objs) 
 	{
-		return new FieldArrayList(parent,objs);
+		return new StandardImmutableFieldArrayList(parent,objs);
 	}
 	
 }

@@ -23,7 +23,7 @@ import org.kane.base.serialization.ValidationException;
  *
  * @param <T>
  */
-abstract public class AbstractFieldList<T> implements List<T>
+abstract public class AbstractStandardImmutableFieldList<T> implements List<T>
 {
 	/**
 	 * This object will be null when the field is serialized from either XML and
@@ -32,23 +32,23 @@ abstract public class AbstractFieldList<T> implements List<T>
 	 */
 	transient private StandardImmutableObject parent;
 	
-	private List<T> mutable_contents;
+	private List<T> contents;
 	
 	abstract protected List createNewMutableListInstance();
 	abstract protected List createFieldSubList(StandardImmutableObject parent, Collection<T> objs);
 	
-	public AbstractFieldList()
+	public AbstractStandardImmutableFieldList()
 	{
 		this(null);
 	}
 	
-	public AbstractFieldList(StandardImmutableObject parent)
+	public AbstractStandardImmutableFieldList(StandardImmutableObject parent)
 	{
 		this.parent = parent;
-		mutable_contents = createNewMutableListInstance();
+		contents = createNewMutableListInstance();
 	}
 	
-	public AbstractFieldList(StandardImmutableObject parent, Iterable<T> objs)
+	public AbstractStandardImmutableFieldList(StandardImmutableObject parent, Iterable<T> objs)
 	{
 		this(parent);
 		
@@ -65,7 +65,7 @@ abstract public class AbstractFieldList<T> implements List<T>
 	
 	public void assertNotComplete()
 	{
-		if ( parent == null ) // an unset parent can only occour when this object was created via xstream de-serialization... Therfore, the object is not mutable...
+		if ( parent == null ) // an unset parent can only occour when this object was created via xstream de-serialization... Therefore, the object is not mutable...
 			throw new ImmutableException();
 		else 
 			parent.assertNotComplete();
@@ -74,35 +74,35 @@ abstract public class AbstractFieldList<T> implements List<T>
 	
 	public List<T> subList(int fromIndex, int toIndex)
 	{
-		return createFieldSubList(parent, mutable_contents.subList(fromIndex, toIndex));
+		return createFieldSubList(parent, contents.subList(fromIndex, toIndex));
 	}
 	
-	public int size() { return mutable_contents.size(); }
-	public boolean isEmpty() { return mutable_contents.isEmpty(); }
-	public boolean contains(Object o) { return mutable_contents.contains(o); }
-	public Object[] toArray() { return mutable_contents.toArray();	}
-	public <T> T[] toArray(T[] a) { return mutable_contents.toArray(a); }
-	public boolean containsAll(Collection<?> c) { return mutable_contents.containsAll(c); }
-	public T get(int index) { return mutable_contents.get(index); }
+	public int size() { return contents.size(); }
+	public boolean isEmpty() { return contents.isEmpty(); }
+	public boolean contains(Object o) { return contents.contains(o); }
+	public Object[] toArray() { return contents.toArray();	}
+	public <T> T[] toArray(T[] a) { return contents.toArray(a); }
+	public boolean containsAll(Collection<?> c) { return contents.containsAll(c); }
+	public T get(int index) { return contents.get(index); }
 	
 	
 
 	public boolean add(T e) 
 	{
 		assertNotComplete();
-		return mutable_contents.add(e);
+		return contents.add(e);
 	}
 	
 	public boolean remove(Object o) 
 	{
 		assertNotComplete();
-		return mutable_contents.remove(o);
+		return contents.remove(o);
 	}
 
 	public boolean addAll(Collection<? extends T> c) 
 	{
 		assertNotComplete();
-		return mutable_contents.addAll(c);
+		return contents.addAll(c);
 	}
 
 
@@ -110,7 +110,7 @@ abstract public class AbstractFieldList<T> implements List<T>
 	public boolean addAll(int index, Collection<? extends T> c) 
 	{
 		assertNotComplete();
-		return mutable_contents.addAll(index,c);
+		return contents.addAll(index,c);
 	}
 
 
@@ -118,13 +118,13 @@ abstract public class AbstractFieldList<T> implements List<T>
 	public boolean removeAll(Collection<?> c) 
 	{
 		assertNotComplete();
-		return mutable_contents.removeAll(c);
+		return contents.removeAll(c);
 	}
 
 	public boolean retainAll(Collection<?> c) 
 	{
 		assertNotComplete();
-		return mutable_contents.retainAll(c);
+		return contents.retainAll(c);
 	}
 
 
@@ -132,14 +132,14 @@ abstract public class AbstractFieldList<T> implements List<T>
 	public void clear() 
 	{
 		assertNotComplete();
-		mutable_contents.clear();
+		contents.clear();
 	}
 
 	
 	public T set(int index, T element) 
 	{
 		assertNotComplete();
-		return mutable_contents.set(index,element);
+		return contents.set(index,element);
 	}
 
 
@@ -147,27 +147,27 @@ abstract public class AbstractFieldList<T> implements List<T>
 	public void add(int index, T element) 
 	{
 		assertNotComplete();
-		mutable_contents.add(index,element);
+		contents.add(index,element);
 	}
 
 	public T remove(int index) 
 	{
 		assertNotComplete();
-		return mutable_contents.remove(index);
+		return contents.remove(index);
 	}
 
-	public int indexOf(Object o) { return mutable_contents.indexOf(o); }
-	public int lastIndexOf(Object o) { return mutable_contents.lastIndexOf(o); }
+	public int indexOf(Object o) { return contents.indexOf(o); }
+	public int lastIndexOf(Object o) { return contents.lastIndexOf(o); }
 
 
-	public Iterator<T> iterator() { return new MyListIterator(mutable_contents.listIterator()); }
-	public ListIterator<T> listIterator() { return new MyListIterator(mutable_contents.listIterator()); }
-	public ListIterator<T> listIterator(int index) { return new MyListIterator(mutable_contents.listIterator(index)); }
+	public Iterator<T> iterator() { return new MyListIterator(contents.listIterator()); }
+	public ListIterator<T> listIterator() { return new MyListIterator(contents.listIterator()); }
+	public ListIterator<T> listIterator(int index) { return new MyListIterator(contents.listIterator(index)); }
 	
 
 	public int hashCode() 
 	{
-		return mutable_contents.hashCode();
+		return contents.hashCode();
 	}
 
 

@@ -4,12 +4,13 @@ import java.util.Collection;
 import java.util.List;
 
 import org.kane.base.serialization.Equality;
+import org.kane.base.serialization.JavaCodeUtils;
 import org.kane.base.serialization.Normalizer;
 import org.kane.base.serialization.StandardImmutableObject;
 import org.kane.base.serialization.StandardObject;
 import org.kane.base.serialization.Validator;
-import org.kane.base.serialization.collections.AbstractFieldList;
-import org.kane.base.serialization.collections.FieldArrayList;
+import org.kane.base.serialization.collections.AbstractStandardImmutableFieldList;
+import org.kane.base.serialization.collections.StandardImmutableFieldArrayList;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
@@ -29,21 +30,14 @@ public class Book extends StandardImmutableObject
 	private String isbn; // optional
 	
 	private BindingType binding; // required
-	
-	@XStreamImplicit(itemFieldName="author")
-	private FieldArrayList<String> authors;
-	
-	// serialization constructor...
-	private Book() 
-	{ 
-		this.authors = new FieldArrayList(this); 
-	}
+
+	private StandardImmutableFieldArrayList<String> authors;
 	
 	// builder constructor...
 	private Book(Builder builder)
 	{
 		// building constructor.  Builder will call complete...
-		this.authors = new FieldArrayList(this);
+		this.authors = new StandardImmutableFieldArrayList(this);
 	}
 	
 	// copy constructor
@@ -53,7 +47,7 @@ public class Book extends StandardImmutableObject
 		this.page_count = page_count;
 		this.isbn = isbn;
 		this.binding = binding;
-		this.authors = new FieldArrayList(this,authors);
+		this.authors = new StandardImmutableFieldArrayList(this,authors);
 		
 		complete();
 	}
@@ -137,7 +131,7 @@ public class Book extends StandardImmutableObject
 			under_construction = (Book)starting_point.deepClone();
 			
 			// In order for the author's collection to be mutable, it must be bound to this object...
-			under_construction.authors = new FieldArrayList(under_construction,starting_point.authors);
+			under_construction.authors = new StandardImmutableFieldArrayList(under_construction,starting_point.authors);
 		}
 		
 		public void setTitle(String title) 
@@ -177,7 +171,7 @@ public class Book extends StandardImmutableObject
 		}
 	}
 	
-	static public void main(String args[])
+	static public void main(String args[]) throws Exception
 	{
 		Builder b = new Builder();
 		
@@ -190,13 +184,7 @@ public class Book extends StandardImmutableObject
 		
 		Book book = b.create();
 		
-		String json = book.toJSON();
-		
-		System.out.println(json);
-		
-		//book = (Book)StandardObject.fromJSON(json);
-		
-		//System.out.println(book);
+		System.out.println(JavaCodeUtils.toJavaStringLiteral(book));
 	}
 }
 
