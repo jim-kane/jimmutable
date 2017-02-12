@@ -9,7 +9,7 @@ import org.kane.base.serialization.Normalizer;
 import org.kane.base.serialization.StandardImmutableObject;
 import org.kane.base.serialization.StandardObject;
 import org.kane.base.serialization.Validator;
-import org.kane.base.serialization.collections.AbstractStandardImmutableFieldList;
+import org.kane.base.serialization.collections.StandardImmutableFieldList;
 import org.kane.base.serialization.collections.StandardImmutableFieldArrayList;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;

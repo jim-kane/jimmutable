@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.kane.base.serialization.StandardImmutableObject;
 
-public class StandardImmutableFieldArrayList<T> extends AbstractStandardImmutableFieldList<T>
+public class StandardImmutableFieldArrayList<T> extends StandardImmutableFieldList<T>
 {
 	public StandardImmutableFieldArrayList()
 	{

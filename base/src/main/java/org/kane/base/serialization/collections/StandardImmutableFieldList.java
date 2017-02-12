@@ -2,6 +2,7 @@ package org.kane.base.serialization.collections;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
@@ -11,19 +12,34 @@ import org.kane.base.serialization.StandardImmutableObject;
 import org.kane.base.serialization.ValidationException;
 
 /**
- * This is a utility class that makes it easy to create a properly behaved 
- * list field of an StandardImmutableObject.
+ * This is a utility class that makes it easy to create a properly behaved list
+ * field of an StandardImmutableObject.
  * 
- * What's hard about that? Well, you need to have a list that is mutable (when
- * the owning object is mutable) and then immutable when the owning object is
- * Immutable. Using Collection.unmodifiableList is clunky...
- * StandardImmutableFieldArrayList takes care of the heavy lifting for you!
+ * What's hard about that? If you have to ask... ;)
+ * 
+ * Java has a number of really quirky mutability issues... For example, think
+ * about the following code:
+ * 
+ *  List<String> my_list = new ArrayList();
+ *  Iterator<String> itr = my_list.iterator();
+ *  
+ *  my_list.add("foo");
+ *  my_list.add("bar");
+ *  
+ *  my_list = Collections.unmodifiableList(my_list);
+ *  
+ *  itr.remove();
+ *  
+ *  Believe it or not, this code *REMOVES FOO*...
+ *  
+ *  So, immutable coder beware... and use AbstractStandardImmutableFieldList!  
+ *  (which will correctly throw an ImmutableException in this case)
  * 
  * @author jim.kane
  *
  * @param <T>
  */
-abstract public class AbstractStandardImmutableFieldList<T> implements List<T>
+abstract public class StandardImmutableFieldList<T> implements List<T>
 {
 	/**
 	 * This object will be null when the field is serialized from either XML and
@@ -37,18 +53,19 @@ abstract public class AbstractStandardImmutableFieldList<T> implements List<T>
 	abstract protected List createNewMutableListInstance();
 	abstract protected List createFieldSubList(StandardImmutableObject parent, Collection<T> objs);
 	
-	public AbstractStandardImmutableFieldList()
+	public StandardImmutableFieldList()
 	{
 		this(null);
+		
 	}
 	
-	public AbstractStandardImmutableFieldList(StandardImmutableObject parent)
+	public StandardImmutableFieldList(StandardImmutableObject parent)
 	{
 		this.parent = parent;
 		contents = createNewMutableListInstance();
 	}
 	
-	public AbstractStandardImmutableFieldList(StandardImmutableObject parent, Iterable<T> objs)
+	public StandardImmutableFieldList(StandardImmutableObject parent, Iterable<T> objs)
 	{
 		this(parent);
 		
