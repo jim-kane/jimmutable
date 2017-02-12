@@ -93,7 +93,7 @@ abstract public class StandardImmutableFieldSet<T> implements Set<T>
 	public boolean retainAll(Collection<?> c)
 	{
 		assertNotComplete();
-		return contents.containsAll(c);
+		return contents.retainAll(c);
 	}
 
 	
@@ -108,6 +108,28 @@ abstract public class StandardImmutableFieldSet<T> implements Set<T>
 	{
 		assertNotComplete();
 		contents.clear();
+	}
+	
+	public int hashCode() 
+	{
+		return contents.hashCode();
+	}
+
+
+	public boolean equals(Object obj) 
+	{
+		if (!(obj instanceof Set) ) return false;
+		
+		Set other = (Set)obj;
+		
+		if ( other.size() != size() ) return false;
+		
+		return other.containsAll(contents);
+	}
+
+	public String toString() 
+	{
+		return super.toString();
 	}
 
 	public Iterator<T> iterator()
