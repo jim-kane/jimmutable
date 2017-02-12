@@ -1,22 +1,20 @@
 package org.kane.base.serialization;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
-import org.kane.base.serialization.collections.StandardImmutableFieldArrayList;
+import org.kane.base.serialization.collections.FieldArrayList;
 
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
 abstract public class StandardImmutableDeckArrayList extends StandardImmutableObject
 {
 	@XStreamImplicit(itemFieldName="contents")
-	private StandardImmutableFieldArrayList contents;
+	private FieldArrayList contents;
 
 	public StandardImmutableDeckArrayList(Collection contents)
 	{
-		this.contents = new StandardImmutableFieldArrayList(this,contents);
+		this.contents = new FieldArrayList(this,contents);
 	}
 	
 	abstract public Class getOptionalValidationType(Class default_value);

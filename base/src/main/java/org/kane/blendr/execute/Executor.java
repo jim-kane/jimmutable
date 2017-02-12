@@ -11,6 +11,7 @@ import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
 
+import org.kane.base.serialization.collections.LRUCache;
 import org.kane.blendr.lex.Tag;
 import org.kane.blendr.parse.ParseError;
 import org.kane.blendr.parse.ParseTree;
@@ -18,7 +19,6 @@ import org.kane.blendr.parse.ParseTreeContent;
 import org.kane.blendr.parse.ParseTreeProgram;
 import org.kane.blendr.parse.ParseTreeTag;
 import org.kane.blendr.parse.Parser;
-import org.kane.collections.LRUCache;
 
 import jdk.nashorn.api.scripting.ClassFilter;
 import jdk.nashorn.api.scripting.NashornScriptEngineFactory;

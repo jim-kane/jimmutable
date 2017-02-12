@@ -1,4 +1,4 @@
-package org.kane.collections;
+package org.kane.base.serialization.collections;
 
 import java.util.Collections;
 import java.util.LinkedHashMap;

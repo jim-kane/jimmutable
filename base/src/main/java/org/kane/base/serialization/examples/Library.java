@@ -1,12 +1,11 @@
 package org.kane.base.serialization.examples;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
 import org.kane.base.serialization.StandardImmutableDeckArrayList;
-import org.kane.base.serialization.Validator;
-import org.kane.base.serialization.examples.Book.Builder;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
@@ -67,10 +66,13 @@ public class Library extends StandardImmutableDeckArrayList
 	
 	static public void main(String args[])
 	{
+		List<String> authors = new ArrayList();
+		authors.add("John Steinbeck");
+		
 		Builder b = new Builder();
 		
-		b.addBook(new Book("Grapes of Wrath", 1211, "33242347234", BindingType.TRADE_PAPER_BACK, new String[]{"John Steinbeck"}));
-		b.addBook(new Book("Of Mice and Men", 1211, "32423423711", BindingType.TRADE_PAPER_BACK, new String[]{"John Steinbeck"}));
+		b.addBook(new Book("Grapes of Wrath", 1211, "33242347234", BindingType.TRADE_PAPER_BACK, authors));
+		b.addBook(new Book("Of Mice and Men", 1211, "32423423711", BindingType.TRADE_PAPER_BACK, authors));
 		
 		System.out.println(b.create().toXML());
 	}

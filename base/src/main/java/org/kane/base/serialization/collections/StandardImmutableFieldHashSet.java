@@ -20,7 +20,7 @@ import org.kane.base.serialization.StandardImmutableObject;
  *
  * @param <T>
  */
-public class StandardImmutableFieldHashSet<T> extends HashSet<T>
+public class StandardImmutableFieldHashSet<T> extends HashSet<T> implements StandardImmutableField
 {
 	/**
 	 * This object will be null when the field is serialized from either XML and
@@ -45,7 +45,7 @@ public class StandardImmutableFieldHashSet<T> extends HashSet<T>
 		addAll(objs);
 	}
 	
-	private void assertNotComplete()
+	public void assertNotComplete()
 	{
 		if ( parent == null ) // an unset parent can only occour when this object was created via xstream de-serialization... Therfore, the object is not mutable...
 			throw new ImmutableException();
@@ -92,4 +92,10 @@ public class StandardImmutableFieldHashSet<T> extends HashSet<T>
 		assertNotComplete();
 		super.clear();
 	}
+	
+	public Iterator<T> iterator()
+	{
+		return null;
+	}
+	
 }

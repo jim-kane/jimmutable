@@ -1,14 +1,15 @@
 package org.kane.base.serialization.examples;
 
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 
 import org.kane.base.serialization.Equality;
 import org.kane.base.serialization.Normalizer;
 import org.kane.base.serialization.StandardImmutableObject;
+import org.kane.base.serialization.StandardObject;
 import org.kane.base.serialization.Validator;
-import org.kane.base.serialization.collections.StandardImmutableFieldArrayList;
+import org.kane.base.serialization.collections.AbstractFieldList;
+import org.kane.base.serialization.collections.FieldArrayList;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
@@ -30,40 +31,33 @@ public class Book extends StandardImmutableObject
 	private BindingType binding; // required
 	
 	@XStreamImplicit(itemFieldName="author")
-	private StandardImmutableFieldArrayList<String> authors;
+	private FieldArrayList<String> authors;
 	
-	/**
-	 * The standard constructor for Book
-	 * 
-	 */
-	public Book(String title, int page_count, String isbn, BindingType binding, Collection<String> authors)
-	{
-		this.title = title;
-		this.page_count = page_count;
-		this.isbn = isbn;
-		this.binding = binding;
-		this.authors = new StandardImmutableFieldArrayList(this,authors);
-		
-		complete();
+	// serialization constructor...
+	private Book() 
+	{ 
+		this.authors = new FieldArrayList(this); 
 	}
 	
-	public Book(String title, int page_count, String isbn, BindingType binding, String authors[])
-	{
-		this.title = title;
-		this.page_count = page_count;
-		this.isbn = isbn;
-		this.binding = binding;
-		this.authors = new StandardImmutableFieldArrayList(this,authors);
-		
-		complete();
-	}
-	
+	// builder constructor...
 	private Book(Builder builder)
 	{
 		// building constructor.  Builder will call complete...
-		this.authors = new StandardImmutableFieldArrayList(this);
+		this.authors = new FieldArrayList(this);
 	}
 	
+	// copy constructor
+	public Book(String title, int page_count, String isbn, BindingType binding, Iterable<String> authors)
+	{
+		this.title = title;
+		this.page_count = page_count;
+		this.isbn = isbn;
+		this.binding = binding;
+		this.authors = new FieldArrayList(this,authors);
+		
+		complete();
+	}
+
 
 	/**
 	 * Normalize the book object (convert the title to upper case)
@@ -143,7 +137,7 @@ public class Book extends StandardImmutableObject
 			under_construction = (Book)starting_point.deepClone();
 			
 			// In order for the author's collection to be mutable, it must be bound to this object...
-			under_construction.authors = new StandardImmutableFieldArrayList(under_construction,starting_point.authors);
+			under_construction.authors = new FieldArrayList(under_construction,starting_point.authors);
 		}
 		
 		public void setTitle(String title) 
@@ -196,7 +190,13 @@ public class Book extends StandardImmutableObject
 		
 		Book book = b.create();
 		
-		System.out.println(book);
+		String json = book.toJSON();
+		
+		System.out.println(json);
+		
+		//book = (Book)StandardObject.fromJSON(json);
+		
+		//System.out.println(book);
 	}
 }
 
