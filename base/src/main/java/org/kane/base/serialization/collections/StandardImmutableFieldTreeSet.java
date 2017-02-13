@@ -1,6 +1,6 @@
 package org.kane.base.serialization.collections;
 
-import java.util.Set;
+import java.util.Collection;
 import java.util.TreeSet;
 
 import org.kane.base.serialization.StandardImmutableObject;
@@ -22,7 +22,7 @@ public class StandardImmutableFieldTreeSet<T> extends StandardImmutableFieldSet<
 		super(parent,objs);
 	}
 	
-	protected Set<T> createNewMutableSetInstance()
+	protected Collection<T> createNewMutableInstance()
 	{
 		return new TreeSet();
 	}

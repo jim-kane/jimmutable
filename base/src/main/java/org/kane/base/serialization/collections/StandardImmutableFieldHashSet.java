@@ -1,7 +1,7 @@
 package org.kane.base.serialization.collections;
 
+import java.util.Collection;
 import java.util.HashSet;
-import java.util.Set;
 
 import org.kane.base.serialization.StandardImmutableObject;
 
@@ -22,7 +22,7 @@ public class StandardImmutableFieldHashSet<T> extends StandardImmutableFieldSet<
 		super(parent,objs);
 	}
 	
-	protected Set<T> createNewMutableSetInstance()
+	protected Collection<T> createNewMutableInstance()
 	{
 		return new HashSet();
 	}

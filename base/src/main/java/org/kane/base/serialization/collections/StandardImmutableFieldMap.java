@@ -77,14 +77,13 @@ abstract public class StandardImmutableFieldMap<K,V> implements Map<K,V>
 	
 	public Set<K> keySet()
 	{
-		return new MyKeySet();
+		return (Set<K>)new MyKeySet();
 	}
 
 	
 	public Collection<V> values()
 	{
-		// TODO Auto-generated method stub
-		return null;
+		return new MyValuesCollection();
 	}
 
 	
@@ -100,7 +99,7 @@ abstract public class StandardImmutableFieldMap<K,V> implements Map<K,V>
 			super(parent);
 		}
 		
-		protected Set createNewMutableSetInstance()
+		protected Collection createNewMutableInstance()
 		{
 			return contents.keySet();
 		}
@@ -113,9 +112,22 @@ abstract public class StandardImmutableFieldMap<K,V> implements Map<K,V>
 			super(parent);
 		}
 		
-		protected Set createNewMutableSetInstance()
+		protected Set createNewMutableInstance()
 		{
 			return contents.entrySet();
+		}
+	}
+	
+	private class MyValuesCollection<V> extends StandardImmutableFieldCollection<V>
+	{
+		private MyValuesCollection()
+		{
+			super(parent);
+		}
+		
+		protected Collection<V> createNewMutableInstance()
+		{
+			return (Collection<V>)contents.values();
 		}
 	}
 }

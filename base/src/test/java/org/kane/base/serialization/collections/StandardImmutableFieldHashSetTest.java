@@ -220,7 +220,7 @@ public class StandardImmutableFieldHashSetTest extends TestCase
     	obj.verifyImmutable();
     	
     	// used to create the code for test serialization...
-    	System.out.println(JavaCodeUtils.toJavaStringLiteral(obj));
+    	//System.out.println(JavaCodeUtils.toJavaStringLiteral(obj));
     }
     
     public void testSerialization()
@@ -229,7 +229,7 @@ public class StandardImmutableFieldHashSetTest extends TestCase
     		     , "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>"
     		     , "<DummyObject-set>"
     		     , "   <set>"
-    		     , "      <contents>"
+    		     , "      <contents class=\"set\">"
     		     , "         <string>foo</string>"
     		     , "      </contents>"
     		     , "   </set>"
