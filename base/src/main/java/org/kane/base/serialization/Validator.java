@@ -1,6 +1,7 @@
 package org.kane.base.serialization;
 
 import java.util.Collection;
+import java.util.Map;
 
 /**
  * Various utility functions used for validation.  
