@@ -4,9 +4,10 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import org.kane.base.serialization.ImmutableException;
+import org.kane.base.immutability.ImmutableException;
+import org.kane.base.immutability.StandardImmutableObject;
+import org.kane.base.immutability.collections.FieldHashSet;
 import org.kane.base.serialization.JavaCodeUtils;
-import org.kane.base.serialization.StandardImmutableObject;
 import org.kane.base.serialization.StandardObject;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
@@ -20,7 +21,7 @@ public class StandardImmutableFieldHashSetTest extends TestCase
 	@XStreamAlias("DummyObject-set")
 	static private class DummyObject extends StandardImmutableObject
 	{
-		private StandardImmutableFieldHashSet<String> set;
+		private FieldHashSet<String> set;
 		transient private Iterator old_iterator;
 		
 		public int compareTo(Object o) { return 0; }
@@ -28,11 +29,11 @@ public class StandardImmutableFieldHashSetTest extends TestCase
 		public void validate() {}
 		public int hashCode() { return set.hashCode(); }
 
-		public StandardImmutableFieldHashSet getSimpleArrayList() { return set; } 
+		public FieldHashSet getSimpleArrayList() { return set; } 
 		
 		public DummyObject()
 		{
-			set = new StandardImmutableFieldHashSet(this);
+			set = new FieldHashSet(this);
 			old_iterator = set.iterator();
 			
 			verifyMutable();
@@ -47,7 +48,7 @@ public class StandardImmutableFieldHashSetTest extends TestCase
 		
 		public DummyObject(Builder b)
 		{
-			set = new StandardImmutableFieldHashSet(this);
+			set = new FieldHashSet(this);
 		}
 	
 		public boolean equals(Object obj) 

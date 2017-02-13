@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.kane.base.serialization.StandardImmutableObject;
+import org.kane.base.immutability.StandardImmutableObject;
 import org.kane.base.serialization.ValidationException;
 import org.kane.base.serialization.Validator;
 

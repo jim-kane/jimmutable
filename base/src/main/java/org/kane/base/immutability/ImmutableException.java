@@ -1,4 +1,4 @@
-package org.kane.base.serialization;
+package org.kane.base.immutability;
 
 /**
  * A RuntimeException with the semantic meaning "hey! you just tried to modify

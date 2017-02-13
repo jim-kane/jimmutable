@@ -1,13 +1,13 @@
-package org.kane.base.serialization.collections;
+package org.kane.base.immutability.collections;
 
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
-import org.kane.base.serialization.ImmutableException;
-import org.kane.base.serialization.StandardImmutableObject;
+import org.kane.base.immutability.ImmutableException;
+import org.kane.base.immutability.StandardImmutableObject;
 
-abstract public class StandardImmutableFieldMap<K,V> implements Map<K,V>
+abstract public class FieldMap<K,V> implements Map<K,V>
 {
 	/**
 	 * This object will be null when the field is serialized from either XML and
@@ -20,19 +20,19 @@ abstract public class StandardImmutableFieldMap<K,V> implements Map<K,V>
 	
 	abstract protected Map<K,V> createNewMutableMapInstance();
 	
-	public StandardImmutableFieldMap()
+	public FieldMap()
 	{
 		this(null);
 		
 	}
 	
-	public StandardImmutableFieldMap(StandardImmutableObject parent)
+	public FieldMap(StandardImmutableObject parent)
 	{
 		this.parent = parent;
 		contents = createNewMutableMapInstance();
 	}
 	
-	public StandardImmutableFieldMap(StandardImmutableObject parent, Map<K,V> initial_values)
+	public FieldMap(StandardImmutableObject parent, Map<K,V> initial_values)
 	{
 		this(parent);
 		
@@ -100,7 +100,7 @@ abstract public class StandardImmutableFieldMap<K,V> implements Map<K,V>
 		return new MyEntrySet();
 	}
 
-	private class MyKeySet<K> extends StandardImmutableFieldSet<K>
+	private class MyKeySet<K> extends FieldSet<K>
 	{
 		private MyKeySet()
 		{
@@ -113,7 +113,7 @@ abstract public class StandardImmutableFieldMap<K,V> implements Map<K,V>
 		}
 	}
 	
-	private class MyEntrySet extends StandardImmutableFieldSet
+	private class MyEntrySet extends FieldSet
 	{
 		private MyEntrySet()
 		{
@@ -126,7 +126,7 @@ abstract public class StandardImmutableFieldMap<K,V> implements Map<K,V>
 		}
 	}
 	
-	private class MyValuesCollection<V> extends StandardImmutableFieldCollection<V>
+	private class MyValuesCollection<V> extends FieldCollection<V>
 	{
 		private MyValuesCollection()
 		{

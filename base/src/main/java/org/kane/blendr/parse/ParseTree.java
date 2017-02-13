@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.kane.base.immutability.StandardImmutableObject;
 import org.kane.base.serialization.Equality;
-import org.kane.base.serialization.StandardImmutableObject;
 import org.kane.base.serialization.Validator;
 import org.kane.blendr.lex.TokenCloseTag;
 import org.kane.blendr.lex.TokenOpenTag;

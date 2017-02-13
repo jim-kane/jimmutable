@@ -1,4 +1,6 @@
-package org.kane.base.serialization;
+package org.kane.base.immutability;
+
+import org.kane.base.serialization.StandardObject;
 
 /**
  * An abstract base class representing a standard immutable objects.

@@ -1,13 +1,13 @@
-package org.kane.base.serialization.collections;
+package org.kane.base.immutability.collections;
 
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;
 
-import org.kane.base.serialization.ImmutableException;
-import org.kane.base.serialization.StandardImmutableObject;
+import org.kane.base.immutability.ImmutableException;
+import org.kane.base.immutability.StandardImmutableObject;
 
-abstract public class StandardImmutableFieldCollection<T> implements Collection<T>
+abstract public class FieldCollection<T> implements Collection<T>
 {
 	/**
 	 * This object will be null when the field is serialized from either XML and
@@ -20,19 +20,19 @@ abstract public class StandardImmutableFieldCollection<T> implements Collection<
 	
 	abstract protected Collection<T> createNewMutableInstance();
 	
-	public StandardImmutableFieldCollection()
+	public FieldCollection()
 	{
 		this(null);
 		
 	}
 	
-	public StandardImmutableFieldCollection(StandardImmutableObject parent)
+	public FieldCollection(StandardImmutableObject parent)
 	{
 		this.parent = parent;
 		contents = createNewMutableInstance();
 	}
 	
-	public StandardImmutableFieldCollection(StandardImmutableObject parent, Iterable<T> objs)
+	public FieldCollection(StandardImmutableObject parent, Iterable<T> objs)
 	{
 		this(parent);
 		

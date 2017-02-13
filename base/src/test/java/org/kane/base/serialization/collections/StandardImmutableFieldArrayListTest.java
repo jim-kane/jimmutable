@@ -4,8 +4,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.ListIterator;
 
-import org.kane.base.serialization.ImmutableException;
-import org.kane.base.serialization.StandardImmutableObject;
+import org.kane.base.immutability.ImmutableException;
+import org.kane.base.immutability.StandardImmutableObject;
+import org.kane.base.immutability.collections.FieldArrayList;
 import org.kane.base.serialization.StandardObject;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
@@ -19,7 +20,7 @@ public class StandardImmutableFieldArrayListTest extends TestCase
 	@XStreamAlias("DummyObject-list")
 	static private class DummyObject extends StandardImmutableObject
 	{
-		private StandardImmutableFieldArrayList<String> list;
+		private FieldArrayList<String> list;
 		transient private ListIterator old_iterator;
 		
 		public int compareTo(Object o) { return 0; }
@@ -27,11 +28,11 @@ public class StandardImmutableFieldArrayListTest extends TestCase
 		public void validate() {}
 		public int hashCode() { return list.hashCode(); }
 
-		public StandardImmutableFieldArrayList getSimpleArrayList() { return list; } 
+		public FieldArrayList getSimpleArrayList() { return list; } 
 		
 		public DummyObject()
 		{
-			list = new StandardImmutableFieldArrayList(this);
+			list = new FieldArrayList(this);
 			old_iterator = list.listIterator();
 			
 			verifyMutable();
@@ -46,7 +47,7 @@ public class StandardImmutableFieldArrayListTest extends TestCase
 		
 		public DummyObject(Builder b)
 		{
-			list = new StandardImmutableFieldArrayList(this);
+			list = new FieldArrayList(this);
 		}
 	
 		public boolean equals(Object obj) 

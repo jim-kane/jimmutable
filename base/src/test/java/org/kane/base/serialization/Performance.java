@@ -3,6 +3,8 @@ package org.kane.base.serialization;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.kane.base.immutability.StandardImmutableObject;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;

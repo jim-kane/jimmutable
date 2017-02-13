@@ -3,14 +3,14 @@ package org.kane.base.serialization.examples;
 import java.util.Collection;
 import java.util.List;
 
+import org.kane.base.immutability.StandardImmutableObject;
+import org.kane.base.immutability.collections.FieldArrayList;
+import org.kane.base.immutability.collections.FieldList;
 import org.kane.base.serialization.Equality;
 import org.kane.base.serialization.JavaCodeUtils;
 import org.kane.base.serialization.Normalizer;
-import org.kane.base.serialization.StandardImmutableObject;
 import org.kane.base.serialization.StandardObject;
 import org.kane.base.serialization.Validator;
-import org.kane.base.serialization.collections.StandardImmutableFieldList;
-import org.kane.base.serialization.collections.StandardImmutableFieldArrayList;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
@@ -31,13 +31,13 @@ public class Book extends StandardImmutableObject
 	
 	private BindingType binding; // required
 
-	private StandardImmutableFieldArrayList<String> authors;
+	private FieldArrayList<String> authors;
 	
 	// builder constructor...
 	private Book(Builder builder)
 	{
 		// building constructor.  Builder will call complete...
-		this.authors = new StandardImmutableFieldArrayList(this);
+		this.authors = new FieldArrayList(this);
 	}
 	
 	// copy constructor
@@ -47,7 +47,7 @@ public class Book extends StandardImmutableObject
 		this.page_count = page_count;
 		this.isbn = isbn;
 		this.binding = binding;
-		this.authors = new StandardImmutableFieldArrayList(this,authors);
+		this.authors = new FieldArrayList(this,authors);
 		
 		complete();
 	}
@@ -131,7 +131,7 @@ public class Book extends StandardImmutableObject
 			under_construction = (Book)starting_point.deepClone();
 			
 			// In order for the author's collection to be mutable, it must be bound to this object...
-			under_construction.authors = new StandardImmutableFieldArrayList(under_construction,starting_point.authors);
+			under_construction.authors = new FieldArrayList(under_construction,starting_point.authors);
 		}
 		
 		public void setTitle(String title) 

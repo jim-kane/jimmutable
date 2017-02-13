@@ -1,5 +1,6 @@
 package org.kane.blendr.lex;
 
+import org.kane.base.immutability.StandardImmutableObject;
 import org.kane.base.serialization.*;
 
 /**

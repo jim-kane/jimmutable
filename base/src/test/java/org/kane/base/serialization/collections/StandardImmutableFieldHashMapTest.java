@@ -6,9 +6,10 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import org.kane.base.serialization.ImmutableException;
+import org.kane.base.immutability.ImmutableException;
+import org.kane.base.immutability.StandardImmutableObject;
+import org.kane.base.immutability.collections.FieldHashMap;
 import org.kane.base.serialization.JavaCodeUtils;
-import org.kane.base.serialization.StandardImmutableObject;
 import org.kane.base.serialization.StandardObject;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
@@ -22,7 +23,7 @@ public class StandardImmutableFieldHashMapTest extends TestCase
 	@XStreamAlias("DummyObject-map")
 	static private class DummyObject extends StandardImmutableObject
 	{
-		private StandardImmutableFieldHashMap<String,Integer> map;
+		private FieldHashMap<String,Integer> map;
 		
 		public int compareTo(Object o) { return 0; }
 		public void normalize() {}
@@ -32,7 +33,7 @@ public class StandardImmutableFieldHashMapTest extends TestCase
 		
 		public DummyObject()
 		{
-			map = new StandardImmutableFieldHashMap(this);
+			map = new FieldHashMap(this);
 			
 			verifyMutable();
 			
@@ -45,7 +46,7 @@ public class StandardImmutableFieldHashMapTest extends TestCase
 		
 		public DummyObject(Builder b)
 		{
-			map = new StandardImmutableFieldHashMap(this);
+			map = new FieldHashMap(this);
 		}
 	
 		public boolean equals(Object obj) 

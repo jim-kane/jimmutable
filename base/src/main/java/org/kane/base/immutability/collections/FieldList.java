@@ -1,4 +1,4 @@
-package org.kane.base.serialization.collections;
+package org.kane.base.immutability.collections;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -7,8 +7,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
-import org.kane.base.serialization.ImmutableException;
-import org.kane.base.serialization.StandardImmutableObject;
+import org.kane.base.immutability.ImmutableException;
+import org.kane.base.immutability.StandardImmutableObject;
 import org.kane.base.serialization.ValidationException;
 
 /**
@@ -39,7 +39,7 @@ import org.kane.base.serialization.ValidationException;
  *
  * @param <T>
  */
-abstract public class StandardImmutableFieldList<T> implements List<T>
+abstract public class FieldList<T> implements List<T>
 {
 	/**
 	 * This object will be null when the field is serialized from either XML and
@@ -53,19 +53,19 @@ abstract public class StandardImmutableFieldList<T> implements List<T>
 	abstract protected List createNewMutableListInstance();
 	abstract protected List createFieldSubList(StandardImmutableObject parent, Collection<T> objs);
 	
-	public StandardImmutableFieldList()
+	public FieldList()
 	{
 		this(null);
 		
 	}
 	
-	public StandardImmutableFieldList(StandardImmutableObject parent)
+	public FieldList(StandardImmutableObject parent)
 	{
 		this.parent = parent;
 		contents = createNewMutableListInstance();
 	}
 	
-	public StandardImmutableFieldList(StandardImmutableObject parent, Iterable<T> objs)
+	public FieldList(StandardImmutableObject parent, Iterable<T> objs)
 	{
 		this(parent);
 		
