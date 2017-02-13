@@ -32,6 +32,14 @@ abstract public class StandardImmutableFieldMap<K,V> implements Map<K,V>
 		contents = createNewMutableMapInstance();
 	}
 	
+	public StandardImmutableFieldMap(StandardImmutableObject parent, Map<K,V> initial_values)
+	{
+		this(parent);
+		
+		if ( initial_values != null )
+			contents.putAll(initial_values);
+	}
+	
 	public void assertNotComplete()
 	{
 		if ( parent == null ) // an unset parent can only occour when this object was created via xstream de-serialization... Therefore, the object is not mutable...
@@ -130,4 +138,24 @@ abstract public class StandardImmutableFieldMap<K,V> implements Map<K,V>
 			return (Collection<V>)contents.values();
 		}
 	}
+
+	
+	public boolean equals(Object obj) 
+	{
+		if ( !(obj instanceof Map) ) return false;
+		
+		Map other = (Map)obj;
+		
+		if ( size() != other.size() ) return false;
+		
+		return entrySet().containsAll(other.entrySet());
+	}
+
+	
+	public String toString() 
+	{
+		return contents.toString();
+	}
+	
+	
 }
