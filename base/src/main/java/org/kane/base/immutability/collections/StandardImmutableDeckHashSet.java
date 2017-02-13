@@ -2,21 +2,20 @@ package org.kane.base.immutability.collections;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import org.kane.base.immutability.StandardImmutableObject;
 import org.kane.base.serialization.Equality;
 import org.kane.base.serialization.ValidationException;
 import org.kane.base.serialization.Validator;
 
-import com.thoughtworks.xstream.annotations.XStreamImplicit;
-
-abstract public class StandardImmutableDeckArrayList extends StandardImmutableObject
+abstract public class StandardImmutableDeckHashSet extends StandardImmutableObject
 {
-	private FieldArrayList contents;
+	private FieldHashSet contents;
 
-	public StandardImmutableDeckArrayList(Collection contents)
+	public StandardImmutableDeckHashSet(Collection contents)
 	{
-		this.contents = new FieldArrayList(this,contents);
+		this.contents = new FieldHashSet(this,contents);
 	}
 	
 	abstract public Class getOptionalValidationType(Class default_value);
@@ -46,14 +45,14 @@ abstract public class StandardImmutableDeckArrayList extends StandardImmutableOb
 		return contents.hashCode();
 	}
 
-	public List getSimpleContents() { return contents; }
+	public Set getSimpleContents() { return contents; }
 	
 	public boolean equals(Object obj) 
 	{
 		if ( obj == null ) return false;
-		if ( !(obj instanceof StandardImmutableDeckArrayList) ) return false;
+		if ( !(obj instanceof StandardImmutableDeckHashSet) ) return false;
 		
-		StandardImmutableDeckArrayList other = (StandardImmutableDeckArrayList)obj;
+		StandardImmutableDeckHashSet other = (StandardImmutableDeckHashSet)obj;
 		
 		// This test is required to prevent any two empty decks from being equal...
 		if ( !Equality.optionalEquals(getOptionalValidationType(null), other.getOptionalValidationType(null)) ) return false;
@@ -63,10 +62,9 @@ abstract public class StandardImmutableDeckArrayList extends StandardImmutableOb
 	
 	public int compareTo(Object o) 
 	{
-		if ( !(o instanceof StandardImmutableDeckArrayList) ) return 0;
-		StandardImmutableDeckArrayList other = (StandardImmutableDeckArrayList)o;
+		if ( !(o instanceof StandardImmutableDeckHashSet) ) return 0;
+		StandardImmutableDeckHashSet other = (StandardImmutableDeckHashSet)o;
 		
 		return Integer.compare(getSimpleContents().size(), other.getSimpleContents().size());
 	}
 }
-
