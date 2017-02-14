@@ -14,7 +14,7 @@ abstract public class FieldMap<K,V> implements Map<K,V>
 	 * JSON (null = immutable) and will be "set" otherwise (via one of the
 	 * constructors)
 	 */
-	transient private StandardImmutableObject parent;
+	private StandardImmutableObject parent;
 	
 	private Map<K,V> contents;
 	
@@ -42,7 +42,7 @@ abstract public class FieldMap<K,V> implements Map<K,V>
 	
 	public void assertNotComplete()
 	{
-		if ( parent == null ) // an unset parent can only occour when this object was created via xstream de-serialization... Therefore, the object is not mutable...
+		if ( parent == null ) // this should never happen, but... should it take place... default to immutable...
 			throw new ImmutableException();
 		else 
 			parent.assertNotComplete();

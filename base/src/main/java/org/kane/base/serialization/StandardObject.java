@@ -167,6 +167,7 @@ abstract public class StandardObject implements Comparable
 	 */
 	static private StandardObject fromSerializedData(String data, XStream deserializer) throws ValidationException
 	{
+		// NOTE: If you change anything in here, also look at StandardImmutableObject.deepMutableCloneForBuilder (it uses much of the same code...)
 		Validator.notNull(data);
 		Validator.notNull(deserializer);
 		

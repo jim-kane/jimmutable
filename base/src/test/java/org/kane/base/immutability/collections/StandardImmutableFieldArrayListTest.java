@@ -6,7 +6,7 @@ import java.util.ListIterator;
 
 import org.kane.base.immutability.ImmutableException;
 import org.kane.base.immutability.StandardImmutableObject;
-import org.kane.base.immutability.collections.FieldArrayList;
+import org.kane.base.serialization.JavaCodeUtils;
 import org.kane.base.serialization.StandardObject;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
@@ -235,10 +235,11 @@ public class StandardImmutableFieldArrayListTest extends TestCase
     
     public void testSerialization()
     {
-    	String xml = String.format("%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n"
+    	String xml = String.format("%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n"
     		     , "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>"
     		     , "<DummyObject-list>"
     		     , "   <list>"
+    		     , "      <parent class=\"DummyObject-list\" reference=\"../..\"/>"
     		     , "      <contents>"
     		     , "         <string>foo</string>"
     		     , "      </contents>"

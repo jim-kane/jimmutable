@@ -22,7 +22,7 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit;
  *
  */
 @XStreamAlias("book")
-public class Book extends StandardImmutableObject
+final public class Book extends StandardImmutableObject
 {
 	private String title; // required, upper-case
 	private int page_count; // required, must be 0 or greater
@@ -40,18 +40,19 @@ public class Book extends StandardImmutableObject
 		this.authors = new FieldArrayList(this);
 	}
 	
-	// copy constructor
-	public Book(String title, int page_count, String isbn, BindingType binding, Iterable<String> authors)
+	// copy constructor...
+	public Book(String title, int page_count, String isbn, BindingType binding, Collection<String> authors)
 	{
+		// building copy constructor.  Builder will call complete...
 		this.title = title;
 		this.page_count = page_count;
 		this.isbn = isbn;
 		this.binding = binding;
-		this.authors = new FieldArrayList(this,authors);
+		
+		this.authors = new FieldArrayList(this, authors);
 		
 		complete();
 	}
-
 
 	/**
 	 * Normalize the book object (convert the title to upper case)
@@ -128,10 +129,7 @@ public class Book extends StandardImmutableObject
 		
 		public Builder(Book starting_point)
 		{
-			under_construction = (Book)starting_point.deepClone();
-			
-			// In order for the author's collection to be mutable, it must be bound to this object...
-			under_construction.authors = new FieldArrayList(under_construction,starting_point.authors);
+			under_construction = (Book)starting_point.deepMutableCloneForBuilder();
 		}
 		
 		public void setTitle(String title) 

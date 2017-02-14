@@ -1,6 +1,10 @@
 package org.kane.base.immutability;
 
 import org.kane.base.serialization.StandardObject;
+import org.kane.base.serialization.ValidationException;
+import org.kane.base.serialization.XStreamSingleton;
+
+import com.thoughtworks.xstream.XStream;
 
 /**
  * An abstract base class representing a standard immutable objects.
@@ -45,4 +49,30 @@ abstract public class StandardImmutableObject extends StandardObject
 	
 	public boolean isComplete() { return is_complete; }
 	
+	public StandardImmutableObject deepMutableCloneForBuilder()
+	{
+		String data = toXML();
+		XStream deserializer = XStreamSingleton.getXMLStream();
+		
+		try
+		{
+			StandardObject ret = (StandardObject)deserializer.fromXML(data);
+			// DO NOT COMPLETE... the idea is to return a mutable object for use in a builder...
+			return (StandardImmutableObject)ret;
+		}
+		catch(ValidationException validation_exception)
+		{
+			throw validation_exception;
+		}
+		catch(Exception other_exception)
+		{
+			if ( deserializer == XStreamSingleton.getXMLStream() )
+				throw new ValidationException("Error constructing StandardObject from XML",other_exception);
+			else if ( deserializer == XStreamSingleton.getJSONStream() )
+				throw new ValidationException("Error constructing StandardObject from JSON",other_exception);
+			else
+				throw new ValidationException("Error constructing StandardObject from serialized data",other_exception);
+		}
+		
+	}
 }

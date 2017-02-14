@@ -47,7 +47,7 @@ public class Library extends StandardImmutableDeckArrayList
 		
 		public Builder(Library starting_point)
 		{
-			under_construction = new Library(starting_point.getSimpleContents());
+			under_construction = (Library)starting_point.deepMutableCloneForBuilder();
 		}
 
 		public void addBook(Book book)
@@ -62,18 +62,5 @@ public class Library extends StandardImmutableDeckArrayList
 			
 			return under_construction;
 		}
-	}
-	
-	static public void main(String args[])
-	{
-		List<String> authors = new ArrayList();
-		authors.add("John Steinbeck");
-		
-		Builder b = new Builder();
-		
-		b.addBook(new Book("Grapes of Wrath", 1211, "33242347234", BindingType.TRADE_PAPER_BACK, authors));
-		b.addBook(new Book("Of Mice and Men", 1211, "32423423711", BindingType.TRADE_PAPER_BACK, authors));
-		
-		System.out.println(b.create().toXML());
 	}
 }

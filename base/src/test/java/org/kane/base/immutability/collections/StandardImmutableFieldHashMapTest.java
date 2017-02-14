@@ -210,18 +210,19 @@ public class StandardImmutableFieldHashMapTest extends TestCase
     	obj.verifyImmutable();
     	
     	// used to create the code for test serialization...
-    	// System.out.println(JavaCodeUtils.toJavaStringLiteral(obj));
+    	System.out.println(JavaCodeUtils.toJavaStringLiteral(obj));
     	
-    	System.out.println(obj.toJSON());
+    	//System.out.println(obj.toJSON());
     }
     
     
     public void testSerialization()
     {
-    	String xml = String.format("%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n"
+    	String xml = String.format("%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n"
     		     , "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>"
     		     , "<DummyObject-map>"
     		     , "   <map>"
+    		     , "      <parent class=\"DummyObject-map\" reference=\"../..\"/>"
     		     , "      <contents>"
     		     , "         <entry>"
     		     , "            <string>foo</string>"

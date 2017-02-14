@@ -6,7 +6,6 @@ import java.util.Set;
 
 import org.kane.base.immutability.ImmutableException;
 import org.kane.base.immutability.StandardImmutableObject;
-import org.kane.base.immutability.collections.FieldHashSet;
 import org.kane.base.serialization.JavaCodeUtils;
 import org.kane.base.serialization.StandardObject;
 
@@ -221,15 +220,16 @@ public class StandardImmutableFieldHashSetTest extends TestCase
     	obj.verifyImmutable();
     	
     	// used to create the code for test serialization...
-    	//System.out.println(JavaCodeUtils.toJavaStringLiteral(obj));
+    	System.out.println(JavaCodeUtils.toJavaStringLiteral(obj));
     }
     
     public void testSerialization()
     {
-    	String xml = String.format("%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n"
+    	String xml = String.format("%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n"
     		     , "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>"
     		     , "<DummyObject-set>"
     		     , "   <set>"
+    		     , "      <parent class=\"DummyObject-set\" reference=\"../..\"/>"
     		     , "      <contents class=\"set\">"
     		     , "         <string>foo</string>"
     		     , "      </contents>"
