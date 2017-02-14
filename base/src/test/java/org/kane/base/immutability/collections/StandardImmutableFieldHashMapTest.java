@@ -1,4 +1,4 @@
-package org.kane.base.serialization.collections;
+package org.kane.base.immutability.collections;
 
 import java.util.Collection;
 import java.util.HashMap;

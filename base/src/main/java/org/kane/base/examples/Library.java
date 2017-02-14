@@ -1,4 +1,4 @@
-package org.kane.base.serialization.examples;
+package org.kane.base.examples;
 
 import java.util.ArrayList;
 import java.util.Collection;
