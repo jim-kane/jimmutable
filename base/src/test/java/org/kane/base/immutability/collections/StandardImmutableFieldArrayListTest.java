@@ -231,12 +231,12 @@ public class StandardImmutableFieldArrayListTest extends TestCase
     	obj.verifyImmutable();
     	
     	// used to create the code for test serialization...
-    	System.out.println(JavaCodeUtils.toJavaStringLiteral(obj));
+    	System.out.println(obj.toJavaCode("obj"));
     }
     
     public void testSerialization()
     {
-    	String xml = String.format("%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n"
+    	String obj_as_xml_string = String.format("%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n"
     		     , "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>"
     		     , "<DummyObject-list>"
     		     , "   <list>"
@@ -246,8 +246,8 @@ public class StandardImmutableFieldArrayListTest extends TestCase
     		     , "   </list>"
     		     , "</DummyObject-list>"
     		);
-    	
-    	DummyObject obj = (DummyObject)StandardObject.fromXML(xml);
+
+    	DummyObject obj = (DummyObject)StandardObject.fromXML(obj_as_xml_string);
     	
     	assertEquals(obj.list.size(),1);
     	assertEquals(obj.list.get(0),"foo");

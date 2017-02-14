@@ -36,6 +36,8 @@ final public class Book extends StandardImmutableObject
 	// builder constructor...
 	private Book(Builder builder)
 	{
+		super();
+		
 		// building constructor.  Builder will call complete...
 		this.authors = new FieldArrayList();
 	}
@@ -43,6 +45,8 @@ final public class Book extends StandardImmutableObject
 	// copy constructor...
 	public Book(String title, int page_count, String isbn, BindingType binding, Collection<String> authors)
 	{
+		super();
+		
 		// building copy constructor.  Builder will call complete...
 		this.title = title;
 		this.page_count = page_count;
@@ -175,22 +179,6 @@ final public class Book extends StandardImmutableObject
 			under_construction.complete();
 			return under_construction;
 		}
-	}
-	
-	static public void main(String args[]) throws Exception
-	{
-		Builder b = new Builder();
-		
-		b.setTitle("Of Mice and Men");
-		b.setPageCount(911);
-		b.setISBN("234234234234");
-		b.addAuthor("John Steinbeck");
-		b.addAuthor("Ed Weisman");
-		b.setBindingType(BindingType.PAPER_BACK);
-		
-		Book book = b.create();
-		
-		System.out.println(JavaCodeUtils.toJavaStringLiteral(book));
 	}
 }
 

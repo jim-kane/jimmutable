@@ -46,7 +46,6 @@ abstract public class StandardImmutableDeckHashSet extends StandardImmutableObje
 		contents.freeze();
 	}
 	
-	
 	public int hashCode() 
 	{
 		return contents.hashCode();

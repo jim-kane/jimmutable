@@ -211,15 +211,14 @@ public class StandardImmutableFieldHashMapTest extends TestCase
     	obj.verifyImmutable();
     	
     	// used to create the code for test serialization...
-    	System.out.println(JavaCodeUtils.toJavaStringLiteral(obj));
-    	
-    	//System.out.println(obj.toJSON());
+    
+    	System.out.println(obj.toJavaCode("obj"));
     }
     
     
     public void testSerialization()
     {
-    	String xml = String.format("%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n"
+    	String obj_as_xml_string = String.format("%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n"
     		     , "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>"
     		     , "<DummyObject-map>"
     		     , "   <map>"
@@ -232,8 +231,8 @@ public class StandardImmutableFieldHashMapTest extends TestCase
     		     , "   </map>"
     		     , "</DummyObject-map>"
     		);
-    	
-    	DummyObject obj = (DummyObject)StandardObject.fromXML(xml);
+
+    	DummyObject obj = (DummyObject)StandardObject.fromXML(obj_as_xml_string);
     	
     	assertEquals(obj.map.size(),1);
     	assert(obj.map.containsKey("foo"));

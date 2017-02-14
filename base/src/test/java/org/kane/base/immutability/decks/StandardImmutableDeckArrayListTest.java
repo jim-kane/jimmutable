@@ -77,6 +77,9 @@ public class StandardImmutableDeckArrayListTest extends TestCase
 		assertEquals(second_library.getSimpleBooks().get(0).getSimpleTitle(),"GRAPES OF WRATH");
 		assertEquals(second_library.getSimpleBooks().get(1).getSimpleTitle(),"OF MICE AND MEN");
 		assertEquals(second_library.getSimpleBooks().get(2).getSimpleTitle(),"O LOST");
+		
+		
+		System.out.println(second_library.toXML());
     }
 }
 

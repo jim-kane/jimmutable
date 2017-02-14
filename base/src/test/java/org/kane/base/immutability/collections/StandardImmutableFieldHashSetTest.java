@@ -221,12 +221,12 @@ public class StandardImmutableFieldHashSetTest extends TestCase
     	obj.verifyImmutable();
     	
     	// used to create the code for test serialization...
-    	System.out.println(JavaCodeUtils.toJavaStringLiteral(obj));
+    	System.out.println(obj.toJavaCode("obj"));
     }
     
     public void testSerialization()
     {
-    	String xml = String.format("%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n"
+    	String obj_as_xml_string = String.format("%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n"
     		     , "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>"
     		     , "<DummyObject-set>"
     		     , "   <set>"
@@ -236,8 +236,8 @@ public class StandardImmutableFieldHashSetTest extends TestCase
     		     , "   </set>"
     		     , "</DummyObject-set>"
     		);
-    	
-    	DummyObject obj = (DummyObject)StandardObject.fromXML(xml);
+
+    	DummyObject obj = (DummyObject)StandardObject.fromXML(obj_as_xml_string);
     	
     	assertEquals(obj.set.size(),1);
     	assert(obj.set.contains("foo"));

@@ -112,6 +112,42 @@ abstract public class StandardObject implements Comparable
 	} 
 	
 	/**
+	 * Pretty print the XML of this object
+	 * 
+	 * @param default_value The value to return if unable to pretty-print the MXL
+	 * 
+	 * @return A pretty printed XML representation of this object
+	 * 
+	 */
+	
+	public String toPrettyPrintXML(String default_value)
+	{
+		return JavaCodeUtils.prettyPrintXML(toXML(), default_value);
+	}
+	
+	
+	/**
+	 * Convert this object to a Java source code. This is done by taking the
+	 * pretty printed XML and properly escaping it (using
+	 * JavaCodeUtils.toJavaStringLiteral) so as to make clean, easy to read Java
+	 * source code that will construct the object. (Effectively serializing the
+	 * object to java source code!)
+	 * 
+	 * @return Java statements that will construct the object from XML
+	 */
+	public String toJavaCode(String variable_name)
+	{
+		return String.format("String %s_as_xml_string = %s\n\n%s %s = (%s)StandardObject.fromXML(%s_as_xml_string);"
+				, variable_name
+				, JavaCodeUtils.toJavaStringLiteral(toPrettyPrintXML("unable to pretty print XML!"))
+				, getClass().getSimpleName()
+				, variable_name
+				, getClass().getSimpleName()
+				, variable_name
+			);
+	}
+	
+	/**
 	 * Create a standard object from XML. Objects created from XML are still
 	 * subject to completion (i.e. normalization followed by validation)
 	 * 
