@@ -5,8 +5,8 @@ import java.util.List;
 
 import org.kane.base.examples.BindingType;
 import org.kane.base.examples.Book;
-import org.kane.base.examples.Library;
-import org.kane.base.examples.Library.Builder;
+import org.kane.base.examples.BookDeckList;
+import org.kane.base.examples.BookDeckList.Builder;
 import org.kane.base.serialization.JavaCodeUtils;
 import org.kane.base.serialization.StandardObject;
 
@@ -44,15 +44,12 @@ public class StandardImmutableDeckArrayListTest extends TestCase
 		builder.addBook(new Book("Grapes of Wrath", 1211, "33242347234", BindingType.TRADE_PAPER_BACK, authors));
 		builder.addBook(new Book("Of Mice and Men", 1211, "32423423711", BindingType.TRADE_PAPER_BACK, authors));
 		
-		Library first_library = builder.create();
+		BookDeckList first_library = builder.create();
 		
-		assertEquals(first_library.getSimpleBooks().size(),2);
+		assertEquals(first_library.getSimpleContents().size(),2);
 		
-		assertEquals(first_library.getSimpleBooks().get(0).getSimpleTitle(),"GRAPES OF WRATH");
-		assertEquals(first_library.getSimpleBooks().get(1).getSimpleTitle(),"OF MICE AND MEN");
-		
-		System.out.println(JavaCodeUtils.prettyPrintXML(first_library.toXML(), null));
-		System.out.println(first_library.toJSON());
+		assertEquals(first_library.getSimpleContents().get(0).getSimpleTitle(),"GRAPES OF WRATH");
+		assertEquals(first_library.getSimpleContents().get(1).getSimpleTitle(),"OF MICE AND MEN");
 		
 		// now test an "append" builder...
 		
@@ -64,20 +61,20 @@ public class StandardImmutableDeckArrayListTest extends TestCase
 		
 		builder.addBook(new Book("O Lost", 1211, "1123234234", BindingType.TRADE_PAPER_BACK, authors));
 		
-		Library second_library = builder.create();
+		BookDeckList second_library = builder.create();
 		
 		// Confirm that first library has not changed...
-		assertEquals(first_library.getSimpleBooks().size(),2);
+		assertEquals(first_library.getSimpleContents().size(),2);
 		
-		assertEquals(first_library.getSimpleBooks().get(0).getSimpleTitle(),"GRAPES OF WRATH");
-		assertEquals(first_library.getSimpleBooks().get(1).getSimpleTitle(),"OF MICE AND MEN");
+		assertEquals(first_library.getSimpleContents().get(0).getSimpleTitle(),"GRAPES OF WRATH");
+		assertEquals(first_library.getSimpleContents().get(1).getSimpleTitle(),"OF MICE AND MEN");
 		
 		// And that second library was properly appended to...
-		assertEquals(second_library.getSimpleBooks().size(),3);
+		assertEquals(second_library.getSimpleContents().size(),3);
 		
-		assertEquals(second_library.getSimpleBooks().get(0).getSimpleTitle(),"GRAPES OF WRATH");
-		assertEquals(second_library.getSimpleBooks().get(1).getSimpleTitle(),"OF MICE AND MEN");
-		assertEquals(second_library.getSimpleBooks().get(2).getSimpleTitle(),"O LOST");
+		assertEquals(second_library.getSimpleContents().get(0).getSimpleTitle(),"GRAPES OF WRATH");
+		assertEquals(second_library.getSimpleContents().get(1).getSimpleTitle(),"OF MICE AND MEN");
+		assertEquals(second_library.getSimpleContents().get(2).getSimpleTitle(),"O LOST");
 		
 		
 		System.out.println(second_library.toJavaCode("obj"));
@@ -87,8 +84,8 @@ public class StandardImmutableDeckArrayListTest extends TestCase
     {
     	String obj_as_xml_string = String.format("%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n"
     		     , "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>"
-    		     , "<library>"
-    		     , "   <contents>"
+    		     , "<book-list>"
+    		     , "   <books>"
     		     , "      <contents>"
     		     , "         <book>"
     		     , "            <title>GRAPES OF WRATH</title>"
@@ -124,17 +121,17 @@ public class StandardImmutableDeckArrayListTest extends TestCase
     		     , "            </authors>"
     		     , "         </book>"
     		     , "      </contents>"
-    		     , "   </contents>"
-    		     , "</library>"
+    		     , "   </books>"
+    		     , "</book-list>"
     		);
 
-    		Library obj = (Library)StandardObject.fromXML(obj_as_xml_string);
+    		BookDeckList obj = (BookDeckList)StandardObject.fromXML(obj_as_xml_string);
     		
-    		assertEquals(obj.getSimpleBooks().size(),3);
+    		assertEquals(obj.getSimpleContents().size(),3);
     		
-    		assertEquals(obj.getSimpleBooks().get(0).getSimpleTitle(),"GRAPES OF WRATH");
-    		assertEquals(obj.getSimpleBooks().get(1).getSimpleTitle(),"OF MICE AND MEN");
-    		assertEquals(obj.getSimpleBooks().get(2).getSimpleTitle(),"O LOST");
+    		assertEquals(obj.getSimpleContents().get(0).getSimpleTitle(),"GRAPES OF WRATH");
+    		assertEquals(obj.getSimpleContents().get(1).getSimpleTitle(),"OF MICE AND MEN");
+    		assertEquals(obj.getSimpleContents().get(2).getSimpleTitle(),"O LOST");
     		
     		// Full test
     		Builder builder = new Builder();
@@ -143,7 +140,7 @@ public class StandardImmutableDeckArrayListTest extends TestCase
     		builder.addBook(new Book("Of Mice and Men", 1211, "32423423711", BindingType.TRADE_PAPER_BACK, "John Steinbeck"));
     		builder.addBook(new Book("O Lost", 1211, "1123234234", BindingType.TRADE_PAPER_BACK, "Thomas Wolfe"));
     		
-    		Library second_library = builder.create();
+    		BookDeckList second_library = builder.create();
     		
     		assertEquals(second_library,obj);
     }

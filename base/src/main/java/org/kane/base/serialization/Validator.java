@@ -57,11 +57,26 @@ public class Validator
 	 * @param c
 	 *            The collection to test
 	 */
-	static public void containsNoNulls(Collection c)
+	static public void containsNoNulls(Collection collection)
 	{
-		for ( Object obj : c )
+		for ( Object obj : collection )
 		{
 			if ( obj == null ) throw new ValidationException("Collection contained a null element");
 		}
+	}
+	
+	static public void containsOnlyInstancesOf(Class c, Collection collection)
+	{
+		for ( Object obj : collection )
+		{
+			if ( !c.isInstance(obj) )
+				throw new ValidationException("Collection contains an object of the wrong type");
+		}
+	}
+	
+	static public void containsOnlyInstancesOf(Class key, Class value, Map map)
+	{
+		containsOnlyInstancesOf(key,map.keySet());
+		containsOnlyInstancesOf(value,map.values());
 	}
 }
