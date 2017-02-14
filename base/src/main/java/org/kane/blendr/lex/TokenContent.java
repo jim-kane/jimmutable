@@ -26,6 +26,11 @@ final public class TokenContent extends Token
 		super.validate();
 		Validator.notNull(text);
 	}
+	
+	public void freeze()
+	{
+		
+	}
 
 	public String toString() { return "CONTENT"; }
 	public String getSimpleText() { return text; }

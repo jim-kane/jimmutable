@@ -37,7 +37,7 @@ final public class Book extends StandardImmutableObject
 	private Book(Builder builder)
 	{
 		// building constructor.  Builder will call complete...
-		this.authors = new FieldArrayList(this);
+		this.authors = new FieldArrayList();
 	}
 	
 	// copy constructor...
@@ -49,7 +49,7 @@ final public class Book extends StandardImmutableObject
 		this.isbn = isbn;
 		this.binding = binding;
 		
-		this.authors = new FieldArrayList(this, authors);
+		this.authors = new FieldArrayList(authors);
 		
 		complete();
 	}
@@ -73,6 +73,14 @@ final public class Book extends StandardImmutableObject
 		Validator.notNull(binding);
 		
 		Validator.containsNoNulls(authors);
+	}
+	
+	/**
+	 * Freeze the object
+	 */
+	public void freeze()
+	{
+		authors.freeze();
 	}
 	
 	public String getSimpleTitle() { return title; } 

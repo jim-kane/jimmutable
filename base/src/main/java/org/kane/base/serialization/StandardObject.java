@@ -128,7 +128,7 @@ abstract public class StandardObject implements Comparable
 	 */
 	static public StandardObject fromXML(String xml) throws ValidationException
 	{
-		return fromSerializedData(xml, XStreamSingleton.getXMLStream());
+		return fromSerializedData(xml, XStreamSingleton.getXMLStream(), true);
 	}
 	
 	/**
@@ -149,7 +149,7 @@ abstract public class StandardObject implements Comparable
 	 */
 	static public StandardObject fromJSON(String json) throws ValidationException
 	{
-		return fromSerializedData(json, XStreamSingleton.getJSONStream());
+		return fromSerializedData(json, XStreamSingleton.getJSONStream(), true);
 	}
 	
 	/**
@@ -165,16 +165,15 @@ abstract public class StandardObject implements Comparable
 	 *             The only exception that can be thrown from this method (other
 	 *             exceptions are caught and chained)
 	 */
-	static private StandardObject fromSerializedData(String data, XStream deserializer) throws ValidationException
+	static protected StandardObject fromSerializedData(String data, XStream deserializer, boolean complete) throws ValidationException
 	{
-		// NOTE: If you change anything in here, also look at StandardImmutableObject.deepMutableCloneForBuilder (it uses much of the same code...)
 		Validator.notNull(data);
 		Validator.notNull(deserializer);
 		
 		try
 		{
 			StandardObject ret = (StandardObject)deserializer.fromXML(data);
-			ret.complete();
+			if ( complete ) ret.complete();
 			return ret;
 		}
 		catch(ValidationException validation_exception)

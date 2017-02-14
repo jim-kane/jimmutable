@@ -1,20 +1,16 @@
 package org.kane.base.immutability.collections;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.Set;
 
 import org.kane.base.immutability.ImmutableException;
 import org.kane.base.immutability.StandardImmutableObject;
 
-abstract public class FieldCollection<T> implements Collection<T>
+abstract public class FieldCollection<T> implements Collection<T>, Field
 {
-	/**
-	 * This object will be null when the field is serialized from either XML and
-	 * JSON (null = immutable) and will be "set" otherwise (via one of the
-	 * constructors)
-	 */
-	private StandardImmutableObject parent;
+	transient private boolean is_frozen = true;
 	
 	private Collection<T> contents;
 	
@@ -22,36 +18,24 @@ abstract public class FieldCollection<T> implements Collection<T>
 	
 	public FieldCollection()
 	{
-		this(null);
-		
-	}
-	
-	public FieldCollection(StandardImmutableObject parent)
-	{
-		this.parent = parent;
+		is_frozen = false;
 		contents = createNewMutableInstance();
 	}
-	
-	public FieldCollection(StandardImmutableObject parent, Iterable<T> objs)
+
+	public FieldCollection(Iterable<T> objs)
 	{
-		this(parent);
+		this();
 		
-		if ( objs != null )
+		if ( objs == null ) objs = Collections.EMPTY_LIST;
+		
+		for ( T obj : objs )
 		{
-			for ( T obj : objs )
-			{
-				add(obj);
-			}
+			add(obj);
 		}
 	}
 	
-	public void assertNotComplete()
-	{
-		if ( parent == null ) // this should never happen, but... should it take place... default to immutable...
-			throw new ImmutableException();
-		else 
-			parent.assertNotComplete();
-	}
+	public void freeze() { is_frozen = true; }
+	public boolean getSimpleIsFrozen()  { return is_frozen; }
 
 	public int size() { return contents.size(); }
 	public boolean isEmpty() { return contents.isEmpty(); }
@@ -62,40 +46,40 @@ abstract public class FieldCollection<T> implements Collection<T>
 	
 	public boolean add(T e)
 	{
-		assertNotComplete();
+		assertNotFrozen();
 		return contents.add(e);
 	}
 	
 	public boolean remove(Object o)
 	{
-		assertNotComplete();
+		assertNotFrozen();
 		return contents.remove(o);
 	}
 	
 	public boolean addAll(Collection<? extends T> c)
 	{
-		assertNotComplete();
+		assertNotFrozen();
 		return contents.addAll(c);
 	}
 
 	
 	public boolean retainAll(Collection<?> c)
 	{
-		assertNotComplete();
+		assertNotFrozen();
 		return contents.retainAll(c);
 	}
 
 	
 	public boolean removeAll(Collection<?> c)
 	{
-		assertNotComplete();
+		assertNotFrozen();
 		return contents.removeAll(c);
 	}
 
 	
 	public void clear()
 	{
-		assertNotComplete();
+		assertNotFrozen();
 		contents.clear();
 	}
 	
@@ -148,7 +132,7 @@ abstract public class FieldCollection<T> implements Collection<T>
 
 		public void remove()
 		{
-			assertNotComplete();
+			assertNotFrozen();
 			itr.remove();
 		}
 	}

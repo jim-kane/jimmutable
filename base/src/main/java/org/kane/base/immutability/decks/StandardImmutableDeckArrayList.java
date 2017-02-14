@@ -17,7 +17,7 @@ abstract public class StandardImmutableDeckArrayList extends StandardImmutableOb
 
 	public StandardImmutableDeckArrayList(Collection contents)
 	{
-		this.contents = new FieldArrayList(this,contents);
+		this.contents = new FieldArrayList(contents);
 	}
 	
 	abstract public Class getOptionalValidationType(Class default_value);
@@ -40,6 +40,11 @@ abstract public class StandardImmutableDeckArrayList extends StandardImmutableOb
 					throw new ValidationException("Expceted contents to be of type: "+c);
 			}
 		}
+	}
+	
+	public void freeze()
+	{
+		contents.freeze();
 	}
 	
 	public int hashCode() 

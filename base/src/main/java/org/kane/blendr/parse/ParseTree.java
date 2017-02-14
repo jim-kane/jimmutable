@@ -5,11 +5,13 @@ import java.util.Collections;
 import java.util.List;
 
 import org.kane.base.immutability.StandardImmutableObject;
+import org.kane.base.immutability.collections.FieldArrayList;
+import org.kane.base.immutability.collections.FieldList;
 import org.kane.base.serialization.Equality;
 import org.kane.base.serialization.Validator;
 import org.kane.blendr.lex.TokenCloseTag;
-import org.kane.blendr.lex.TokenOpenTag;
 import org.kane.blendr.lex.TokenContent;
+import org.kane.blendr.lex.TokenOpenTag;
 
 /**
  * The abstract base class used to represent a blendr parse tree
@@ -20,18 +22,17 @@ import org.kane.blendr.lex.TokenContent;
 abstract public class ParseTree extends StandardImmutableObject
 {
 	private ParseTree parent = null;
-	private List<ParseTree> children = new ArrayList();
+	private FieldList<ParseTree> children = new FieldArrayList();
 
 	protected ParseTree(Builder builder, ParseTree parent)
 	{
 		this.parent = parent;
-		this.children = new ArrayList();
 	}
 	
 	public ParseTree(ParseTree parent, List<ParseTree> children)
 	{
 		this.parent = parent;
-		this.children = Collections.unmodifiableList(new ArrayList(children));
+		this.children = new FieldArrayList(children);
 	}
 	
 	public void validate()
@@ -43,6 +44,11 @@ abstract public class ParseTree extends StandardImmutableObject
 	public void normalize()
 	{
 		
+	}
+	
+	public void freeze()
+	{
+		children.freeze();
 	}
 	
 	public boolean hasParent() { return parent != null; }
@@ -189,7 +195,6 @@ abstract public class ParseTree extends StandardImmutableObject
 				ParseError.ERROR_MIS_MATCHED_CLOSING_TAG.throwException(close_operator);
 			}
 			
-			((ParseTree)cursor).children = Collections.unmodifiableList(((ParseTree)cursor).children);
 			cursor.complete();
 			
 			cursor = cursor.getOptionalParent(null);
@@ -200,7 +205,6 @@ abstract public class ParseTree extends StandardImmutableObject
 			if ( cursor != root )
 				ParseError.ERROR_MISSING_CLOSING_TAG.throwException(null);
 				
-			((ParseTree)root).children = Collections.unmodifiableList(((ParseTree)root).children);
 			root.complete();
 			
 			return root;

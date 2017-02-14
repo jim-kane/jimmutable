@@ -12,14 +12,9 @@ public class FieldHashSet<T> extends FieldSet<T>
 		super();
 	}
 	
-	public FieldHashSet(StandardImmutableObject parent)
+	public FieldHashSet(Iterable<T> objs)
 	{
-		super(parent);
-	}
-	
-	public FieldHashSet(StandardImmutableObject parent, Iterable<T> objs)
-	{
-		super(parent,objs);
+		super(objs);
 	}
 	
 	protected Collection<T> createNewMutableInstance()

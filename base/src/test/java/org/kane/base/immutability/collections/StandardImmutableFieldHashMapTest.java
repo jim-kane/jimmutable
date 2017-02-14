@@ -28,12 +28,13 @@ public class StandardImmutableFieldHashMapTest extends TestCase
 		public int compareTo(Object o) { return 0; }
 		public void normalize() {}
 		public void validate() {}
+		public void freeze() { map.freeze(); }
 		public int hashCode() { return map.hashCode(); }
 
 		
 		public DummyObject()
 		{
-			map = new FieldHashMap(this);
+			map = new FieldHashMap();
 			
 			verifyMutable();
 			
@@ -46,7 +47,7 @@ public class StandardImmutableFieldHashMapTest extends TestCase
 		
 		public DummyObject(Builder b)
 		{
-			map = new FieldHashMap(this);
+			map = new FieldHashMap();
 		}
 	
 		public boolean equals(Object obj) 
@@ -218,11 +219,10 @@ public class StandardImmutableFieldHashMapTest extends TestCase
     
     public void testSerialization()
     {
-    	String xml = String.format("%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n"
+    	String xml = String.format("%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n"
     		     , "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>"
     		     , "<DummyObject-map>"
     		     , "   <map>"
-    		     , "      <parent class=\"DummyObject-map\" reference=\"../..\"/>"
     		     , "      <contents>"
     		     , "         <entry>"
     		     , "            <string>foo</string>"

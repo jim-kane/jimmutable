@@ -13,26 +13,15 @@ public class FieldArrayList<T> extends FieldList<T>
 		super();
 	}
 	
-	public FieldArrayList(StandardImmutableObject parent)
-	{
-		super(parent);
-	}
 	
-	public FieldArrayList(StandardImmutableObject parent, Iterable<T> objs)
+	public FieldArrayList(Iterable<T> objs)
 	{
-		super(parent,objs);
+		super(objs);
 	}
-
 
 	protected List createNewMutableListInstance() 
 	{
 		return new ArrayList();
-	}
-
-	
-	protected List createFieldSubList(StandardImmutableObject parent, Collection<T> objs) 
-	{
-		return new FieldArrayList(parent,objs);
 	}
 	
 }

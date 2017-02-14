@@ -41,6 +41,11 @@ public class ParseTreeTag extends ParseTree
 		
 	}
 	
+	public void freeze()
+	{
+		super.freeze();
+	}
+	
 	public Tag getSimpleType() { return type; }
 
 	

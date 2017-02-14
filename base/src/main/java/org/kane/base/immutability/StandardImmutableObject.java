@@ -22,7 +22,16 @@ abstract public class StandardImmutableObject extends StandardObject
 	transient private boolean is_complete = false;
 	
 	/**
-	 * Complete the object (normailze(), validate(), mark as complete)
+	 * StandardImmutableObject's add one additional method to StandardObject's
+	 * complete cycle, freeze(). The job of freeze is to make any changes
+	 * required to the object to make it immutable. Frequently the only job of
+	 * freeze is to call freeze on any StandardImutableField objects contained
+	 * herein...
+	 */
+	abstract public void freeze();
+	
+	/**
+	 * Complete the object (normailze(), validate(), freeze(), mark as complete)
 	 * 
 	 * Attempting to make multiple calls to this function will result in a
 	 * ImmutableException being thrown
@@ -33,6 +42,7 @@ abstract public class StandardImmutableObject extends StandardObject
 		assertNotComplete();
 		
 		super.complete();
+		freeze();
 		
 		is_complete = true;
 	}
@@ -51,28 +61,6 @@ abstract public class StandardImmutableObject extends StandardObject
 	
 	public StandardImmutableObject deepMutableCloneForBuilder()
 	{
-		String data = toXML();
-		XStream deserializer = XStreamSingleton.getXMLStream();
-		
-		try
-		{
-			StandardObject ret = (StandardObject)deserializer.fromXML(data);
-			// DO NOT COMPLETE... the idea is to return a mutable object for use in a builder...
-			return (StandardImmutableObject)ret;
-		}
-		catch(ValidationException validation_exception)
-		{
-			throw validation_exception;
-		}
-		catch(Exception other_exception)
-		{
-			if ( deserializer == XStreamSingleton.getXMLStream() )
-				throw new ValidationException("Error constructing StandardObject from XML",other_exception);
-			else if ( deserializer == XStreamSingleton.getJSONStream() )
-				throw new ValidationException("Error constructing StandardObject from JSON",other_exception);
-			else
-				throw new ValidationException("Error constructing StandardObject from serialized data",other_exception);
-		}
-		
+		return (StandardImmutableObject)fromSerializedData(toXML(), XStreamSingleton.getXMLStream(), false);
 	}
 }

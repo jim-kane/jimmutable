@@ -39,59 +39,40 @@ import org.kane.base.serialization.ValidationException;
  *
  * @param <T>
  */
-abstract public class FieldList<T> implements List<T>
+abstract public class FieldList<T> implements List<T>, Field
 {
-	/**
-	 * This object will be null when the field is serialized from either XML and
-	 * JSON (null = immutable) and will be "set" otherwise (via one of the
-	 * constructors)
-	 */
-	private StandardImmutableObject parent;
+	transient private boolean is_frozen = true;
 	
 	private List<T> contents;
 	
 	abstract protected List createNewMutableListInstance();
-	abstract protected List createFieldSubList(StandardImmutableObject parent, Collection<T> objs);
+	
 	
 	public FieldList()
 	{
-		this(null);
-		
-	}
-	
-	public FieldList(StandardImmutableObject parent)
-	{
-		this.parent = parent;
+		is_frozen = false;
 		contents = createNewMutableListInstance();
 	}
 	
-	public FieldList(StandardImmutableObject parent, Iterable<T> objs)
+	public FieldList(Iterable<T> objs)
 	{
-		this(parent);
+		this();
 		
-		if ( objs != null )
+		if ( objs == null ) objs = Collections.EMPTY_LIST;
+		
+		for ( T obj : objs )
 		{
-			for ( T obj : objs )
-			{
-				add(obj);
-			}
+			add(obj);
 		}
 	}
 
-
-	
-	public void assertNotComplete()
-	{
-		if ( parent == null ) // this should never happen, but... should it take place... default to immutable...
-			throw new ImmutableException();
-		else 
-			parent.assertNotComplete();
-	}
+	public void freeze() { is_frozen = true; }
+	public boolean getSimpleIsFrozen()  { return is_frozen; }
 	
 	
 	public List<T> subList(int fromIndex, int toIndex)
 	{
-		return createFieldSubList(parent, contents.subList(fromIndex, toIndex));
+		return Collections.unmodifiableList(contents.subList(fromIndex, toIndex));
 	}
 	
 	public int size() { return contents.size(); }
@@ -106,19 +87,19 @@ abstract public class FieldList<T> implements List<T>
 
 	public boolean add(T e) 
 	{
-		assertNotComplete();
+		assertNotFrozen();
 		return contents.add(e);
 	}
 	
 	public boolean remove(Object o) 
 	{
-		assertNotComplete();
+		assertNotFrozen();
 		return contents.remove(o);
 	}
 
 	public boolean addAll(Collection<? extends T> c) 
 	{
-		assertNotComplete();
+		assertNotFrozen();
 		return contents.addAll(c);
 	}
 
@@ -126,7 +107,7 @@ abstract public class FieldList<T> implements List<T>
 	
 	public boolean addAll(int index, Collection<? extends T> c) 
 	{
-		assertNotComplete();
+		assertNotFrozen();
 		return contents.addAll(index,c);
 	}
 
@@ -134,13 +115,13 @@ abstract public class FieldList<T> implements List<T>
 	
 	public boolean removeAll(Collection<?> c) 
 	{
-		assertNotComplete();
+		assertNotFrozen();
 		return contents.removeAll(c);
 	}
 
 	public boolean retainAll(Collection<?> c) 
 	{
-		assertNotComplete();
+		assertNotFrozen();
 		return contents.retainAll(c);
 	}
 
@@ -148,14 +129,14 @@ abstract public class FieldList<T> implements List<T>
 	
 	public void clear() 
 	{
-		assertNotComplete();
+		assertNotFrozen();
 		contents.clear();
 	}
 
 	
 	public T set(int index, T element) 
 	{
-		assertNotComplete();
+		assertNotFrozen();
 		return contents.set(index,element);
 	}
 
@@ -163,13 +144,13 @@ abstract public class FieldList<T> implements List<T>
 	
 	public void add(int index, T element) 
 	{
-		assertNotComplete();
+		assertNotFrozen();
 		contents.add(index,element);
 	}
 
 	public T remove(int index) 
 	{
-		assertNotComplete();
+		assertNotFrozen();
 		return contents.remove(index);
 	}
 
@@ -232,21 +213,21 @@ abstract public class FieldList<T> implements List<T>
 		
 		public void remove() 
 		{
-			assertNotComplete();
+			assertNotFrozen();
 			itr.remove();
 		}
 
 		
 		public void set(T e) 
 		{
-			assertNotComplete();
+			assertNotFrozen();
 			itr.set(e);
 		}
 
 		
 		public void add(T e) 
 		{
-			assertNotComplete();
+			assertNotFrozen();
 			itr.add(e);
 		}
 	}

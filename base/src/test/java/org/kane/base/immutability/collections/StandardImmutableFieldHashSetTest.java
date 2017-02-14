@@ -26,13 +26,14 @@ public class StandardImmutableFieldHashSetTest extends TestCase
 		public int compareTo(Object o) { return 0; }
 		public void normalize() {}
 		public void validate() {}
+		public void freeze() { set.freeze(); }
 		public int hashCode() { return set.hashCode(); }
 
 		public FieldHashSet getSimpleArrayList() { return set; } 
 		
 		public DummyObject()
 		{
-			set = new FieldHashSet(this);
+			set = new FieldHashSet();
 			old_iterator = set.iterator();
 			
 			verifyMutable();
@@ -47,7 +48,7 @@ public class StandardImmutableFieldHashSetTest extends TestCase
 		
 		public DummyObject(Builder b)
 		{
-			set = new FieldHashSet(this);
+			set = new FieldHashSet();
 		}
 	
 		public boolean equals(Object obj) 
@@ -225,11 +226,10 @@ public class StandardImmutableFieldHashSetTest extends TestCase
     
     public void testSerialization()
     {
-    	String xml = String.format("%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n"
+    	String xml = String.format("%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n"
     		     , "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>"
     		     , "<DummyObject-set>"
     		     , "   <set>"
-    		     , "      <parent class=\"DummyObject-set\" reference=\"../..\"/>"
     		     , "      <contents class=\"set\">"
     		     , "         <string>foo</string>"
     		     , "      </contents>"

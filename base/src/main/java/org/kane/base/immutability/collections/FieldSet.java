@@ -21,17 +21,12 @@ abstract public class FieldSet<T> extends FieldCollection<T> implements Set<T>
 {
 	public FieldSet()
 	{
-		super(null);
-	}
-	
-	public FieldSet(StandardImmutableObject parent)
-	{
-		super(parent);
+		super();
 		
 	}
 	
-	public FieldSet(StandardImmutableObject parent, Iterable<T> objs)
+	public FieldSet(Iterable<T> objs)
 	{
-		super(parent,objs);
+		super(objs);
 	}
 }

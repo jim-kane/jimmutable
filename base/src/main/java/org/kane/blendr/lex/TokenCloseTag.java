@@ -26,6 +26,11 @@ final public class TokenCloseTag extends Token
 		super.validate();
 		Validator.notNull(operator);
 	}
+	
+	public void freeze()
+	{
+		
+	}
 
 	public String toString() { return operator.getSimpleCloseString(); }
 	public Tag getSimpleOperator() { return operator; }

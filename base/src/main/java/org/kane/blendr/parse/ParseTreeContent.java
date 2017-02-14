@@ -36,6 +36,11 @@ final public class ParseTreeContent extends ParseTree
 		Validator.notNull(text);
 	}
 	
+	public void freeze()
+	{
+		super.freeze();
+	}
+	
 	public String getSimpleText() { return text; }
 	
 	public int hashCode() 

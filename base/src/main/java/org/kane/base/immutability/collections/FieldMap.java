@@ -1,52 +1,39 @@
 package org.kane.base.immutability.collections;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
 import org.kane.base.immutability.ImmutableException;
 import org.kane.base.immutability.StandardImmutableObject;
 
-abstract public class FieldMap<K,V> implements Map<K,V>
+abstract public class FieldMap<K,V> implements Map<K,V>, Field
 {
-	/**
-	 * This object will be null when the field is serialized from either XML and
-	 * JSON (null = immutable) and will be "set" otherwise (via one of the
-	 * constructors)
-	 */
-	private StandardImmutableObject parent;
+	transient private boolean is_frozen = true;
 	
 	private Map<K,V> contents;
 	
 	abstract protected Map<K,V> createNewMutableMapInstance();
 	
+	
 	public FieldMap()
 	{
-		this(null);
-		
-	}
-	
-	public FieldMap(StandardImmutableObject parent)
-	{
-		this.parent = parent;
+		is_frozen = false;
 		contents = createNewMutableMapInstance();
 	}
 	
-	public FieldMap(StandardImmutableObject parent, Map<K,V> initial_values)
+	public FieldMap(Map<K,V> initial_values)
 	{
-		this(parent);
+		this();
 		
 		if ( initial_values != null )
 			contents.putAll(initial_values);
 	}
 	
-	public void assertNotComplete()
-	{
-		if ( parent == null ) // this should never happen, but... should it take place... default to immutable...
-			throw new ImmutableException();
-		else 
-			parent.assertNotComplete();
-	}
+	public void freeze() { is_frozen = true; }
+	public boolean getSimpleIsFrozen()  { return is_frozen; }
 	
 	public int size() { return contents.size(); }
 	public boolean isEmpty() { return contents.isEmpty(); }
@@ -57,89 +44,49 @@ abstract public class FieldMap<K,V> implements Map<K,V>
 	
 	public V put(K key, V value)
 	{
-		assertNotComplete();
+		assertNotFrozen();
 		return contents.put(key, value);
 	}
 
 	
 	public V remove(Object key)
 	{
-		assertNotComplete();
+		assertNotFrozen();
 		return contents.remove(key);
 	}
 
 	
 	public void putAll(Map<? extends K, ? extends V> m)
 	{
-		assertNotComplete();
+		assertNotFrozen();
 		contents.putAll(m);
 	}
 
 	
 	public void clear()
 	{
-		assertNotComplete();
+		assertNotFrozen();
 		contents.clear();
 	}
 
 	
 	public Set<K> keySet()
 	{
-		return (Set<K>)new MyKeySet();
+		return (Set<K>)(new InnerSet(contents.keySet()));
 	}
 
 	
 	public Collection<V> values()
 	{
-		return new MyValuesCollection();
+		return (Collection<V>)new InnerCollection(contents.values());
 	}
 
 	
 	public Set<java.util.Map.Entry<K, V>> entrySet()
 	{
-		return new MyEntrySet();
+		return (Set<java.util.Map.Entry<K, V>>)(new InnerSet(contents.entrySet()));
 	}
 
-	private class MyKeySet<K> extends FieldSet<K>
-	{
-		private MyKeySet()
-		{
-			super(parent);
-		}
-		
-		protected Collection createNewMutableInstance()
-		{
-			return contents.keySet();
-		}
-	}
-	
-	private class MyEntrySet extends FieldSet
-	{
-		private MyEntrySet()
-		{
-			super(parent);
-		}
-		
-		protected Set createNewMutableInstance()
-		{
-			return contents.entrySet();
-		}
-	}
-	
-	private class MyValuesCollection<V> extends FieldCollection<V>
-	{
-		private MyValuesCollection()
-		{
-			super(parent);
-		}
-		
-		protected Collection<V> createNewMutableInstance()
-		{
-			return (Collection<V>)contents.values();
-		}
-	}
-
-	
 	public boolean equals(Object obj) 
 	{
 		if ( !(obj instanceof Map) ) return false;
@@ -150,12 +97,113 @@ abstract public class FieldMap<K,V> implements Map<K,V>
 		
 		return entrySet().containsAll(other.entrySet());
 	}
-
 	
 	public String toString() 
 	{
 		return contents.toString();
 	}
 	
+	private class InnerCollection implements Collection
+	{
+		private Collection inner_contents;
+		
+		private InnerCollection(Collection c)
+		{
+			inner_contents = c;
+		}
+		
+		
+		public int size() { return inner_contents.size(); }
+		public boolean isEmpty() { return inner_contents.isEmpty(); }
+		public boolean contains(Object o) { return inner_contents.contains(o); }
+		
+
+		
+		public Iterator iterator() 
+		{
+			return new InnerIterator(inner_contents.iterator());
+		}
+
+		
+		public Object[] toArray() { return inner_contents.toArray(); }
+		public Object[] toArray(Object[] a) { return inner_contents.toArray(a); }
+
+		
+		public boolean add(Object e)
+		{
+			assertNotFrozen();
+			return inner_contents.add(e);
+		}
+
+		
+		public boolean remove(Object o) 
+		{
+			assertNotFrozen();
+			return inner_contents.remove(o);
+		}
+
+		
+		public boolean containsAll(Collection c) { return inner_contents.containsAll(c); }
+
+		
+		public boolean addAll(Collection c) 
+		{
+			assertNotFrozen();
+			return inner_contents.addAll(c);
+		}
+
+		public boolean removeAll(Collection c) 
+		{
+			assertNotFrozen();
+			return inner_contents.removeAll(c);
+		}
+
+		
+		public boolean retainAll(Collection c) 
+		{
+			assertNotFrozen();
+			return inner_contents.retainAll(c);
+		}
+
+		
+		public void clear() 
+		{
+			assertNotFrozen();
+			inner_contents.clear();
+		}
+	}
 	
+	private class InnerSet extends InnerCollection implements Set
+	{
+		private InnerSet(Collection c)
+		{
+			super(c);
+		}
+	}
+	
+	private class InnerIterator implements Iterator
+	{
+		private Iterator inner_contents;
+		
+		private InnerIterator(Iterator i) { inner_contents = i; }
+
+		
+		public boolean hasNext() 
+		{
+			return inner_contents.hasNext();
+		}
+
+		public Object next() 
+		{
+			return inner_contents.next();
+		}
+
+		public void remove() 
+		{
+			assertNotFrozen();
+			inner_contents.remove();
+		}
+		
+		
+	}
 }

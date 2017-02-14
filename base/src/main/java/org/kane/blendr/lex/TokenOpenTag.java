@@ -24,6 +24,11 @@ final public class TokenOpenTag extends Token
 		super.validate();
 		Validator.notNull(operator);
 	}
+	
+	public void freeze()
+	{
+		
+	}
 
 	public String toString() { return operator.getSimpleOpenString(); }
 	public Tag getSimpleOperator() { return operator; }

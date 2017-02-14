@@ -16,7 +16,7 @@ abstract public class StandardImmutableDeckHashSet extends StandardImmutableObje
 
 	public StandardImmutableDeckHashSet(Collection contents)
 	{
-		this.contents = new FieldHashSet(this,contents);
+		this.contents = new FieldHashSet(contents);
 	}
 	
 	abstract public Class getOptionalValidationType(Class default_value);
@@ -40,6 +40,12 @@ abstract public class StandardImmutableDeckHashSet extends StandardImmutableObje
 			}
 		}
 	}
+	
+	public void freeze()
+	{
+		contents.freeze();
+	}
+	
 	
 	public int hashCode() 
 	{

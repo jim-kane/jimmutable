@@ -26,13 +26,14 @@ public class StandardImmutableFieldArrayListTest extends TestCase
 		public int compareTo(Object o) { return 0; }
 		public void normalize() {}
 		public void validate() {}
+		public void freeze() { list.freeze(); } 
 		public int hashCode() { return list.hashCode(); }
 
 		public FieldArrayList getSimpleArrayList() { return list; } 
 		
 		public DummyObject()
 		{
-			list = new FieldArrayList(this);
+			list = new FieldArrayList();
 			old_iterator = list.listIterator();
 			
 			verifyMutable();
@@ -47,7 +48,7 @@ public class StandardImmutableFieldArrayListTest extends TestCase
 		
 		public DummyObject(Builder b)
 		{
-			list = new FieldArrayList(this);
+			list = new FieldArrayList();
 		}
 	
 		public boolean equals(Object obj) 
@@ -230,16 +231,15 @@ public class StandardImmutableFieldArrayListTest extends TestCase
     	obj.verifyImmutable();
     	
     	// used to create the code for test serialization...
-    	//System.out.println(JavaCodeUtils.toJavaStringLiteral(obj));
+    	System.out.println(JavaCodeUtils.toJavaStringLiteral(obj));
     }
     
     public void testSerialization()
     {
-    	String xml = String.format("%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n"
+    	String xml = String.format("%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n"
     		     , "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>"
     		     , "<DummyObject-list>"
     		     , "   <list>"
-    		     , "      <parent class=\"DummyObject-list\" reference=\"../..\"/>"
     		     , "      <contents>"
     		     , "         <string>foo</string>"
     		     , "      </contents>"

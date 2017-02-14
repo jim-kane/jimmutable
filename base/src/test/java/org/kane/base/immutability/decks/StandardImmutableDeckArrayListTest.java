@@ -55,9 +55,6 @@ public class StandardImmutableDeckArrayListTest extends TestCase
 		
 		// now test an "append" builder...
 		
-		
-		
-		
 		builder = new Builder(first_library);
 		
 		

@@ -10,17 +10,11 @@ public class FieldHashMap<K,V> extends FieldMap<K,V>
 	public FieldHashMap()
 	{
 		super();
-		
 	}
 	
-	public FieldHashMap(StandardImmutableObject parent)
+	public FieldHashMap(Map<K,V> initial_values)
 	{
-		super(parent);
-	}
-	
-	public FieldHashMap(StandardImmutableObject parent, Map<K,V> initial_values)
-	{
-		super(parent,initial_values);
+		super(initial_values);
 	}
 	
 	protected Map<K, V> createNewMutableMapInstance() 

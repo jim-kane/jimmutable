@@ -5,7 +5,8 @@ import java.util.Collections;
 import java.util.List;
 
 import org.kane.base.immutability.StandardImmutableObject;
-import org.kane.base.serialization.ValidationException;
+import org.kane.base.immutability.collections.FieldArrayList;
+import org.kane.base.immutability.collections.FieldList;
 import org.kane.base.serialization.Validator;
 
 /**
@@ -17,7 +18,7 @@ import org.kane.base.serialization.Validator;
 public class LexOutput extends StandardImmutableObject
 {
 	private String original_source_code;
-	private List<Token> tokens;
+	private FieldList<Token> tokens;
 	
 	/**
 	 * Constructor used by the builder
@@ -29,7 +30,7 @@ public class LexOutput extends StandardImmutableObject
 	{
 		// constructor used by builder...
 		this.original_source_code = "";
-		this.tokens = new ArrayList();
+		this.tokens = new FieldArrayList();
 		
 		// No call to complete, as this constructor is used by the builder...
 	}
@@ -46,7 +47,7 @@ public class LexOutput extends StandardImmutableObject
 	public LexOutput(String original_code, List<Token> tokens)
 	{
 		this.original_source_code = original_code;
-		this.tokens = Collections.unmodifiableList(new ArrayList(tokens));
+		this.tokens = new FieldArrayList(tokens);
 		
 		complete();
 	}
@@ -60,6 +61,11 @@ public class LexOutput extends StandardImmutableObject
 	{
 		Validator.notNull(original_source_code);
 		Validator.notNull(tokens);
+	}
+	
+	public void freeze()
+	{
+		tokens.freeze();
 	}
 
 	public String getSimpleOriginalSourceCode() { return original_source_code; }

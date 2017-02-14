@@ -12,14 +12,9 @@ public class FieldTreeSet<T> extends FieldSet<T>
 		super();
 	}
 	
-	public FieldTreeSet(StandardImmutableObject parent)
+	public FieldTreeSet(Iterable<T> objs)
 	{
-		super(parent);
-	}
-	
-	public FieldTreeSet(StandardImmutableObject parent, Iterable<T> objs)
-	{
-		super(parent,objs);
+		super(objs);
 	}
 	
 	protected Collection<T> createNewMutableInstance()

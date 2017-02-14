@@ -16,7 +16,7 @@ abstract public class StandardImmutableDeckHashMap extends StandardImmutableObje
 
 	public StandardImmutableDeckHashMap(Map initial_contents)
 	{
-		this.contents = new FieldHashMap(this,initial_contents);
+		this.contents = new FieldHashMap(initial_contents);
 	}
 	
 	abstract public Class getOptionalKeyValidationType(Class default_value);
@@ -57,9 +57,14 @@ abstract public class StandardImmutableDeckHashMap extends StandardImmutableObje
 						throw new ValidationException("Expected values to all be of type: "+value_validation_type);
 				}
 			}
-		}
-		
+		}	
 	}
+	
+	public void freeze()
+	{
+		contents.freeze();
+	}
+	
 	
 	public int hashCode() 
 	{
