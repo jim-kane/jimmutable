@@ -47,7 +47,6 @@ abstract public class FieldList<T> implements List<T>, Field
 	
 	abstract protected List createNewMutableListInstance();
 	
-	
 	public FieldList()
 	{
 		is_frozen = false;
