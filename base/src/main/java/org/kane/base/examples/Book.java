@@ -1,19 +1,16 @@
 package org.kane.base.examples;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import org.kane.base.immutability.StandardImmutableObject;
 import org.kane.base.immutability.collections.FieldArrayList;
-import org.kane.base.immutability.collections.FieldList;
 import org.kane.base.serialization.Equality;
-import org.kane.base.serialization.JavaCodeUtils;
 import org.kane.base.serialization.Normalizer;
-import org.kane.base.serialization.StandardObject;
 import org.kane.base.serialization.Validator;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
 /**
  * An example of a proper implementation of a StandardImmutableObject
@@ -56,6 +53,19 @@ final public class Book extends StandardImmutableObject
 		this.authors = new FieldArrayList(authors);
 		
 		complete();
+	}
+	
+	// copy constructor...
+	public Book(String title, int page_count, String isbn, BindingType binding, String author)
+	{
+		this(title,page_count,isbn,binding,toCollection(author));
+	} 
+	
+	static private Collection<String> toCollection(String author)
+	{
+		List<String> ret = new ArrayList();
+		ret.add(author);
+		return ret;
 	}
 
 	/**

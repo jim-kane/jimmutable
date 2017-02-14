@@ -133,6 +133,9 @@ abstract public class StandardObject implements Comparable
 	 * source code that will construct the object. (Effectively serializing the
 	 * object to java source code!)
 	 * 
+	 * This is super useful when creating unit tests of serialization... Just
+	 * saying...
+	 * 
 	 * @return Java statements that will construct the object from XML
 	 */
 	public String toJavaCode(String variable_name)
