@@ -1,12 +1,20 @@
 package org.kane.db_experiments;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.InputStreamReader;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.zip.GZIPOutputStream;
+import java.util.zip.GZIPInputStream;
 
 import org.kane.base.immutability.StandardImmutableObject;
 import org.kane.base.immutability.collections.FieldHashMap;
+import org.kane.base.serialization.StandardObject;
 
 public class RandomProductData extends StandardImmutableObject
 {
@@ -91,53 +99,73 @@ public class RandomProductData extends StandardImmutableObject
 	
 	static public void main(String args[]) throws Exception
 	{
-		Builder builder = new Builder();
-		
-		long t1 = System.currentTimeMillis();
-		
-		List<RandomProductData> items = new ArrayList();
-		
-		for ( int i = 0; i < 10_000; i++ )
+		// Create/write
 		{
-			items.add(builder.createRandomProductData());
+			Builder builder = new Builder();
+
+			long t1 = System.currentTimeMillis();
+
+			List<RandomProductData> items = new ArrayList();
+
+			for ( int i = 0; i < 10_000; i++ )
+			{
+				items.add(builder.createRandomProductData());
+
+				if ( i % 10_000 == 0 )
+					System.out.println(String.format("Building: %,d", i));
+			}
+
+			long t2 = System.currentTimeMillis();
+
+			System.out.println();
+			System.out.println(String.format("Build Time: %,d ms", (t2-t1)));
+			System.out.println();
+
+
+			//GZIPOutputStream zip = new GZIPOutputStream(new FileOutputStream(new File("c:\\test.gz")));
 			
-			if ( i % 10_000 == 0 )
-				System.out.println(String.format("Building: %,d", i));
+			OutputStream raw = new FileOutputStream(new File("c:\\test.dat"));
+			ObjectOutputStream out = StandardObject.createNewXMLObjectOutputStream(raw);
+
+			int write_count = 0;
+
+			t1 = System.currentTimeMillis();
+
+			for ( RandomProductData item : items )
+			{
+				write_count++;
+
+				out.writeObject(item);
+
+				if ( write_count % 100 == 0 )
+					System.out.println(String.format("Writing: %,d", write_count));
+
+			}
+
+			out.close();
+
+			t2 = System.currentTimeMillis();
+
+			System.out.println();
+			System.out.println(String.format("Write Time: %,d ms", (t2-t1)));
+			System.out.println();
 		}
 		
-		long t2 = System.currentTimeMillis();
 		
-		System.out.println();
-		System.out.println(String.format("Build Time: %,d ms", (t2-t1)));
-		System.out.println();
-		
-		
-		//GZIPOutputStream out = new GZIPOutputStream(new FileOutputStream("c:\\test.dat"));
-		
-		FileOutputStream out = new FileOutputStream("c:\\test.dat");
-		
-		int write_count = 0;
-		
-		t1 = System.currentTimeMillis();
-		
-		for ( RandomProductData item : items )
+		// Read
 		{
-			write_count++;
+			/*GZIPInputStream zip = new GZIPInputStream(new FileInputStream(new File("c:\\test.gz")));
+			Reader reader = new BufferedReader(new InputStreamReader(zip, "UTF-8"));
 			
-			out.write(item.toXML().getBytes());
+			Object obj = StandardObject.fromXML(reader);
 			
-			if ( write_count % 10_000 == 0 )
-				System.out.println(String.format("Writing: %,d", write_count));
+			System.out.println(obj.getClass());
 			
+			obj = StandardObject.fromXML(reader);
+			
+			System.out.println(obj.getClass());*/
 		}
 		
-		out.close();
-			
-		t2 = System.currentTimeMillis();
-		
-		System.out.println();
-		System.out.println(String.format("Write Time: %,d ms", (t2-t1)));
-		System.out.println();
 	}
 	
 	static public void sleepForever()

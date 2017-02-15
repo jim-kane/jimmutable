@@ -1,5 +1,14 @@
 package org.kane.base.serialization;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.io.Reader;
+import java.io.StringReader;
+import java.io.Writer;
+
 import com.thoughtworks.xstream.XStream;
 
 
@@ -112,6 +121,15 @@ abstract public class StandardObject implements Comparable
 	} 
 	
 	/**
+	 * Serialize this object to XML
+	 * 
+	 */
+	public void toXML(Writer writer)
+	{
+		XStreamSingleton.getXMLStream().toXML(this, writer);
+	} 
+	
+	/**
 	 * Pretty print the XML of this object
 	 * 
 	 * @param default_value The value to return if unable to pretty-print the MXL
@@ -170,6 +188,22 @@ abstract public class StandardObject implements Comparable
 		return fromSerializedData(xml, XStreamSingleton.getXMLStream(), true);
 	}
 	
+	
+	static public StandardObject fromXML(Reader xml) throws ValidationException
+	{
+		return fromSerializedData(xml, XStreamSingleton.getXMLStream(), true);
+	}
+	
+	static public ObjectOutputStream createNewXMLObjectOutputStream(OutputStream out) throws IOException
+	{
+		return XStreamSingleton.getXMLStream().createObjectOutputStream(out);
+	}
+	
+	static public ObjectInputStream createNewXMLObjectInputStream(InputStream in) throws IOException
+	{
+		return XStreamSingleton.getXMLStream().createObjectInputStream(in);
+	}
+	
 	/**
 	 * Create a standard object from JSON. Objects created from JSON are still
 	 * subject to completion (i.e. normalization followed by validation)
@@ -191,6 +225,12 @@ abstract public class StandardObject implements Comparable
 		return fromSerializedData(json, XStreamSingleton.getJSONStream(), true);
 	}
 	
+	
+	static protected StandardObject fromSerializedData(String data, XStream deserializer, boolean complete) throws ValidationException
+	{
+		return fromSerializedData(new StringReader(data),deserializer, complete);
+	}
+	
 	/**
 	 * Do the actual work for fromXML and from JSON
 	 * 
@@ -204,7 +244,8 @@ abstract public class StandardObject implements Comparable
 	 *             The only exception that can be thrown from this method (other
 	 *             exceptions are caught and chained)
 	 */
-	static protected StandardObject fromSerializedData(String data, XStream deserializer, boolean complete) throws ValidationException
+	
+	static protected StandardObject fromSerializedData(Reader data, XStream deserializer, boolean complete) throws ValidationException
 	{
 		Validator.notNull(data);
 		Validator.notNull(deserializer);
@@ -228,8 +269,6 @@ abstract public class StandardObject implements Comparable
 			else
 				throw new ValidationException("Error constructing StandardObject from serialized data",other_exception);
 		}
-		
-		
 	}
 	
 	/**
