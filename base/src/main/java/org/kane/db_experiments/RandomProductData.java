@@ -9,12 +9,17 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.kane.base.immutability.StandardImmutableObject;
 import org.kane.base.immutability.collections.FieldHashMap;
+import org.kane.base.serialization.StandardObject;
 import org.kane.io.SmallDocumentReader;
 import org.kane.io.SmallDocumentWriter;
+import org.kane.io.StandardObjectBulkLoader;
 
 public class RandomProductData extends StandardImmutableObject
 {
@@ -108,11 +113,11 @@ public class RandomProductData extends StandardImmutableObject
 
 			List<RandomProductData> items = new ArrayList();
 
-			for ( int i = 0; i < 10_000; i++ )
+			for ( int i = 0; i < 100_000; i++ )
 			{
 				items.add(builder.createRandomProductData());
 
-				if ( i % 100_000 == 0 )
+				if ( i % 1_000 == 0 )
 					System.out.println(String.format("Building: %,d", i));
 			}
 
@@ -154,13 +159,31 @@ public class RandomProductData extends StandardImmutableObject
 		
 		
 		// Read
-		/*if ( true )
+		if ( true )
 		{
-			//GZIPInputStream zip = new GZIPInputStream(new FileInputStream(new File("c:\\test.gz")));
 			Reader reader_raw = new BufferedReader(new InputStreamReader(new FileInputStream("c:\\test.dat"), "UTF-8"));
 			SmallDocumentReader reader = new SmallDocumentReader(reader_raw);
 			
+			MyListener listener = new MyListener();
+			StandardObjectBulkLoader loader = new StandardObjectBulkLoader(listener,32);
+			loader.addSource(reader);
+			loader.doneAddingSources();
+			
 			long t1 = System.currentTimeMillis();
+			
+			while(true)
+			{
+				try { Thread.currentThread().sleep(100); } catch(Exception e) { e.printStackTrace(); }
+				if ( listener.done ) break;
+			}
+			
+			long t2 = System.currentTimeMillis();
+			
+			System.out.println(String.format("All objects loaded: %d",t2-t1));
+			
+			
+			
+			/*long t1 = System.currentTimeMillis();
 			
 			int count = 0;
 			
@@ -179,9 +202,29 @@ public class RandomProductData extends StandardImmutableObject
 			
 			System.out.println();
 			System.out.println(String.format("Document Scan Time: %,d ms", (t2-t1)));
-			System.out.println();
-		}*/
+			System.out.println();*/
+		}
+	}
+	
+	static private class MyListener implements StandardObjectBulkLoader.Listener
+	{
+		private boolean done = false;
+		private Set<RandomProductData> data = Collections.newSetFromMap(new ConcurrentHashMap());
 		
+		public void onObjectLoaded(StandardObject obj)
+		{
+			if ( data.size() % 1_000 == 0 )
+				System.out.println(data.size());
+			
+			data.add((RandomProductData)obj);
+		}
+
+		@Override
+		public void onBulkLoaderFinished()
+		{
+			System.out.println("Done loading objects!");
+			done = true;
+		}
 	}
 	
 	static public void sleepForever()
