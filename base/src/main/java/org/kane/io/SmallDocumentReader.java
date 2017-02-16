@@ -10,48 +10,119 @@ public class SmallDocumentReader
 	static public final int MAXIMUM_DOCUMENT_LENGTH_IN_CHARACTERS			= 10*1024*1024; // Maximum document size, roughly 10 MB
 	
 	static public final String EOF_DOCUMENT = "--end-of-file--";
-	static public final char[] DELIMITER_OPEN = "<?".toCharArray(); 
-	static public final char[] DELIMITER_CLOSE = "?>".toCharArray();
 	
-	private ReadUntilReader reader;
-
-	public SmallDocumentReader(Reader r)
+	private Reader reader;
+	
+	private String buffer = "";
+	private char grow_buffer[] = new char[32*1024]; // 32 KB reusable buffer
+	
+	public SmallDocumentReader(Reader reader)
 	{
-		reader = new ReadUntilReader(r, MAXIMUM_DELIMITER_LENGTH_IN_CHARACTERS);
+		this.reader = reader;
 	}
-
+	
 	public String readDocument(String default_value)
 	{
+		FindDocumentResult document = findFirstDocument(buffer,null);
+		
+		if ( document != null )
+		{
+			buffer = document.getRemainder();
+			return document.getDocument();
+		}
+		
+		if ( growBuffer() )
+		{
+			return readDocument(default_value);
+		}
+		
+		return default_value;
+	}
+	
+	private boolean growBuffer()
+	{
+		if ( buffer.length() >= MAXIMUM_DOCUMENT_LENGTH_IN_CHARACTERS ) return false; // can't grow the buffer anymore, we are over the maximum allowable buffer size
+		
 		try
 		{
-			if ( reader.readUntil(DELIMITER_OPEN, MAXIMUM_DOCUMENT_LENGTH_IN_CHARACTERS, null) == null ) return default_value;
+			int amount_read = reader.read(grow_buffer);
 			
-			if ( !reader.consume(DELIMITER_OPEN) ) return default_value;
+			if ( amount_read == -1 ) return false; // unable to grow the buffer because we are at the EOF
 			
-			String delimiter_key = reader.readUntil(DELIMITER_CLOSE, MAXIMUM_DELIMITER_LENGTH_IN_CHARACTERS-4, null);
-			if ( delimiter_key == null ) return default_value;
-			
-			if ( !reader.consume(DELIMITER_CLOSE) ) return default_value;
-			
-			String delimiter_str = String.format("<?%s?>", delimiter_key);
-			char delimiter[] = delimiter_str.toCharArray();
-			
-			String document = reader.readUntil(delimiter, MAXIMUM_DOCUMENT_LENGTH_IN_CHARACTERS, null);
-			if ( document == null ) return default_value;
-			
-			if ( !reader.consume(delimiter) ) return default_value;
-			
-			return document;
+			buffer += new String(grow_buffer,0,amount_read); // grow the buffer
+			return true;
 		}
 		catch(IOException e)
 		{
-			return default_value;
+			e.printStackTrace();
+			return false;
 		}
 	}
+	
+	static public class FindDocumentResult
+	{
+		private int container_start;
+		private int document_start;
+		
+		private int document_end;
+		private int container_end;
+		
+		private String buffer;
+		
+		public FindDocumentResult(String buffer, int container_start, int document_start, int document_end, int container_end)
+		{
+			this.buffer = buffer;
+			
+			this.container_start = container_start;
+			this.document_start = document_start;
+			
+			this.document_end = document_end;
+			this.container_end = container_end;
+		}
+		
+		public String toString() { return String.format("{container_start:%d, document_start:%d, document_end:%d, container_end:%d}", container_start, document_start, document_end, container_end); }
+		
+		public String getDocument() { return buffer.substring(document_start, document_end); }
+		public String getRemainder() { return buffer.substring(container_end); }
+	} 
+	
+	static public FindDocumentResult findFirstDocument(String buffer, FindDocumentResult default_value)
+	{
+		if ( buffer == null ) return default_value;
+		
+		int container_start = buffer.indexOf("<?");
+		if ( container_start == -1 ) return default_value;
+		
+		int document_start = buffer.indexOf("?>",container_start)+2;
+		
+		if ( document_start <= 1 ) return default_value;
+		
+		String label = buffer.substring(container_start,document_start);
+		
+		if ( label.length() > MAXIMUM_DELIMITER_LENGTH_IN_CHARACTERS ) return default_value;
+		
+		int document_end = buffer.indexOf(label,document_start);
+		if ( document_end == -1 ) return default_value;
+		
+		int container_end = document_end + label.length();
+		
+		return new FindDocumentResult(buffer, container_start, document_start, document_end, container_end);
+	}
+	
+	
 	
 	static public boolean isEOFDocument(String document)
 	{
 		if ( document == null ) return false;
 		return document.equals(EOF_DOCUMENT);
+	} 
+	
+	static public void main(String args[])
+	{
+		String documents = " <?a?>A<?a?> <?foo?>B<?foo?> <?z?>C<?z?> <?a?>--end-of-file--<?a?>";
+		
+		System.out.println(findFirstDocument(documents, null));
+		System.out.println(findFirstDocument(documents, null).getDocument());
+		System.out.println(findFirstDocument(documents, null).getRemainder());
 	}
 }

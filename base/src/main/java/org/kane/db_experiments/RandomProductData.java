@@ -1,14 +1,19 @@
 package org.kane.db_experiments;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.kane.base.immutability.StandardImmutableObject;
 import org.kane.base.immutability.collections.FieldHashMap;
+import org.kane.io.SmallDocumentReader;
 import org.kane.io.SmallDocumentWriter;
 
 public class RandomProductData extends StandardImmutableObject
@@ -95,6 +100,7 @@ public class RandomProductData extends StandardImmutableObject
 	static public void main(String args[]) throws Exception
 	{
 		// Create/write
+		if (false)
 		{
 			Builder builder = new Builder();
 
@@ -148,17 +154,32 @@ public class RandomProductData extends StandardImmutableObject
 		
 		
 		// Read
+		if ( true )
 		{
-			/*GZIPInputStream zip = new GZIPInputStream(new FileInputStream(new File("c:\\test.gz")));
-			Reader reader = new BufferedReader(new InputStreamReader(zip, "UTF-8"));
+			//GZIPInputStream zip = new GZIPInputStream(new FileInputStream(new File("c:\\test.gz")));
+			Reader reader_raw = new BufferedReader(new InputStreamReader(new FileInputStream("c:\\test.dat"), "UTF-8"));
+			SmallDocumentReader reader = new SmallDocumentReader(reader_raw);
 			
-			Object obj = StandardObject.fromXML(reader);
+			long t1 = System.currentTimeMillis();
 			
-			System.out.println(obj.getClass());
+			int count = 0;
 			
-			obj = StandardObject.fromXML(reader);
 			
-			System.out.println(obj.getClass());*/
+			while(true)
+			{
+				String document = reader.readDocument(null);
+				if ( document == null ) break;
+				
+				count++;
+			}
+			
+			long t2 = System.currentTimeMillis();
+			
+			System.out.println(count);
+			
+			System.out.println();
+			System.out.println(String.format("Document Scan Time: %,d ms", (t2-t1)));
+			System.out.println();
 		}
 		
 	}

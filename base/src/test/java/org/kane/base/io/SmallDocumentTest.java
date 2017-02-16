@@ -46,7 +46,7 @@ public class SmallDocumentTest extends TestCase
     
     public void testReadingOfContentPreparedByWriter()
     {
-    	int size = 25;
+    	int size = 100;
     	
     	String documents = createNDocumentsUsingWriter(size);
     	
@@ -55,13 +55,12 @@ public class SmallDocumentTest extends TestCase
 
     	for ( int i = 0; i < size; i++ )
     	{
-    		assertEquals(r.readDocument(null),""+i);
+    		assertEquals(r.readDocument(null),createDocumentN(i));
     	}
 
     	assertTrue(r.isEOFDocument(r.readDocument(null)));
 
     	assertEquals(r.readDocument(null),null);
-    	
     }
     
     public void testZeroRead()
@@ -85,7 +84,7 @@ public class SmallDocumentTest extends TestCase
 	    	
 	    	for ( int i = 0; i < size; i++ )
 	    	{
-	    		out.writeDocument(""+i);
+	    		out.writeDocument(createDocumentN(i));
 	    	}
 	    	
 	    	out.close();
@@ -98,5 +97,17 @@ public class SmallDocumentTest extends TestCase
     		assert(false);
     		return null;
     	}
+    }
+    
+    private String createDocumentN(int number)
+    {
+    	StringBuilder ret = new StringBuilder();
+    	
+    	while(ret.length() < 2048)
+    	{
+    		ret.append(String.format("-%d-", number));
+    	}
+    	
+    	return ret.toString();
     }
 }
