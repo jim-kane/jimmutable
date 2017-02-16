@@ -11,6 +11,7 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -20,6 +21,8 @@ import org.kane.base.serialization.StandardObject;
 import org.kane.io.SmallDocumentReader;
 import org.kane.io.SmallDocumentWriter;
 import org.kane.io.StandardObjectBulkLoader;
+
+import com.google.common.collect.ComparisonChain;
 
 public class RandomProductData extends StandardImmutableObject
 {
@@ -170,40 +173,30 @@ public class RandomProductData extends StandardImmutableObject
 			loader.doneAddingSources();
 			
 			long t1 = System.currentTimeMillis();
+			int count = 0;
+			
 			
 			while(true)
 			{
+				count++;
+				
+				if ( count % 10 == 0 )
+				{
+					System.out.println(String.format("loading objects: %,d loaded in %,d ms", listener.data.size(), System.currentTimeMillis()-t1));
+				}
+				
 				try { Thread.currentThread().sleep(100); } catch(Exception e) { e.printStackTrace(); }
 				if ( listener.done ) break;
 			}
 			
 			long t2 = System.currentTimeMillis();
 			
-			System.out.println(String.format("All objects loaded: %d",t2-t1));
-			
-			
-			
-			/*long t1 = System.currentTimeMillis();
-			
-			int count = 0;
-			
-			
-			while(true)
-			{
-				String document = reader.readDocument(null);
-				if ( document == null ) break;
-				
-				count++;
-			}
-			
-			long t2 = System.currentTimeMillis();
-			
-			System.out.println(count);
 			
 			System.out.println();
-			System.out.println(String.format("Document Scan Time: %,d ms", (t2-t1)));
-			System.out.println();*/
+			System.out.println(String.format("loading finished: %,d loaded in %,d ms", listener.data.size(), System.currentTimeMillis()-t1));
 		}
+		
+		sleepForever();
 	}
 	
 	static private class MyListener implements StandardObjectBulkLoader.Listener
@@ -213,9 +206,6 @@ public class RandomProductData extends StandardImmutableObject
 		
 		public void onObjectLoaded(StandardObject obj)
 		{
-			if ( data.size() % 1_000 == 0 )
-				System.out.println(data.size());
-			
 			data.add((RandomProductData)obj);
 		}
 

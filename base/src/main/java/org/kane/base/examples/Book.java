@@ -3,13 +3,14 @@ package org.kane.base.examples;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 import org.kane.base.immutability.StandardImmutableObject;
 import org.kane.base.immutability.collections.FieldArrayList;
-import org.kane.base.serialization.Equality;
 import org.kane.base.serialization.Normalizer;
 import org.kane.base.serialization.Validator;
 
+import com.google.common.collect.ComparisonChain;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 /**
@@ -114,12 +115,19 @@ final public class Book extends StandardImmutableObject
 	{
 		if ( !(o instanceof Book) ) return 0;
 		
-		return getSimpleTitle().compareTo(((Book)o).getSimpleTitle());
+		Book other = (Book)o;
+		
+		return ComparisonChain.start()
+				.compare(getSimpleTitle(), other.getSimpleTitle())
+				.compare(getSimplePageCount(), other.getSimplePageCount())
+				.compare(getSimpleBinding(), other.getSimpleBinding())
+				.compare(getOptionalISBN(""), other.getOptionalISBN(""))
+				.compare(getSimpleAuthors().size(),other.getSimpleAuthors().size()).result();
 	}
 
 	public int hashCode() 
 	{
-		return getSimpleTitle().hashCode();
+		return Objects.hash(getSimpleTitle(), getSimplePageCount(), getOptionalISBN(null), getSimpleBinding());
 	}
 
 	public boolean equals(Object obj) 
@@ -131,7 +139,7 @@ final public class Book extends StandardImmutableObject
 		if ( !getSimpleTitle().equals(other.getSimpleTitle()) ) return false;
 		if ( getSimplePageCount() != other.getSimplePageCount() ) return false;
 		
-		if ( !Equality.optionalEquals(isbn, other.isbn) ) return false;
+		if ( !Objects.equals(isbn, other.isbn) ) return false;
 		
 		if ( getSimpleBinding() != other.getSimpleBinding() ) return false;
 		

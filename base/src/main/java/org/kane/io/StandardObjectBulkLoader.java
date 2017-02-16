@@ -11,7 +11,7 @@ import org.kane.base.serialization.Validator;
 
 public class StandardObjectBulkLoader
 {
-	private BlockingQueue<String> document_queue = new ArrayBlockingQueue(1024);
+	private BlockingQueue<String> document_queue;
 	private Listener listener;
 	
 	private boolean has_finished = false;
@@ -24,6 +24,8 @@ public class StandardObjectBulkLoader
 	{
 		Validator.notNull(listener);
 		Validator.min(object_loading_thread_count, 1);
+		
+		document_queue = new ArrayBlockingQueue(Math.max(32, object_loading_thread_count*8));
 		
 		this.listener = listener;
 		
@@ -54,6 +56,8 @@ public class StandardObjectBulkLoader
 	{
 		if ( has_finished ) return; // already done, nothing to check...
 		if ( have_all_sources_been_added == false ) return; // can't be done... more sources may be added...
+		
+		if ( !document_queue.isEmpty() ) return;
 		
 		for ( DocumentLoadingThread thread : document_loading_threads )
 		{
@@ -98,6 +102,10 @@ public class StandardObjectBulkLoader
 				catch(Exception e)
 				{
 					e.printStackTrace();
+				}
+				finally
+				{
+					checkIfFinished();
 				}
 				
 				if ( has_finished ) return;

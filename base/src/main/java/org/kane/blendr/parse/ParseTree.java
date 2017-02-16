@@ -3,6 +3,7 @@ package org.kane.blendr.parse;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import org.kane.base.immutability.StandardImmutableObject;
 import org.kane.base.immutability.collections.FieldArrayList;
@@ -143,7 +144,7 @@ abstract public class ParseTree extends StandardImmutableObject
 		ParseTree o = (ParseTree)obj;
 		
 		if ( !nodeEquals(o) ) return false;
-		if ( !Equality.optionalEquals(getOptionalParent(null), o.getOptionalParent(null)) ) return false;
+		if ( !Objects.equals(getOptionalParent(null), o.getOptionalParent(null)) ) return false;
 		
 		return children.equals(o.children);
 	}
