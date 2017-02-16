@@ -5,6 +5,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 
 import org.kane.io.SmallDocumentReader;
+import org.kane.io.SmallDocumentSource;
 import org.kane.io.SmallDocumentWriter;
 
 import junit.framework.Test;
@@ -37,11 +38,20 @@ public class SmallDocumentTest extends TestCase
     	
     	SmallDocumentReader r = new SmallDocumentReader(new StringReader(documents));
     	
-    	assertEquals(r.readDocument(null),"A");
-    	assertEquals(r.readDocument(null),"B");
-    	assertEquals(r.readDocument(null),"C");
-
-    	assertTrue(r.isEOFDocument(r.readDocument(null)));
+    	assertEquals(r.getSimpleState(),SmallDocumentSource.State.READ_DOCUMENT_NOT_YET_ATTEMPTED);
+    	
+    	assertEquals(r.readNextDocument(), SmallDocumentSource.State.DOCUMENT_AVAILABLE);
+    	assertEquals(r.getCurrentDocument(null),"A");
+    	
+    	assertEquals(r.readNextDocument(), SmallDocumentSource.State.DOCUMENT_AVAILABLE);
+    	assertEquals(r.getCurrentDocument(null),"B");
+    	
+    	assertEquals(r.readNextDocument(), SmallDocumentSource.State.DOCUMENT_AVAILABLE);
+    	assertEquals(r.getCurrentDocument(null),"C");
+    	
+    	assertEquals(r.readNextDocument(), SmallDocumentSource.State.NO_MORE_DOCUMENTS);
+    	
+    	assertEquals(r.getSimpleState(),SmallDocumentSource.State.NO_MORE_DOCUMENTS);
     }
     
     public void testReadingOfContentPreparedByWriter()
@@ -50,29 +60,30 @@ public class SmallDocumentTest extends TestCase
     	
     	String documents = createNDocumentsUsingWriter(size);
     	
-
     	SmallDocumentReader r = new SmallDocumentReader(new StringReader(documents));
+    	
+    	assertEquals(r.getSimpleState(),SmallDocumentSource.State.READ_DOCUMENT_NOT_YET_ATTEMPTED);
 
     	for ( int i = 0; i < size; i++ )
     	{
-    		assertEquals(r.readDocument(null),createDocumentN(i));
+    		assertEquals(r.readNextDocument(), SmallDocumentSource.State.DOCUMENT_AVAILABLE);
+    		assertEquals(r.getCurrentDocument(null),createDocumentN(i));
     	}
 
-    	assertTrue(r.isEOFDocument(r.readDocument(null)));
-
-    	assertEquals(r.readDocument(null),null);
+    	assertEquals(r.readNextDocument(), SmallDocumentSource.State.NO_MORE_DOCUMENTS);
+    	assertEquals(r.getSimpleState(),SmallDocumentSource.State.NO_MORE_DOCUMENTS);
     }
     
     public void testZeroRead()
     {
     	SmallDocumentReader r = new SmallDocumentReader(new StringReader(""));
-    	assertEquals(r.readDocument(null),null);
+    	assertEquals(r.readNextDocument(), SmallDocumentSource.State.ERROR_ENCOUNTERED);
     }
     
     public void testNonsenseRead()
     {
     	SmallDocumentReader r = new SmallDocumentReader(new StringReader("asdfasdfasdfasdfasdf"));
-    	assertEquals(r.readDocument(null),null);
+    	assertEquals(r.readNextDocument(), SmallDocumentSource.State.ERROR_ENCOUNTERED);
     }
     
     private String createNDocumentsUsingWriter(int size)

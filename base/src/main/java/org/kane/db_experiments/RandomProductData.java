@@ -154,7 +154,7 @@ public class RandomProductData extends StandardImmutableObject
 		
 		
 		// Read
-		if ( true )
+		/*if ( true )
 		{
 			//GZIPInputStream zip = new GZIPInputStream(new FileInputStream(new File("c:\\test.gz")));
 			Reader reader_raw = new BufferedReader(new InputStreamReader(new FileInputStream("c:\\test.dat"), "UTF-8"));
@@ -180,7 +180,7 @@ public class RandomProductData extends StandardImmutableObject
 			System.out.println();
 			System.out.println(String.format("Document Scan Time: %,d ms", (t2-t1)));
 			System.out.println();
-		}
+		}*/
 		
 	}
 	

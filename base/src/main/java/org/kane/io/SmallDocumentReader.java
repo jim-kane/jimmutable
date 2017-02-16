@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.io.PushbackReader;
 import java.io.Reader;
 
-public class SmallDocumentReader
+import org.kane.io.SmallDocumentSource.State;
+
+public class SmallDocumentReader extends SmallDocumentSource
 {
 	static public final int MAXIMUM_DELIMITER_LENGTH_IN_CHARACTERS 			= 32;
 	static public final int MAXIMUM_DOCUMENT_LENGTH_IN_CHARACTERS			= 10*1024*1024; // Maximum document size, roughly 10 MB
@@ -16,29 +18,54 @@ public class SmallDocumentReader
 	private String buffer = "";
 	private char grow_buffer[] = new char[32*1024]; // 32 KB reusable buffer
 	
+	private SmallDocumentSource.State state;
+	private String current_document = null;
+	
 	public SmallDocumentReader(Reader reader)
 	{
 		this.reader = reader;
+		this.state = State.READ_DOCUMENT_NOT_YET_ATTEMPTED;
 	}
 	
-	public String readDocument(String default_value)
+	public State readNextDocument()
 	{
+		if ( state == State.NO_MORE_DOCUMENTS ) return state;  // at EOF, don't try another read...
+		if ( state == State.ERROR_ENCOUNTERED ) return state; // an error occurred, don't try another read
+		
 		FindDocumentResult document = findFirstDocument(buffer,null);
 		
 		if ( document != null )
 		{
 			buffer = document.getRemainder();
-			return document.getDocument();
+			current_document = document.getDocument();
+			
+			if ( isEOFDocument(current_document) )
+				return state = state.NO_MORE_DOCUMENTS;
+			
+			return state = State.DOCUMENT_AVAILABLE;
 		}
 		
 		if ( growBuffer() )
 		{
-			return readDocument(default_value);
+			return readNextDocument();
 		}
 		
-		return default_value;
+		return state = State.ERROR_ENCOUNTERED; // Can't grow, did not find an EOF document, so, an error (probably a truncated input stream)
 	}
 	
+	public State getSimpleState()
+	{
+		return state;
+	}
+
+	public String getCurrentDocument(String default_value)
+	{
+		if ( current_document == null ) return default_value;
+		if ( state != State.DOCUMENT_AVAILABLE ) return default_value;
+		
+		return current_document;
+	}
+
 	private boolean growBuffer()
 	{
 		if ( buffer.length() >= MAXIMUM_DOCUMENT_LENGTH_IN_CHARACTERS ) return false; // can't grow the buffer anymore, we are over the maximum allowable buffer size
