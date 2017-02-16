@@ -5,17 +5,18 @@ import java.io.Writer;
 
 import org.kane.db_experiments.RandomData;
 
-public class XMLSmallDocumentWriter
+public class SmallDocumentWriter
 {
+	
 	private Writer out;
 	private RandomData random_data = new RandomData();
 	
-	public XMLSmallDocumentWriter(Writer out)
+	public SmallDocumentWriter(Writer out)
 	{
 		this.out = out;
 	}
 	
-	public void addXMLDocument(String xml) throws IOException
+	public void writeDocument(String xml) throws IOException
 	{
 		if ( xml == null ) return;
 		
@@ -29,7 +30,7 @@ public class XMLSmallDocumentWriter
 	
 	public void close() throws IOException
 	{
-		addXMLDocument("--end-of-file--");
+		writeDocument(SmallDocumentReader.EOF_DOCUMENT);
 		out.close();
 	}
 	

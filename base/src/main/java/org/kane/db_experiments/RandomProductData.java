@@ -9,7 +9,7 @@ import java.util.List;
 
 import org.kane.base.immutability.StandardImmutableObject;
 import org.kane.base.immutability.collections.FieldHashMap;
-import org.kane.io.XMLSmallDocumentWriter;
+import org.kane.io.SmallDocumentWriter;
 
 public class RandomProductData extends StandardImmutableObject
 {
@@ -120,7 +120,7 @@ public class RandomProductData extends StandardImmutableObject
 			//GZIPOutputStream zip = new GZIPOutputStream(new FileOutputStream(new File("c:\\test.gz")));
 			
 			OutputStream raw = new FileOutputStream(new File("c:\\test.dat"));
-			XMLSmallDocumentWriter out = new XMLSmallDocumentWriter(new OutputStreamWriter(raw));
+			SmallDocumentWriter out = new SmallDocumentWriter(new OutputStreamWriter(raw));
 
 			int write_count = 0;
 
@@ -130,7 +130,7 @@ public class RandomProductData extends StandardImmutableObject
 			{
 				write_count++;
 
-				out.addXMLDocument(item.toXML());
+				out.writeDocument(item.toXML());
 
 				if ( write_count % 10_000 == 0 )
 					System.out.println(String.format("Writing: %,d", write_count));
