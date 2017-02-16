@@ -1,20 +1,15 @@
 package org.kane.db_experiments;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.InputStreamReader;
-import java.io.ObjectOutputStream;
 import java.io.OutputStream;
-import java.io.Reader;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.zip.GZIPInputStream;
 
 import org.kane.base.immutability.StandardImmutableObject;
 import org.kane.base.immutability.collections.FieldHashMap;
-import org.kane.base.serialization.StandardObject;
+import org.kane.io.XMLSmallDocumentWriter;
 
 public class RandomProductData extends StandardImmutableObject
 {
@@ -111,7 +106,7 @@ public class RandomProductData extends StandardImmutableObject
 			{
 				items.add(builder.createRandomProductData());
 
-				if ( i % 10_000 == 0 )
+				if ( i % 100_000 == 0 )
 					System.out.println(String.format("Building: %,d", i));
 			}
 
@@ -125,7 +120,7 @@ public class RandomProductData extends StandardImmutableObject
 			//GZIPOutputStream zip = new GZIPOutputStream(new FileOutputStream(new File("c:\\test.gz")));
 			
 			OutputStream raw = new FileOutputStream(new File("c:\\test.dat"));
-			ObjectOutputStream out = StandardObject.createNewXMLObjectOutputStream(raw);
+			XMLSmallDocumentWriter out = new XMLSmallDocumentWriter(new OutputStreamWriter(raw));
 
 			int write_count = 0;
 
@@ -135,9 +130,9 @@ public class RandomProductData extends StandardImmutableObject
 			{
 				write_count++;
 
-				out.writeObject(item);
+				out.addXMLDocument(item.toXML());
 
-				if ( write_count % 100 == 0 )
+				if ( write_count % 10_000 == 0 )
 					System.out.println(String.format("Writing: %,d", write_count));
 
 			}
