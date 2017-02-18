@@ -1,0 +1,11 @@
+You need to get the kane-key-pair-oregon.pem from Jim
+
+ssh -i kane-key-pair-oregon.pem ec2-user@[host name]
+
+
+Install puppet and git:
+
+sudo yum install puppet
+sudo yum install git
+
+Download the jimmutable library using git:
