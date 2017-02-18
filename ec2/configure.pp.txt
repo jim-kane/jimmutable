@@ -3,9 +3,14 @@ class java
 
 package
 {
-	'java-1.8.0' : ensure => present
+	'java-1.8.0' : ensure => present,
 
 }
 
+}
+
+node default
+{
+include java
 }
 

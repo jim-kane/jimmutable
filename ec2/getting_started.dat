@@ -9,3 +9,7 @@ sudo yum install puppet
 sudo yum install git
 
 Download the jimmutable library using git:
+
+https://github.com/jim-kane/jimmutable.git
+
+later, when you need to update, the command is: git pull origin master
