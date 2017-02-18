@@ -316,6 +316,7 @@ public class Executor
 			StringWriter output = new StringWriter();
 
 			Writer old_out = engine.getContext().getWriter();
+			
 			executeIter(contents,output);
 			engine.getContext().setWriter(old_out);
 

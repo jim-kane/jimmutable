@@ -19,6 +19,12 @@ public class ValidationException extends RuntimeException
 		super(message);
 	}
 	
+	/**
+	 * Create a "chained" validation exception
+	 * 
+	 * @param message
+	 * @param e
+	 */
 	public ValidationException(String message, Exception e)
 	{
 		super(message,e);

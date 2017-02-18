@@ -79,7 +79,7 @@
 	<configuration>
 		<archive>
 		<manifest>
-			<mainClass>org.kane.base.serialization.examples.TestApp</mainClass>
+			<mainClass> org.kane.db_experiments.IOBenchmark</mainClass>
 		</manifest>
 		</archive>
 	</configuration>
