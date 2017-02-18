@@ -1,15 +1,39 @@
-You need to get the kane-key-pair-oregon.pem from Jim
+-- Mount dropbox in cygwin --
 
-ssh -i kane-key-pair-oregon.pem ec2-user@[host name]
+First, mount the dropbox folder by edting /etc/fstab to include a mount for it (remember a newline at the end)
+
+-- Setup SSH Config File --
+
+Good Tutorial:  http://nerderati.com/2011/03/17/simplify-your-life-with-an-ssh-config-file/
+
+copy kane-key-pair-oregon.pem into ~/.ssh/
+chmod 400 ~/.ssh/kane-key-pair-oregon.pem
+
+Edit your ~/.ssh/config file to have a host entry, something like:
+
+Host dev
+	HostName ec2-52-35-16-93.us-west-2.compute.amazonaws.com
+	User ec2-user
+	IdentityFile ~/.ssh/kane-key-pair-oregon.pem
 
 
-Install puppet and git:
 
-sudo yum install puppet
-sudo yum install git
+-- Setup the node --
 
-Download the jimmutable library using git:
+# before loggin in
+scp aws_default_config.pp dev:/home/ec2-user/
 
-https://github.com/jim-kane/jimmutable.git
+# to log in
+ssh dev
 
+# Getting ready
+sudo yum update
+sudo yum install puppet3
+
+# Configure the box
+sudo puppet apply aws_default_config.pp
+
+# you will need to log out and log back in for all paths etc. to take effect...
+
+# Command to update a GIT repository..
 later, when you need to update, the command is: git pull origin master
