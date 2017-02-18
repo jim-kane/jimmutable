@@ -11,16 +11,16 @@ import org.kane.base.serialization.Validator;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @XStreamAlias("book-set")
-public class BookSet extends StandardImmutableObject implements StandardImmutableDeckSet<Book>
+public class BookDeckSet extends StandardImmutableObject implements StandardImmutableDeckSet<Book>
 {
 	private FieldHashSet<Book> books = new FieldHashSet();
 	
 	
-	private BookSet(Builder builder)
+	private BookDeckSet(Builder builder)
 	{
 	}
 	
-	public BookSet(Collection<Book> books)
+	public BookDeckSet(Collection<Book> books)
 	{
 		this.books.addAll(books);
 		
@@ -48,16 +48,16 @@ public class BookSet extends StandardImmutableObject implements StandardImmutabl
 	
 	static public class Builder
 	{
-		private BookSet under_construction;
+		private BookDeckSet under_construction;
 		
 		public Builder()
 		{
-			under_construction = new BookSet(this);
+			under_construction = new BookDeckSet(this);
 		}
 		
-		public Builder(BookSet starting_point)
+		public Builder(BookDeckSet starting_point)
 		{
-			under_construction = (BookSet)starting_point.deepMutableCloneForBuilder();
+			under_construction = (BookDeckSet)starting_point.deepMutableCloneForBuilder();
 		}
 
 		public void addBook(Book book)
@@ -66,7 +66,7 @@ public class BookSet extends StandardImmutableObject implements StandardImmutabl
 			under_construction.getSimpleContents().add(book);
 		}
 		
-		public BookSet create()
+		public BookDeckSet create()
 		{
 			under_construction.complete();
 			

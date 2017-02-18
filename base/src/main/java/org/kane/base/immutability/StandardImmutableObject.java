@@ -16,6 +16,12 @@ import com.thoughtworks.xstream.XStream;
  * 
  * A call complete executes normalize(), validate(), and then freeze()
  * 
+ * Please note: it is important that the noramlization code goes into the
+ * normalize() function, the validation code into validate() and the freezing
+ * code into freeze(). The latter is particularly important as deep cloning (and
+ * hence building) rely upon the ability to "freeze later" an object
+ * serialized...
+ * 
  * @author jim.kane
  *
  */

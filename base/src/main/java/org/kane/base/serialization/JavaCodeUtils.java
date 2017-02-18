@@ -123,6 +123,15 @@ public class JavaCodeUtils
 		return ret.toString();
 	}
 	
+	/**
+	 * Conventience method that takes a StandardObject, pretty prints its XML
+	 * and then "serializes" the object to java code (rather useful when writing
+	 * unit tests...)
+	 * 
+	 * @param obj The object to serialize to java code
+	 * 
+	 * @return Java code that will construct obj
+	 */
 	static public String toJavaStringLiteral(StandardObject obj)
 	{
 		Validator.notNull(obj);
@@ -133,7 +142,19 @@ public class JavaCodeUtils
 		return toJavaStringLiteral(xml);
 	}
 	
-	
+	/**
+	 * Take some XML and "pretty print" it (indent, newlines etc.)
+	 * 
+	 * @param xml
+	 *            The XML to pretty print
+	 * @param default_value
+	 *            The value to return if an error is encountered (i.e. the XML
+	 *            is invalid etc.). Frequently, this is either null or xml
+	 *            (which, effectively means, hey, try and pretty print this --
+	 *            if you can't, do nothing)
+	 * @return The pretty printed XML, or default value if this can not be
+	 *         achieved
+	 */
 	static public String prettyPrintXML(String xml, String default_value)
 	{
 		try
@@ -157,18 +178,5 @@ public class JavaCodeUtils
 		{
 			return default_value;
 		}
-	}
-	
-	
-	
-	static public void main(String args[])
-	{
-		System.out.println(toJavaStringLiteral("a\n\rb"));
-		
-		String foo = String.format("%s\n%s"
-			     , "Hello"
-			     , "World");
-		
-		System.out.println(foo);
 	}
 }

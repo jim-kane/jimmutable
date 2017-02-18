@@ -5,8 +5,8 @@ import java.util.List;
 
 import org.kane.base.examples.BindingType;
 import org.kane.base.examples.Book;
-import org.kane.base.examples.BookMap;
-import org.kane.base.examples.BookMap.Builder;
+import org.kane.base.examples.BookDeckMap;
+import org.kane.base.examples.BookDeckMap.Builder;
 import org.kane.base.serialization.StandardObject;
 
 import junit.framework.Test;
@@ -47,7 +47,7 @@ public class StandardImmutableDeckHashMapTest extends TestCase
 		builder.putBook("jim_first_book",test_books.get(0));
 		builder.putBook("jim_second_book",test_books.get(1));
 
-		BookMap first_library = builder.create();
+		BookDeckMap first_library = builder.create();
 		
 		assertEquals(first_library.getSimpleContents().size(),2);
 		
@@ -61,7 +61,7 @@ public class StandardImmutableDeckHashMapTest extends TestCase
 		builder.putBook("jim_first_book",test_books.get(2));
 		builder.putBook("jim_third_book",test_books.get(3));
 		
-		BookMap second_library = builder.create();
+		BookDeckMap second_library = builder.create();
 		
 		// Confirm that first library has not changed...
 		assertEquals(second_library.getSimpleContents().size(),3); 
@@ -123,7 +123,7 @@ public class StandardImmutableDeckHashMapTest extends TestCase
     		     , "</book-map>"
     		);
 
-    		BookMap obj = (BookMap)StandardObject.fromXML(obj_as_xml_string);
+    		BookDeckMap obj = (BookDeckMap)StandardObject.fromXML(obj_as_xml_string);
     	
     	assertEquals(obj.getSimpleContents().size(),3); 
     	assert(obj.getSimpleContents().containsKey("jim_first_book"));
@@ -143,7 +143,7 @@ public class StandardImmutableDeckHashMapTest extends TestCase
     	builder.putBook("jim_second_book",test_books.get(1));
     	builder.putBook("jim_third_book",test_books.get(3));
     	
-    	BookMap second_library = builder.create();
+    	BookDeckMap second_library = builder.create();
     	
     	assertEquals(obj,second_library);
     }

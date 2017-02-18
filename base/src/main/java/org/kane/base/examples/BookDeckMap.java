@@ -17,20 +17,20 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
  *
  */
 @XStreamAlias("book-map")
-public class BookMap extends StandardImmutableObject implements StandardImmutableDeckMap<String,Book>
+public class BookDeckMap extends StandardImmutableObject implements StandardImmutableDeckMap<String,Book>
 {
 	private FieldHashMap<String,Book> books = new FieldHashMap();
 	
-	private BookMap(Builder builder)
+	private BookDeckMap(Builder builder)
 	{
 	}
 	
-	public BookMap()
+	public BookDeckMap()
 	{
 		complete();
 	}
 	
-	public BookMap(Map<String,Book> initial_contents)
+	public BookDeckMap(Map<String,Book> initial_contents)
 	{
 		books.putAll(initial_contents);
 		
@@ -56,16 +56,16 @@ public class BookMap extends StandardImmutableObject implements StandardImmutabl
 
 	static public class Builder
 	{
-		private BookMap under_construction;
+		private BookDeckMap under_construction;
 		
 		public Builder()
 		{
-			under_construction = new BookMap(this);
+			under_construction = new BookDeckMap(this);
 		}
 		
-		public Builder(BookMap starting_point)
+		public Builder(BookDeckMap starting_point)
 		{
-			under_construction = (BookMap)starting_point.deepMutableCloneForBuilder();
+			under_construction = (BookDeckMap)starting_point.deepMutableCloneForBuilder();
 		}
 
 		public void putBook(String key, Book book)
@@ -74,7 +74,7 @@ public class BookMap extends StandardImmutableObject implements StandardImmutabl
 			under_construction.getSimpleContents().put(key,book);
 		}
 		
-		public BookMap create()
+		public BookDeckMap create()
 		{
 			under_construction.complete();
 			
