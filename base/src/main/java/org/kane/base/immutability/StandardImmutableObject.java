@@ -14,6 +14,8 @@ import com.thoughtworks.xstream.XStream;
  * only be made one time. Calling complete results in the normalize method and
  * then the validate method being invoked on the object.
  * 
+ * A call complete executes normalize(), validate(), and then freeze()
+ * 
  * @author jim.kane
  *
  */
