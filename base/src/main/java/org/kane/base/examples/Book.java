@@ -164,38 +164,37 @@ final public class Book extends StandardImmutableObject
 		
 		public void setTitle(String title) 
 		{ 
-			under_construction.assertNotComplete(); 
 			under_construction.title = title;
 		}
 		
 		public void setPageCount(int count)
 		{
-			under_construction.assertNotComplete(); 
 			under_construction.page_count = count;
 		}
 		
 		public void setISBN(String isbn)
 		{
-			under_construction.assertNotComplete();
 			under_construction.isbn = isbn;
 		}
 		
 		public void addAuthor(String author)
 		{
-			under_construction.assertNotComplete();
 			under_construction.authors.add(author);
 		}
 		
 		public void setBindingType(BindingType type)
 		{
-			under_construction.assertNotComplete();
 			under_construction.binding = type;
 		}
 		
 		public Book create()
 		{
-			under_construction.complete();
-			return under_construction;
+			// You need to do the "under_construction" swap first because complete may Throw a ValidationException
+			Book ret = under_construction;
+			under_construction = new Book(this); 
+			
+			ret.complete();
+			return ret;
 		}
 	}
 }

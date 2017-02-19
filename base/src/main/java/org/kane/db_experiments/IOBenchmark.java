@@ -42,8 +42,8 @@ public class IOBenchmark
 	{
 		if ( true )
 		{
-			RandomProductData.Builder builder = new RandomProductData.Builder();
-			RandomProductData data = builder.createRandomProductData(3500);
+			TestObjectProductData.Builder builder = new TestObjectProductData.Builder();
+			TestObjectProductData data = builder.createRandomProductData(3500);
 			
 			String xml = data.toXML();
 			
@@ -182,11 +182,11 @@ public class IOBenchmark
 		System.out.println(String.format("Writing %,d objects to %s", num_objects, dest.getAbsolutePath()));
 		System.out.println();
 		
-		RandomProductData.Builder builder = new RandomProductData.Builder();
+		TestObjectProductData.Builder builder = new TestObjectProductData.Builder();
 
 		long t1 = System.currentTimeMillis();
 
-		List<RandomProductData> items = new ArrayList();
+		List<TestObjectProductData> items = new ArrayList();
 
 		for ( int i = 0; i < num_objects; i++ )
 		{
@@ -214,7 +214,7 @@ public class IOBenchmark
 	
 			t1 = System.currentTimeMillis();
 	
-			for ( RandomProductData item : items )
+			for ( TestObjectProductData item : items )
 			{
 				write_count++;
 	
@@ -296,11 +296,11 @@ public class IOBenchmark
 	static private class MyListener implements StandardObjectBulkLoader.Listener
 	{
 		private boolean done = false;
-		private Set<RandomProductData> data = Collections.newSetFromMap(new ConcurrentHashMap());
+		private Set<TestObjectProductData> data = Collections.newSetFromMap(new ConcurrentHashMap());
 		
 		public void onObjectLoaded(StandardObject obj)
 		{
-			data.add((RandomProductData)obj);
+			data.add((TestObjectProductData)obj);
 		}
 
 		@Override
