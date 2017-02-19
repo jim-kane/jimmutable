@@ -60,7 +60,7 @@ public class GZIPUtils
 	 * 
 	 * @param default_value the value to return if there is an error
 	 * 
-	 * @return an uncompressed version of src[] or default_value[] if an error occours
+	 * @return an uncompressed version of src[] or default_value[] if an error occurs
 	 */
 	static public byte[] gunzipBytesIfNeeded(byte src[], byte default_value[])
 	{
