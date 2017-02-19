@@ -24,11 +24,13 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.kane.base.serialization.StandardObject;
+import org.kane.io.GZIPUtils;
 import org.kane.io.SmallDocumentReader;
 import org.kane.io.SmallDocumentWriter;
 import org.kane.io.StandardObjectBulkLoader;
 
 // How to build an uber-jar: mvn assembly:assembly -DdescriptorId=jar-with-dependencies
+// Good command line switches: -XX:+UseG1GC -Xmx2G
 
 
 public class IOBenchmark 
@@ -38,6 +40,18 @@ public class IOBenchmark
 	
 	static public void main(String args[])
 	{
+		if ( true )
+		{
+			RandomProductData.Builder builder = new RandomProductData.Builder();
+			RandomProductData data = builder.createRandomProductData(3500);
+			
+			String xml = data.toXML();
+			
+			System.out.println(GZIPUtils.gzipBytes(xml.getBytes(),null).length);
+			return;
+		}
+		
+		
 		new IOBenchmark(args);
 	} 
 	
@@ -46,7 +60,7 @@ public class IOBenchmark
 		setupOptions();
 		
 		//args = new String[]{"--help"};
-		//args = new String[]{"--file=c:\\test.dat", "--write=20,000"}; 
+		//args = new String[]{"--file=c:\\test.dat", "--write=100,000"}; 
 		//args = new String[]{"--file=c:\\test.dat", "--read"}; 
 		
 		CommandLineParser parser = new DefaultParser();

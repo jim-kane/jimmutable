@@ -82,6 +82,25 @@ public class RandomProductData extends StandardImmutableObject
 			
 			return ret;
 		}
+		
+		public RandomProductData createRandomProductData(int num_features)
+		{
+			RandomProductData ret = new RandomProductData(this);
+			
+			ret.brand_code = random.randomStringOfLength(RandomData.ALPHABET_ALPHA_UPPER_CASE, 4,12);
+			ret.pn = random.randomStringOfLength(RandomData.ALPHABET_ALPHA_UPPER_CASE, 8,17);
+			
+			ret.category_code = random.randomStringOfLength(RandomData.ALPHABET_ALPHA_UPPER_CASE, 16,32);
+			
+			for ( int i = 0; i < num_features; i++ )
+			{
+				ret.kv_data.put(random.randomStringOfLength(RandomData.ALPHABET_ALPHA_NUMERIC_UPPER_CASE, 10, 20), random.randomStringOfLength(RandomData.ALPHABET_ALPHA_NUMERIC, 35, 200));
+			}
+			
+			ret.complete();
+			
+			return ret;
+		}
 	}
 	
 
