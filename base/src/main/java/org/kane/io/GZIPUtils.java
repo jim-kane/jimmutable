@@ -1,7 +1,12 @@
 package org.kane.io;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.zip.Deflater;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -80,4 +85,48 @@ public class GZIPUtils
 			return default_value;
 		}
 	}
+	
+	/**
+	 * Check if the input stream's data is gzipped, if so, return an input
+	 * stream that will (in line) de-compress the data
+	 * 
+	 * @param in
+	 *            The input stream (must support mark)
+	 * @return An input stream that will decompress data (if required)
+	 * @throws IOException
+	 */
+	static public InputStream gunzipStreamIfNeeded(InputStream in) throws IOException
+	{
+		if ( !in.markSupported() ) 
+			in = new BufferedInputStream(in);
+		
+		in.mark(5);
+		
+		byte arr[] = new byte[3];
+		int amount_read = in.read(arr);
+		in.reset();
+		
+		if ( amount_read != arr.length )
+		{
+			return in;
+		}
+		
+		if ( isCompressedUsingGZIP(arr) )
+		{
+			return new GZIPInputStream(in);
+		}
+		
+		return in;
+	}
+	
+	static public class OutputStreamBestSpeed extends GZIPOutputStream
+	{
+		public OutputStreamBestSpeed(OutputStream out) throws IOException
+		{
+			super(out);
+	      	def.setLevel(Deflater.BEST_SPEED);
+		}
+	    
+	}
+	
 }

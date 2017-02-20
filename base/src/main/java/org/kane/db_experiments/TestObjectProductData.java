@@ -1,16 +1,24 @@
 package org.kane.db_experiments;
 
+import java.util.Map;
+
 import org.kane.base.immutability.StandardImmutableObject;
-import org.kane.base.immutability.collections.FieldHashMap;
+import org.kane.base.immutability.collections.FieldStringStringHashMap;
 import org.kane.base.serialization.Normalizer;
 import org.kane.base.serialization.Validator;
 
-public class TestObjectProductData extends StandardImmutableObject
+import com.thoughtworks.xstream.converters.Converter;
+import com.thoughtworks.xstream.converters.MarshallingContext;
+import com.thoughtworks.xstream.converters.UnmarshallingContext;
+import com.thoughtworks.xstream.io.HierarchicalStreamReader;
+import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+
+public class TestObjectProductData extends StandardImmutableObject 
 {
 	private String brand_code;
 	private String pn;
 	
-	private FieldHashMap<String,String> kv_data = new FieldHashMap();
+	private FieldStringStringHashMap kv_data = new FieldStringStringHashMap();
 	
 	public TestObjectProductData()
 	{
@@ -21,6 +29,10 @@ public class TestObjectProductData extends StandardImmutableObject
 	{
 		
 	}
+	
+	public String getSimpleBrandCode() { return brand_code; }
+	public String getSimplePN() { return pn; }
+	public Map<String,String> getSimpleKVData() { return kv_data; }
 	 
 	public int compareTo(Object o)
 	{
@@ -115,4 +127,5 @@ public class TestObjectProductData extends StandardImmutableObject
 			return create();
 		}
 	}
+	
 }

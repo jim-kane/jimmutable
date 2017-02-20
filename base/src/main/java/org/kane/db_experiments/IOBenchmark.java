@@ -5,10 +5,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
+import java.io.StringWriter;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -40,18 +42,6 @@ public class IOBenchmark
 	
 	static public void main(String args[])
 	{
-		if ( true )
-		{
-			TestObjectProductData.Builder builder = new TestObjectProductData.Builder();
-			TestObjectProductData data = builder.createRandomProductData(3500);
-			
-			String xml = data.toXML();
-			
-			System.out.println(GZIPUtils.gzipBytes(xml.getBytes(),null).length);
-			return;
-		}
-		
-		
 		new IOBenchmark(args);
 	} 
 	
@@ -61,7 +51,8 @@ public class IOBenchmark
 		
 		//args = new String[]{"--help"};
 		//args = new String[]{"--file=c:\\test.dat", "--write=100,000"}; 
-		//args = new String[]{"--file=c:\\test.dat", "--read"}; 
+		args = new String[]{"--file=c:\\test.dat", "--read=2"}; 
+		//args = new String[]{"--file=c:\\test.dat", "--transform=c:\\spec_data.xml"};
 		
 		CommandLineParser parser = new DefaultParser();
 	    try 
@@ -101,6 +92,24 @@ public class IOBenchmark
 	        	write(num_objects);
 	        	had_operation = true;
 	        }
+	        
+	        if ( line.hasOption("transform") ) 
+	        {
+	        	String src_file = line.getOptionValue("transform");
+	        	if ( src_file == null ) src_file = "spec_data.xml";
+	        	
+	        	try
+	        	{
+	        		TestObjectProductDataTransformer xform = new TestObjectProductDataTransformer(new File(src_file),dest, true, 100_000);
+	        		had_operation = true;
+	        	}
+	        	catch(Exception e)
+	        	{
+	        		e.printStackTrace();
+	        		return;
+	        	}
+	        }
+	        
 	        
 	        if ( line.hasOption("read") )
 	        {
@@ -160,6 +169,13 @@ public class IOBenchmark
 			cur = new Option(null, "read", true, "Using the specified number of threads, load all objects from the file into RAM, measuring the time it takes to do so");
 			cur.setOptionalArg(true);
 			cur.setArgName("THREAD COUNT");
+			options.addOption(cur);
+		}
+		
+		{
+			cur = new Option(null, "transform", true, "Transform the old XML Spec Data file into TestObjectProductData objects");
+			cur.setOptionalArg(false);
+			cur.setArgName("Spec Data XML File");
 			options.addOption(cur);
 		}
 		
@@ -252,7 +268,8 @@ public class IOBenchmark
 				return;
 			}
 			
-			Reader reader_raw = new BufferedReader(new InputStreamReader(new FileInputStream(dest), "UTF-8"));
+			InputStream in_raw = GZIPUtils.gunzipStreamIfNeeded(new FileInputStream(dest));
+			Reader reader_raw = new BufferedReader(new InputStreamReader(in_raw,"UTF-8"));
 			SmallDocumentReader reader = new SmallDocumentReader(reader_raw);
 	
 			MyListener listener = new MyListener();
@@ -282,10 +299,32 @@ public class IOBenchmark
 	
 			System.out.println();
 			System.out.println(String.format("loading finished: %,d loaded in %,d ms", listener.data.size(), System.currentTimeMillis()-t1));
+			
+			System.out.println();
+			
+			int write_count = 0;
+			
+			//while(true)
+			{
+				Thread.currentThread().sleep(1000); 
+				
+				write_count++;
+				System.out.println(String.format("Starting write: %d",write_count));
+				
+				OutputStream out = new GZIPUtils.OutputStreamBestSpeed(new FileOutputStream(new File(dest.getParentFile(),"tmp_write_data.xml.gz")));
+				SmallDocumentWriter writer = new SmallDocumentWriter(out);
+				
+				for ( TestObjectProductData item : listener.data )
+				{
+					writer.writeDocument(item.toXML());
+				
+					writer.printStatus(10_000);
+				}
+				
+				writer.close();
+			}
 	
-	
-			System.out.println("Sleeping forever");
-			sleepForever();
+			
 		}
 		catch(Exception e)
 		{
