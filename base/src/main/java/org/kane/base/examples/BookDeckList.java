@@ -69,15 +69,18 @@ public class BookDeckList extends StandardImmutableObject implements StandardImm
 
 		public void addBook(Book book)
 		{
-			under_construction.assertNotComplete();
+			if ( book == null ) return;
 			under_construction.getSimpleContents().add(book);
 		}
 		
 		public BookDeckList create()
 		{
-			under_construction.complete();
+			// You need to do the "under_construction" swap first because complete may Throw a ValidationException
+			BookDeckList ret = under_construction;
+			under_construction = new BookDeckList(this);
 			
-			return under_construction;
+			ret.complete();
+			return ret;
 		}
 	}
 }

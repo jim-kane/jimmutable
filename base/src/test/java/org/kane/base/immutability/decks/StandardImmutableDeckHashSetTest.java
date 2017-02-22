@@ -6,8 +6,8 @@ import java.util.List;
 import org.kane.base.examples.BindingType;
 import org.kane.base.examples.Book;
 import org.kane.base.examples.BookDeckList;
-import org.kane.base.examples.BookSet;
-import org.kane.base.examples.BookSet.Builder;
+import org.kane.base.examples.BookDeckSet;
+import org.kane.base.examples.BookDeckSet.Builder;
 import org.kane.base.serialization.JavaCodeUtils;
 import org.kane.base.serialization.StandardObject;
 
@@ -50,7 +50,7 @@ public class StandardImmutableDeckHashSetTest extends TestCase
 		builder.addBook(test_books.get(0));
 		builder.addBook(test_books.get(1));
 
-		BookSet first_library = builder.create();
+		BookDeckSet first_library = builder.create();
 		
 		assertEquals(first_library.getSimpleContents().size(),2);
 		
@@ -64,7 +64,7 @@ public class StandardImmutableDeckHashSetTest extends TestCase
 		builder.addBook(test_books.get(2));
 		builder.addBook(test_books.get(3));
 		
-		BookSet second_library = builder.create();
+		BookDeckSet second_library = builder.create();
 		
 		// Confirm that first library has not changed...
 		assertEquals(second_library.getSimpleContents().size(),3); // because book 2 and 3 are duplicates...
@@ -120,7 +120,7 @@ public class StandardImmutableDeckHashSetTest extends TestCase
     		     , "</book-set>"
     		);
 
-    	BookSet obj = (BookSet)StandardObject.fromXML(obj_as_xml_string);
+    	BookDeckSet obj = (BookDeckSet)StandardObject.fromXML(obj_as_xml_string);
     	
     	
     	List<Book> test_books = new ArrayList();
@@ -135,7 +135,7 @@ public class StandardImmutableDeckHashSetTest extends TestCase
 		builder.addBook(test_books.get(1));
 		builder.addBook(test_books.get(2));
 		
-		BookSet second_library = builder.create();
+		BookDeckSet second_library = builder.create();
 		
 		assertEquals(obj,second_library);
     }

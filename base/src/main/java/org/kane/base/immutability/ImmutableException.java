@@ -2,7 +2,7 @@ package org.kane.base.immutability;
 
 /**
  * A RuntimeException with the semantic meaning "hey! you just tried to modify
- * and object that is immutable"
+ * and object that is immutable (i.e. after it has been completed/frozen)"
  * 
  * @author jim.kane
  *

@@ -52,7 +52,7 @@ public class StandardObjectBulkLoader
 		checkIfFinished();
 	}
 	
-	private void checkIfFinished()
+	synchronized private void checkIfFinished()
 	{
 		if ( has_finished ) return; // already done, nothing to check...
 		if ( have_all_sources_been_added == false ) return; // can't be done... more sources may be added...

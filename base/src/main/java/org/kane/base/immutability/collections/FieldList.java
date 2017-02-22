@@ -32,7 +32,7 @@ import org.kane.base.serialization.ValidationException;
  *  
  *  Believe it or not, this code *REMOVES FOO*...
  *  
- *  So, immutable coder beware... and use AbstractStandardImmutableFieldList!  
+ *  So, immutable coder beware... and use FieldList (or one of its implementing classes)!  
  *  (which will correctly throw an ImmutableException in this case)
  * 
  * @author jim.kane
