@@ -79,4 +79,9 @@ public class Validator
 		containsOnlyInstancesOf(key,map.keySet());
 		containsOnlyInstancesOf(value,map.values());
 	}
+
+	static public <E extends Enum<E>> void notEqual(Enum<E> one, Enum<E> two)
+	{
+	    if (one != two) throw new ValidationException();
+	}
 }

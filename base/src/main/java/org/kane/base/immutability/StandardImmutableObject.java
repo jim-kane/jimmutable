@@ -1,10 +1,7 @@
 package org.kane.base.immutability;
 
 import org.kane.base.serialization.StandardObject;
-import org.kane.base.serialization.ValidationException;
 import org.kane.base.serialization.XStreamSingleton;
-
-import com.thoughtworks.xstream.XStream;
 
 /**
  * An abstract base class representing a standard immutable objects.
@@ -25,7 +22,7 @@ import com.thoughtworks.xstream.XStream;
  * @author jim.kane
  *
  */
-abstract public class StandardImmutableObject extends StandardObject
+abstract public class StandardImmutableObject<T extends StandardImmutableObject<T>> extends StandardObject<T>
 {
 	transient private boolean is_complete = false;
 	
@@ -67,8 +64,8 @@ abstract public class StandardImmutableObject extends StandardObject
 	
 	public boolean isComplete() { return is_complete; }
 	
-	public StandardImmutableObject deepMutableCloneForBuilder()
+	public T deepMutableCloneForBuilder()
 	{
-		return (StandardImmutableObject)fromSerializedData(toXML(), XStreamSingleton.getXMLStream(), false);
+		return fromSerializedData(toXML(), XStreamSingleton.getXMLStream(), false);
 	}
 }

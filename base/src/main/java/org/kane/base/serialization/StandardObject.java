@@ -38,7 +38,7 @@ import com.thoughtworks.xstream.XStream;
  * @author jim.kane
  *
  */
-abstract public class StandardObject implements Comparable
+abstract public class StandardObject<T extends StandardObject<T>> implements Comparable<T>
 {
 	/**
 	 * Normalize the fields of the object.
@@ -85,7 +85,7 @@ abstract public class StandardObject implements Comparable
 	 * 
 	 * @return A deep copy of this object
 	 */
-	public StandardObject deepClone()
+	public T deepClone()
 	{
 		return fromXML(toXML());
 	}
@@ -183,13 +183,13 @@ abstract public class StandardObject implements Comparable
 	 *             example, the XML is invalid etc.) a chained validation
 	 *             exception will be thrown
 	 */
-	static public StandardObject fromXML(String xml) throws ValidationException
+	static public <T extends StandardObject<T>> T fromXML(String xml) throws ValidationException
 	{
 		return fromSerializedData(xml, XStreamSingleton.getXMLStream(), true);
 	}
 	
 	
-	static public StandardObject fromXML(Reader xml) throws ValidationException
+	static public <T extends StandardObject<T>> T fromXML(Reader xml) throws ValidationException
 	{
 		return fromSerializedData(xml, XStreamSingleton.getXMLStream(), true);
 	}
@@ -220,13 +220,13 @@ abstract public class StandardObject implements Comparable
 	 *             example, the JSON is invalid etc.) a chained validation
 	 *             exception will be thrown
 	 */
-	static public StandardObject fromJSON(String json) throws ValidationException
+	static public <T extends StandardObject<T>> T fromJSON(String json) throws ValidationException
 	{
 		return fromSerializedData(json, XStreamSingleton.getJSONStream(), true);
 	}
 	
 	
-	static protected StandardObject fromSerializedData(String data, XStream deserializer, boolean complete) throws ValidationException
+	static protected <T extends StandardObject<T>> T fromSerializedData(String data, XStream deserializer, boolean complete) throws ValidationException
 	{
 		return fromSerializedData(new StringReader(data),deserializer, complete);
 	}
@@ -245,15 +245,16 @@ abstract public class StandardObject implements Comparable
 	 *             exceptions are caught and chained)
 	 */
 	
-	static protected StandardObject fromSerializedData(Reader data, XStream deserializer, boolean complete) throws ValidationException
+	static protected <T extends StandardObject<T>> T fromSerializedData(Reader data, XStream deserializer, boolean complete) throws ValidationException
 	{
 		Validator.notNull(data);
 		Validator.notNull(deserializer);
 		
 		try
 		{
-			StandardObject ret = (StandardObject)deserializer.fromXML(data);
-			if ( complete ) ret.complete();
+			@SuppressWarnings("unchecked")
+            T ret = (T) deserializer.fromXML(data);
+            if (complete) ret.complete();
 			return ret;
 		}
 		catch(ValidationException validation_exception)
@@ -284,7 +285,7 @@ abstract public class StandardObject implements Comparable
 	 *         default_value if there is any error
 	 */
 	
-	static public StandardObject quietFromXML(String xml, StandardObject default_value)
+	static public <T extends StandardObject<T>> T quietFromXML(String xml, T default_value)
 	{
 		try
 		{
@@ -309,7 +310,7 @@ abstract public class StandardObject implements Comparable
 	 *         default_value if there is any error
 	 */
 	
-	static public StandardObject quietFromJSON(String json, StandardObject default_value)
+	static public <T extends StandardObject<T>> T quietFromJSON(String json, T default_value)
 	{
 		try
 		{
