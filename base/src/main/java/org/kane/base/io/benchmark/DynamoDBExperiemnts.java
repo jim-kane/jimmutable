@@ -1,4 +1,4 @@
-package org.kane.db_experiments;
+package org.kane.base.io.benchmark;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +16,7 @@ import com.amazonaws.services.dynamodbv2.model.KeyType;
 import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput;
 import com.amazonaws.services.dynamodbv2.model.ScalarAttributeType;
 
-public class TestApp
+public class DynamoDBExperiemnts
 {
 	static private String TABLE_NAME = "product_db";
 	

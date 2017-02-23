@@ -76,12 +76,7 @@ public class BookDeckMap extends StandardImmutableObject implements StandardImmu
 		
 		public BookDeckMap create()
 		{
-			// You need to do the "under_construction" swap first because complete may Throw a ValidationException
-			BookDeckMap ret = under_construction;
-			under_construction = new BookDeckMap(this);
-			
-			ret.complete();
-			return ret;
+			return (BookDeckMap)under_construction.deepClone();
 		}
 	}
 }

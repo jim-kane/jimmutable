@@ -3,7 +3,7 @@ package org.kane.base.immutability.collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.kane.db_experiments.TestObjectProductData;
+import org.kane.base.io.benchmark.TestObjectProductData;
 
 import com.thoughtworks.xstream.annotations.XStreamConverter;
 import com.thoughtworks.xstream.converters.Converter;

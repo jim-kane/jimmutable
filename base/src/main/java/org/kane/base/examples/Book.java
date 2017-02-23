@@ -189,12 +189,7 @@ final public class Book extends StandardImmutableObject
 		
 		public Book create()
 		{
-			// You need to do the "under_construction" swap first because complete may Throw a ValidationException
-			Book ret = under_construction;
-			under_construction = new Book(this); 
-			
-			ret.complete();
-			return ret;
+			return (Book)under_construction.deepClone();
 		}
 	}
 }

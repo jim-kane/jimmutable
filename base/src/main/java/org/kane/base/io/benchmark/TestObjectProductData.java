@@ -1,10 +1,11 @@
-package org.kane.db_experiments;
+package org.kane.base.io.benchmark;
 
 import java.util.Map;
 
 import org.kane.base.immutability.StandardImmutableObject;
 import org.kane.base.immutability.collections.FieldStringStringHashMap;
 import org.kane.base.serialization.Normalizer;
+import org.kane.base.serialization.RandomData;
 import org.kane.base.serialization.Validator;
 
 import com.thoughtworks.xstream.converters.Converter;
@@ -102,11 +103,7 @@ public class TestObjectProductData extends StandardImmutableObject
 		
 		public TestObjectProductData create()
 		{
-			TestObjectProductData ret = under_construction;
-			under_construction = new TestObjectProductData(this);
-			
-			ret.complete();
-			return ret;
+			return (TestObjectProductData)under_construction.deepClone();
 		}
 		
 		public TestObjectProductData createRandomProductData()

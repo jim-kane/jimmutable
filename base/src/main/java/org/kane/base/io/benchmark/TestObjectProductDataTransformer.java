@@ -1,4 +1,4 @@
-package org.kane.db_experiments;
+package org.kane.base.io.benchmark;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -6,9 +6,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 
+import org.kane.base.io.GZIPUtils;
+import org.kane.base.io.SmallDocumentWriter;
 import org.kane.base.serialization.ValidationException;
-import org.kane.io.GZIPUtils;
-import org.kane.io.SmallDocumentWriter;
 
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.xml.AbstractXmlDriver;
