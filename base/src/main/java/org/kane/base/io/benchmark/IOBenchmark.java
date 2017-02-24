@@ -1,4 +1,4 @@
-package org.kane.db_experiments;
+package org.kane.base.io.benchmark;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -25,11 +25,11 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.kane.base.io.GZIPUtils;
+import org.kane.base.io.SmallDocumentReader;
+import org.kane.base.io.SmallDocumentWriter;
+import org.kane.base.io.StandardObjectBulkLoader;
 import org.kane.base.serialization.StandardObject;
-import org.kane.io.GZIPUtils;
-import org.kane.io.SmallDocumentReader;
-import org.kane.io.SmallDocumentWriter;
-import org.kane.io.StandardObjectBulkLoader;
 
 // How to build an uber-jar: mvn assembly:assembly -DdescriptorId=jar-with-dependencies
 // Good command line switches: -XX:+UseG1GC -Xmx2G

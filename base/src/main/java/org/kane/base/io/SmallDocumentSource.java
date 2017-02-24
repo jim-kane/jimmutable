@@ -1,4 +1,4 @@
-package org.kane.io;
+package org.kane.base.io;
 
 abstract public class SmallDocumentSource
 {

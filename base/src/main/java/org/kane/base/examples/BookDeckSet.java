@@ -68,13 +68,7 @@ public class BookDeckSet extends StandardImmutableObject implements StandardImmu
 		
 		public BookDeckSet create()
 		{
-			// You need to do the "under_construction" swap first because complete may Throw a ValidationException
-			BookDeckSet ret = under_construction;
-			under_construction = new BookDeckSet(this);
-			
-			
-			ret.complete();
-			return ret;
+			return (BookDeckSet)under_construction.deepClone();
 		}
 	}
 }

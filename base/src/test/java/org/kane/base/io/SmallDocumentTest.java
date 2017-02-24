@@ -4,10 +4,6 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 
-import org.kane.io.SmallDocumentReader;
-import org.kane.io.SmallDocumentSource;
-import org.kane.io.SmallDocumentWriter;
-
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;

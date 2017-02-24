@@ -1,10 +1,10 @@
-package org.kane.io;
+package org.kane.base.io;
 
 import java.io.IOException;
 import java.io.PushbackReader;
 import java.io.Reader;
 
-import org.kane.io.SmallDocumentSource.State;
+import org.kane.base.io.SmallDocumentSource.State;
 
 public class SmallDocumentReader extends SmallDocumentSource
 {

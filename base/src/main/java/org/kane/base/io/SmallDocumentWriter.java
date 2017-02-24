@@ -1,11 +1,11 @@
-package org.kane.io;
+package org.kane.base.io;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 
-import org.kane.db_experiments.RandomData;
+import org.kane.base.serialization.RandomData;
 
 public class SmallDocumentWriter
 {

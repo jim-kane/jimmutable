@@ -1,4 +1,4 @@
-package org.kane.io;
+package org.kane.base.io;
 
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;

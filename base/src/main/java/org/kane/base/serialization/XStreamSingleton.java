@@ -16,7 +16,7 @@ import com.thoughtworks.xstream.io.xml.StaxDriver;
  * 
  * You should never have to do very much with this class, with the notable
  * exception of calling addRootPackage once to have the singleton scan your
- * packages and process all annotations therin (via reflection). For example,
+ * packages and process all annotations therein (via reflection). For example,
  * imagine you are building a large application under com.some.company..., you
  * simply add a call very early in your application (say, first line of main?)
  * XStreamSingleton.addRootPackage("com.some.company"). This wills scan an
