@@ -1,10 +1,7 @@
 package org.kane.base.immutability.collections;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-
-import org.kane.base.immutability.StandardImmutableObject;
 
 /**
  * An implementation of a Field object backed by an ArrayList. Generally
@@ -21,26 +18,23 @@ import org.kane.base.immutability.StandardImmutableObject;
  * 
  * @author jim.kane
  *
- * @param <T>
+ * @param <E>
  */
-public class FieldArrayList<T> extends FieldList<T>
+public class FieldArrayList<E> extends FieldList<E>
 {
 	public FieldArrayList()
 	{
 		super();
 	}
 	
-	
-	public FieldArrayList(Iterable<T> objs)
+	public FieldArrayList(Iterable<E> objs)
 	{
 		super(objs);
 	}
 
-	protected List createNewMutableListInstance() 
+	@Override
+	protected List<E> createNewMutableInstance() 
 	{
-		return new ArrayList();
-		
+		return new ArrayList<>();
 	}
-	
-	
 }

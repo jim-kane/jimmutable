@@ -1,9 +1,7 @@
 package org.kane.base.immutability.collections;
 
-import java.util.Collection;
+import java.util.Set;
 import java.util.TreeSet;
-
-import org.kane.base.immutability.StandardImmutableObject;
 
 /**
  * An implementation of a Field object backed by an TreeSet. Generally
@@ -33,9 +31,8 @@ public class FieldTreeSet<T> extends FieldSet<T>
 		super(objs);
 	}
 	
-	protected Collection<T> createNewMutableInstance()
+	protected Set<T> createNewMutableInstance()
 	{
-		return new TreeSet();
+		return new TreeSet<>();
 	}
-
 }

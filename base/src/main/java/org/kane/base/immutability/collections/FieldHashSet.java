@@ -1,9 +1,7 @@
 package org.kane.base.immutability.collections;
 
-import java.util.Collection;
 import java.util.HashSet;
-
-import org.kane.base.immutability.StandardImmutableObject;
+import java.util.Set;
 
 /**
  * An implementation of a Field object backed by an HashSet. Generally
@@ -33,9 +31,8 @@ public class FieldHashSet<T> extends FieldSet<T>
 		super(objs);
 	}
 	
-	protected Collection<T> createNewMutableInstance()
+	protected Set<T> createNewMutableInstance()
 	{
-		return new HashSet();
+		return new HashSet<>();
 	}
-
 }

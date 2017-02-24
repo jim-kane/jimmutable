@@ -2,9 +2,9 @@ package org.kane.base.examples.card;
 
 import java.util.Collection;
 
-import org.kane.base.immutability.StandardImmutableJeffDeckList;
 import org.kane.base.immutability.collections.FieldArrayList;
 import org.kane.base.immutability.collections.FieldList;
+import org.kane.base.immutability.decks.StandardImmutableJeffDeckList;
 import org.kane.base.serialization.Validator;
 
 

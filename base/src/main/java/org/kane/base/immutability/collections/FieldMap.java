@@ -1,13 +1,9 @@
 package org.kane.base.immutability.collections;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-
-import org.kane.base.immutability.ImmutableException;
-import org.kane.base.immutability.StandardImmutableObject;
 
 /**
  * An implementation of a map that begins life as immutable but can, at
@@ -33,13 +29,13 @@ abstract public class FieldMap<K,V> implements Map<K,V>, Field
 	
 	private Map<K,V> contents;
 	
-	abstract protected Map<K,V> createNewMutableMapInstance();
+	abstract protected Map<K,V> createNewMutableInstance();
 	
 	
 	public FieldMap()
 	{
 		is_frozen = false;
-		contents = createNewMutableMapInstance();
+		contents = createNewMutableInstance();
 	}
 	
 	public FieldMap(Map<K,V> initial_values)
@@ -65,7 +61,6 @@ abstract public class FieldMap<K,V> implements Map<K,V>, Field
 		assertNotFrozen();
 		return contents.put(key, value);
 	}
-
 	
 	public V remove(Object key)
 	{
@@ -73,43 +68,41 @@ abstract public class FieldMap<K,V> implements Map<K,V>, Field
 		return contents.remove(key);
 	}
 
-	
 	public void putAll(Map<? extends K, ? extends V> m)
 	{
 		assertNotFrozen();
 		contents.putAll(m);
 	}
-
 	
 	public void clear()
 	{
 		assertNotFrozen();
 		contents.clear();
 	}
-
 	
 	public Set<K> keySet()
 	{
-		return (Set<K>)(new InnerSet(contents.keySet()));
+		return new InnerSet<>(contents.keySet());
 	}
 
 	
 	public Collection<V> values()
 	{
-		return (Collection<V>)new InnerCollection(contents.values());
+		return new InnerCollection<>(contents.values());
 	}
 
 	
-	public Set<java.util.Map.Entry<K, V>> entrySet()
+	public Set<Map.Entry<K, V>> entrySet()
 	{
-		return (Set<java.util.Map.Entry<K, V>>)(new InnerSet(contents.entrySet()));
+		return new InnerSet<>(contents.entrySet());
 	}
 
 	public boolean equals(Object obj) 
 	{
 		if ( !(obj instanceof Map) ) return false;
 		
-		Map other = (Map)obj;
+		@SuppressWarnings("unchecked")
+		Map<K, V> other = (Map<K, V>)obj;
 		
 		if ( size() != other.size() ) return false;
 		
@@ -121,38 +114,32 @@ abstract public class FieldMap<K,V> implements Map<K,V>, Field
 		return contents.toString();
 	}
 	
-	private class InnerCollection implements Collection
+	private class InnerCollection<E> implements Collection<E>
 	{
-		private Collection inner_contents;
+		private Collection<E> inner_contents;
 		
-		private InnerCollection(Collection c)
+		private InnerCollection(Collection<E> c)
 		{
 			inner_contents = c;
 		}
-		
 		
 		public int size() { return inner_contents.size(); }
 		public boolean isEmpty() { return inner_contents.isEmpty(); }
 		public boolean contains(Object o) { return inner_contents.contains(o); }
 		
-
-		
-		public Iterator iterator() 
+		public Iterator<E> iterator() 
 		{
-			return new InnerIterator(inner_contents.iterator());
+			return new InnerIterator<>(inner_contents.iterator());
 		}
-
 		
 		public Object[] toArray() { return inner_contents.toArray(); }
-		public Object[] toArray(Object[] a) { return inner_contents.toArray(a); }
+		public <T> T[] toArray(T[] a) { return inner_contents.toArray(a); }
 
-		
-		public boolean add(Object e)
+		public boolean add(E e)
 		{
 			assertNotFrozen();
 			return inner_contents.add(e);
 		}
-
 		
 		public boolean remove(Object o) 
 		{
@@ -161,23 +148,23 @@ abstract public class FieldMap<K,V> implements Map<K,V>, Field
 		}
 
 		
-		public boolean containsAll(Collection c) { return inner_contents.containsAll(c); }
+		public boolean containsAll(Collection<?> c) { return inner_contents.containsAll(c); }
 
 		
-		public boolean addAll(Collection c) 
+		public boolean addAll(Collection<? extends E> c) 
 		{
 			assertNotFrozen();
 			return inner_contents.addAll(c);
 		}
 
-		public boolean removeAll(Collection c) 
+		public boolean removeAll(Collection<?> c) 
 		{
 			assertNotFrozen();
 			return inner_contents.removeAll(c);
 		}
 
 		
-		public boolean retainAll(Collection c) 
+		public boolean retainAll(Collection<?> c) 
 		{
 			assertNotFrozen();
 			return inner_contents.retainAll(c);
@@ -191,27 +178,26 @@ abstract public class FieldMap<K,V> implements Map<K,V>, Field
 		}
 	}
 	
-	private class InnerSet extends InnerCollection implements Set
+	private class InnerSet<E> extends InnerCollection<E> implements Set<E>
 	{
-		private InnerSet(Collection c)
+		private InnerSet(Collection<E> c)
 		{
 			super(c);
 		}
 	}
 	
-	private class InnerIterator implements Iterator
+	private class InnerIterator<E> implements Iterator<E>
 	{
-		private Iterator inner_contents;
+		private Iterator<E> inner_contents;
 		
-		private InnerIterator(Iterator i) { inner_contents = i; }
+		private InnerIterator(Iterator<E> i) { inner_contents = i; }
 
-		
 		public boolean hasNext() 
 		{
 			return inner_contents.hasNext();
 		}
 
-		public Object next() 
+		public E next() 
 		{
 			return inner_contents.next();
 		}
@@ -221,7 +207,5 @@ abstract public class FieldMap<K,V> implements Map<K,V>, Field
 			assertNotFrozen();
 			inner_contents.remove();
 		}
-		
-		
 	}
 }

@@ -3,21 +3,21 @@ package org.kane.base.examples.card;
 import java.util.Collection;
 import java.util.Objects;
 
-import org.kane.base.immutability.StandardImmutableJeffDeckList;
-import org.kane.base.immutability.collections.FieldArrayList;
-import org.kane.base.immutability.collections.FieldList;
+import org.kane.base.immutability.collections.FieldHashSet;
+import org.kane.base.immutability.collections.FieldSet;
+import org.kane.base.immutability.decks.StandardImmutableJeffDeckSet;
 import org.kane.base.serialization.Normalizer;
 import org.kane.base.serialization.Validator;
 
 import com.google.common.collect.ComparisonChain;
 
 
-public class Hand extends StandardImmutableJeffDeckList<Hand, Card>
+public class Hand extends StandardImmutableJeffDeckSet<Hand, Card>
 {
     private String name; // Optional, free form
     private int max_size; // Required, non-negative
     
-    private FieldArrayList<Card> cards = new FieldArrayList<>();
+    private FieldSet<Card> cards = new FieldHashSet<>();
     
     private Hand(Builder builder)
     {
@@ -52,7 +52,7 @@ public class Hand extends StandardImmutableJeffDeckList<Hand, Card>
     }
     
     @Override
-    public FieldList<Card> getSimpleContents()
+    public FieldSet<Card> getSimpleContents()
     {
         return cards;
     }
@@ -133,7 +133,7 @@ public class Hand extends StandardImmutableJeffDeckList<Hand, Card>
             under_construction.name = name;
         }
 
-        public FieldList<Card> getCards()
+        public FieldSet<Card> getCards()
         {
             return under_construction.getSimpleContents();
         }

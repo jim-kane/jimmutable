@@ -33,9 +33,8 @@ public class FieldConcurrentHashMap <K,V> extends FieldMap<K,V>
 		super(initial_values);
 	}
 	
-	protected Map<K, V> createNewMutableMapInstance() 
+	protected Map<K, V> createNewMutableInstance() 
 	{
-		return new ConcurrentHashMap();
+		return new ConcurrentHashMap<>();
 	}
-
 }

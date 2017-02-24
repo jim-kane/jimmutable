@@ -31,17 +31,14 @@ public class FieldCopyOnWriteArrayList<T> extends FieldList<T>
 		super();
 	}
 	
-	
 	public FieldCopyOnWriteArrayList(Iterable<T> objs)
 	{
 		super(objs);
 	}
 
-	protected List createNewMutableListInstance() 
+	protected List<T> createNewMutableInstance() 
 	{
-		return new CopyOnWriteArrayList();
+		return new CopyOnWriteArrayList<>();
 	}
-	
-	
 }
 

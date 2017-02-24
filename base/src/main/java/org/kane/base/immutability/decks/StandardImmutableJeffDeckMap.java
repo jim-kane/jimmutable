@@ -1,19 +1,13 @@
-package org.kane.base.immutability;
+package org.kane.base.immutability.decks;
 
-import java.util.Iterator;
+import org.kane.base.immutability.StandardImmutableObject;
+import org.kane.base.immutability.collections.FieldMap;
 
-import org.kane.base.immutability.collections.FieldList;
 
-abstract public class StandardImmutableJeffDeckList<T extends StandardImmutableJeffDeckList<T, E>, E extends StandardImmutableObject<E>> extends StandardImmutableObject<T> implements Iterable<E>
+abstract public class StandardImmutableJeffDeckMap<T extends StandardImmutableJeffDeckMap<T, K, V>, K, V> extends StandardImmutableObject<T>
 {
-    abstract public FieldList<E> getSimpleContents();
+    abstract public FieldMap<K, V> getSimpleContents();
     
-    
-    @Override
-    public Iterator<E> iterator()
-    {
-        return getSimpleContents().iterator();
-    }
     
     @Override
     public int compareTo(T other)
@@ -39,7 +33,7 @@ abstract public class StandardImmutableJeffDeckList<T extends StandardImmutableJ
         if (! getClass().isInstance(obj)) return false;
         
         @SuppressWarnings("unchecked")
-        StandardImmutableJeffDeckList<T, E> other = (StandardImmutableJeffDeckList<T, E>) obj;
+        StandardImmutableJeffDeckMap<T, K, V> other = (StandardImmutableJeffDeckMap<T, K, V>) obj;
         
         return getSimpleContents().equals(other.getSimpleContents());
     }

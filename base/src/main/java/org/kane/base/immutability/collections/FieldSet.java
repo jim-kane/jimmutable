@@ -1,12 +1,6 @@
 package org.kane.base.immutability.collections;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
-
-import org.kane.base.immutability.ImmutableException;
-import org.kane.base.immutability.StandardImmutableObject;
 
 /**
  * An implementation of a Set that begins life as immutable but can, at
@@ -23,17 +17,24 @@ import org.kane.base.immutability.StandardImmutableObject;
  * 
  * @author jim.kane
  *
- * @param <T>
+ * @param <E>
  */
-abstract public class FieldSet<T> extends FieldCollection<T> implements Set<T>
+abstract public class FieldSet<E> extends FieldCollection<E> implements Set<E>
 {
+	private Set<E> contents;
+	
+	@Override
+	protected Set<E> getContents() { return contents; }
+	
+	abstract protected Set<E> createNewMutableInstance();
+	
 	public FieldSet()
 	{
 		super();
-		
+		contents = createNewMutableInstance();
 	}
 	
-	public FieldSet(Iterable<T> objs)
+	public FieldSet(Iterable<E> objs)
 	{
 		super(objs);
 	}

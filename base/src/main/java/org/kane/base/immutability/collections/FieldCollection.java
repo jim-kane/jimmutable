@@ -3,10 +3,6 @@ package org.kane.base.immutability.collections;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.Set;
-
-import org.kane.base.immutability.ImmutableException;
-import org.kane.base.immutability.StandardImmutableObject;
 
 /**
  * An implementation of a collection that begins life as immutable but can, at
@@ -23,29 +19,26 @@ import org.kane.base.immutability.StandardImmutableObject;
  * 
  * @author jim.kane
  *
- * @param <T>
+ * @param <E>
  */
-abstract public class FieldCollection<T> implements Collection<T>, Field
+abstract public class FieldCollection<E> implements Collection<E>, Field
 {
 	transient private boolean is_frozen = true;
 	
-	private Collection<T> contents;
-	
-	abstract protected Collection<T> createNewMutableInstance();
+	abstract protected Collection<E> getContents();
 	
 	public FieldCollection()
 	{
 		is_frozen = false;
-		contents = createNewMutableInstance();
 	}
 
-	public FieldCollection(Iterable<T> objs)
+	public FieldCollection(Iterable<E> objs)
 	{
 		this();
 		
-		if ( objs == null ) objs = Collections.EMPTY_LIST;
+		if ( objs == null ) objs = Collections.emptyList();
 		
-		for ( T obj : objs )
+		for ( E obj : objs )
 		{
 			add(obj);
 		}
@@ -54,67 +47,64 @@ abstract public class FieldCollection<T> implements Collection<T>, Field
 	public void freeze() { is_frozen = true; }
 	public boolean getSimpleIsFrozen()  { return is_frozen; }
 
-	public int size() { return contents.size(); }
-	public boolean isEmpty() { return contents.isEmpty(); }
-	public boolean contains(Object o) { return contents.contains(o); }
-	public Object[] toArray() { return contents.toArray(); }
-	public <T> T[] toArray(T[] a) { return contents.toArray(a); }
-	public boolean containsAll(Collection<?> c) { return contents.containsAll(c); }
+	public int size() { return getContents().size(); }
+	public boolean isEmpty() { return getContents().isEmpty(); }
+	public boolean contains(Object o) { return getContents().contains(o); }
+	public Object[] toArray() { return getContents().toArray(); }
+	public <T> T[] toArray(T[] a) { return getContents().toArray(a); }
+	public boolean containsAll(Collection<?> c) { return getContents().containsAll(c); }
 	
-	public boolean add(T e)
+	public boolean add(E e)
 	{
 		assertNotFrozen();
-		return contents.add(e);
+		return getContents().add(e);
 	}
 	
 	public boolean remove(Object o)
 	{
 		assertNotFrozen();
-		return contents.remove(o);
+		return getContents().remove(o);
 	}
 	
-	public boolean addAll(Collection<? extends T> c)
+	public boolean addAll(Collection<? extends E> c)
 	{
 		assertNotFrozen();
-		return contents.addAll(c);
+		return getContents().addAll(c);
 	}
-
 	
 	public boolean retainAll(Collection<?> c)
 	{
 		assertNotFrozen();
-		return contents.retainAll(c);
+		return getContents().retainAll(c);
 	}
-
 	
 	public boolean removeAll(Collection<?> c)
 	{
 		assertNotFrozen();
-		return contents.removeAll(c);
+		return getContents().removeAll(c);
 	}
-
 	
 	public void clear()
 	{
 		assertNotFrozen();
-		contents.clear();
+		getContents().clear();
 	}
 	
 	public int hashCode() 
 	{
-		return contents.hashCode();
+		return getContents().hashCode();
 	}
-
 
 	public boolean equals(Object obj) 
 	{
-		if (!(obj instanceof Set) ) return false;
+		if (!(obj instanceof Collection) ) return false;
 		
-		Set other = (Set)obj;
+		@SuppressWarnings("unchecked")
+		Collection<E> other = (Collection<E>)obj;
 		
-		if ( other.size() != size() ) return false;
+		if ( size() != other.size() ) return false;
 		
-		return other.containsAll(contents);
+		return containsAll(other);
 	}
 
 	public String toString() 
@@ -122,27 +112,26 @@ abstract public class FieldCollection<T> implements Collection<T>, Field
 		return super.toString();
 	}
 
-	public Iterator<T> iterator()
+	public Iterator<E> iterator()
 	{
 		return new MyIterator();
 	}
 	
-	private class MyIterator implements Iterator<T>
+	private class MyIterator implements Iterator<E>
 	{
-		private Iterator<T> itr;
+		private Iterator<E> itr;
 		
 		public MyIterator()
 		{
-			itr = contents.iterator();
+			itr = getContents().iterator();
 		}
 
-		
 		public boolean hasNext()
 		{
 			return itr.hasNext();
 		}
 
-		public T next()
+		public E next()
 		{
 			return itr.next();
 		}

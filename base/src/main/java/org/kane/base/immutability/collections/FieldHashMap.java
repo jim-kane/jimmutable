@@ -3,8 +3,6 @@ package org.kane.base.immutability.collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.kane.base.immutability.StandardImmutableObject;
-
 /**
  * An implementation of a Field object backed by an HashMap. Generally speaking,
  * this Field will have all of the characteristics of a HahsMap object that can
@@ -32,9 +30,8 @@ public class FieldHashMap<K,V> extends FieldMap<K,V>
 		super(initial_values);
 	}
 	
-	protected Map<K, V> createNewMutableMapInstance() 
+	protected Map<K, V> createNewMutableInstance() 
 	{
-		return new HashMap();
+		return new HashMap<>();
 	}
-
 }

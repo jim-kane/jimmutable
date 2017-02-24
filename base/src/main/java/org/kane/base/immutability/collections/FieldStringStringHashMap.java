@@ -3,8 +3,6 @@ package org.kane.base.immutability.collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.kane.base.io.benchmark.TestObjectProductData;
-
 import com.thoughtworks.xstream.annotations.XStreamConverter;
 import com.thoughtworks.xstream.converters.Converter;
 import com.thoughtworks.xstream.converters.MarshallingContext;
@@ -33,19 +31,18 @@ public class FieldStringStringHashMap extends FieldMap<String,String>
 		super(initial_values);
 	}
 	
-	protected Map<String, String> createNewMutableMapInstance()
+	protected Map<String, String> createNewMutableInstance()
 	{
-		// TODO Auto-generated method stub
-		return new HashMap();
+		return new HashMap<>();
 	}
 
 	static public class MyConverter implements Converter
 	{
+		@SuppressWarnings("rawtypes")
 		public boolean canConvert(Class type)
 		{
 			return type.equals(FieldStringStringHashMap.class);
 		}
-	
 		
 		public void marshal(Object source_raw, HierarchicalStreamWriter writer, MarshallingContext context)
 		{

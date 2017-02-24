@@ -1,15 +1,9 @@
 package org.kane.base.immutability.collections;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
-
-import org.kane.base.immutability.ImmutableException;
-import org.kane.base.immutability.StandardImmutableObject;
-import org.kane.base.serialization.ValidationException;
 
 /**
  * This is a utility class that makes it easy to create a properly behaved list
@@ -37,117 +31,61 @@ import org.kane.base.serialization.ValidationException;
  * 
  * @author jim.kane
  *
- * @param <T>
+ * @param <E>
  */
-abstract public class FieldList<T> implements List<T>, Field
+abstract public class FieldList<E> extends FieldCollection<E> implements List<E>
 {
-	transient private boolean is_frozen = true;
+	private List<E> contents;
 	
-	private List<T> contents;
+	@Override
+	protected List<E> getContents() { return contents; }
 	
-	abstract protected List createNewMutableListInstance();
+	abstract protected List<E> createNewMutableInstance();
 	
 	public FieldList()
 	{
-		is_frozen = false;
-		contents = createNewMutableListInstance();
+		super();
+		contents = createNewMutableInstance();
 	}
 	
-	public FieldList(Iterable<T> objs)
+	public FieldList(Iterable<E> objs)
 	{
 		this();
 		
-		if ( objs == null ) objs = Collections.EMPTY_LIST;
+		if ( objs == null ) objs = Collections.emptyList();
 		
-		for ( T obj : objs )
+		for ( E obj : objs )
 		{
 			add(obj);
 		}
 	}
 
-	public void freeze() { is_frozen = true; }
-	public boolean getSimpleIsFrozen()  { return is_frozen; }
-	
-	
-	public List<T> subList(int fromIndex, int toIndex)
+	public List<E> subList(int fromIndex, int toIndex)
 	{
 		return Collections.unmodifiableList(contents.subList(fromIndex, toIndex));
 	}
 	
-	public int size() { return contents.size(); }
-	public boolean isEmpty() { return contents.isEmpty(); }
-	public boolean contains(Object o) { return contents.contains(o); }
-	public Object[] toArray() { return contents.toArray();	}
-	public <T> T[] toArray(T[] a) { return contents.toArray(a); }
-	public boolean containsAll(Collection<?> c) { return contents.containsAll(c); }
-	public T get(int index) { return contents.get(index); }
+	public E get(int index) { return contents.get(index); }
 	
-	
-
-	public boolean add(T e) 
-	{
-		assertNotFrozen();
-		return contents.add(e);
-	}
-	
-	public boolean remove(Object o) 
-	{
-		assertNotFrozen();
-		return contents.remove(o);
-	}
-
-	public boolean addAll(Collection<? extends T> c) 
-	{
-		assertNotFrozen();
-		return contents.addAll(c);
-	}
-
-
-	
-	public boolean addAll(int index, Collection<? extends T> c) 
+	public boolean addAll(int index, Collection<? extends E> c) 
 	{
 		assertNotFrozen();
 		return contents.addAll(index,c);
 	}
-
-
 	
-	public boolean removeAll(Collection<?> c) 
-	{
-		assertNotFrozen();
-		return contents.removeAll(c);
-	}
-
-	public boolean retainAll(Collection<?> c) 
-	{
-		assertNotFrozen();
-		return contents.retainAll(c);
-	}
-
-
-	
-	public void clear() 
-	{
-		assertNotFrozen();
-		contents.clear();
-	}
-
-	
-	public T set(int index, T element) 
+	public E set(int index, E element) 
 	{
 		assertNotFrozen();
 		return contents.set(index,element);
 	}
-
-
 	
-	public void add(int index, T element) 
+	public void add(int index, E element) 
 	{
 		assertNotFrozen();
 		contents.add(index,element);
 	}
 
-	public T remove(int index) 
+	public E remove(int index) 
 	{
 		assertNotFrozen();
 		return contents.remove(index);
@@ -156,23 +94,15 @@ abstract public class FieldList<T> implements List<T>, Field
 	public int indexOf(Object o) { return contents.indexOf(o); }
 	public int lastIndexOf(Object o) { return contents.lastIndexOf(o); }
 
-
-	public Iterator<T> iterator() { return new MyListIterator(contents.listIterator()); }
-	public ListIterator<T> listIterator() { return new MyListIterator(contents.listIterator()); }
-	public ListIterator<T> listIterator(int index) { return new MyListIterator(contents.listIterator(index)); }
-	
-
-	public int hashCode() 
-	{
-		return contents.hashCode();
-	}
-
+	public ListIterator<E> listIterator() { return new MyListIterator(contents.listIterator()); }
+	public ListIterator<E> listIterator(int index) { return new MyListIterator(contents.listIterator(index)); }
 
 	public boolean equals(Object obj) 
 	{
 		if (!(obj instanceof List) ) return false;
 		
-		List other = (List)obj;
+		@SuppressWarnings("unchecked")
+		List<E> other = (List<E>)obj;
 		
 		if ( other.size() != size() ) return false;
 		
@@ -185,51 +115,39 @@ abstract public class FieldList<T> implements List<T>, Field
 		return true;
 	}
 
-	public String toString() 
+	private class MyListIterator implements ListIterator<E>
 	{
-		return super.toString();
-	}
-
-	private class MyListIterator implements ListIterator<T>
-	{
-		private ListIterator<T> itr;
+		private ListIterator<E> itr;
 		
-		public MyListIterator(ListIterator<T> itr)
+		public MyListIterator(ListIterator<E> itr)
 		{
 			this.itr = itr;
 		}
-
 		
 		public boolean hasNext() { return itr.hasNext(); }
-		public T next() { return (T)itr.next(); }
+		public E next() { return (E)itr.next(); }
 
-		
 		public boolean hasPrevious() { return itr.hasPrevious(); }
-		public T previous() { return itr.previous(); }
+		public E previous() { return itr.previous(); }
 		public int nextIndex() { return itr.nextIndex(); }
 		public int previousIndex() { return itr.previousIndex(); }
 
-		
 		public void remove() 
 		{
 			assertNotFrozen();
 			itr.remove();
 		}
 
-		
-		public void set(T e) 
+		public void set(E e) 
 		{
 			assertNotFrozen();
 			itr.set(e);
 		}
 
-		
-		public void add(T e) 
+		public void add(E e) 
 		{
 			assertNotFrozen();
 			itr.add(e);
 		}
 	}
-	
-	
 }

@@ -1,7 +1,7 @@
 package org.kane.base.immutability.collections;
 
-import java.util.Collection;
 import java.util.Collections;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 
@@ -37,9 +37,8 @@ public class FieldConcurrentHashSet<T> extends FieldSet<T>
 		super(objs);
 	}
 	
-	protected Collection<T> createNewMutableInstance()
+	protected Set<T> createNewMutableInstance()
 	{
-		return Collections.newSetFromMap(new ConcurrentHashMap());
+		return Collections.newSetFromMap(new ConcurrentHashMap<>());
 	}
-
 }
