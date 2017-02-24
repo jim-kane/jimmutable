@@ -13,6 +13,8 @@ public enum Suit
     CLUBS("clubs", "Clubs"),
     DIAMONDS("diamonds", "Diamonds"),
     
+    JOKER("joker", "Joker"),
+    
     UNKNOWN("unknown", "Unknown Suit Type");
     
     

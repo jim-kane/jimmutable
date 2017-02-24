@@ -6,7 +6,9 @@ import org.kane.base.immutability.StandardImmutableObject;
 import org.kane.base.serialization.Validator;
 
 import com.google.common.collect.ComparisonChain;
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 
+@XStreamAlias("card")
 public class Card extends StandardImmutableObject<Card>
 {
     private Suit suit; // Required
@@ -83,6 +85,13 @@ public class Card extends StandardImmutableObject<Card>
         return true;
     }
     
+    @Override
+    public String toString()
+    {
+        if (Suit.JOKER == suit) return "Joker";
+        
+        return value + " of " + suit;
+    }
     
     static public class Builder
     {
@@ -98,28 +107,19 @@ public class Card extends StandardImmutableObject<Card>
             under_construction = starting_point.deepMutableCloneForBuilder();
         }
         
-        // TODO assertNotComplete is annoying
         public void setSuit(Suit suit) 
-        { 
-            under_construction.assertNotComplete();
+        {
             under_construction.suit = suit;
         }
         
         public void setValue(Value value)
         {
-            under_construction.assertNotComplete();
             under_construction.value = value;
         }
         
-        /*
-         * TODO
-         * 1) Repeated calls to create() returns separate but equivalent objects
-         * 2) create() can only be called once. Future calls to complete() or set* will throw Exception.
-         */
         public Card create()
         {
-            under_construction.complete();
-            return under_construction;
+            return under_construction.deepClone();
         }
     }
 }

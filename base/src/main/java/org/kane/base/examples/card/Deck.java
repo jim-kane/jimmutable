@@ -1,66 +1,70 @@
 package org.kane.base.examples.card;
 
-import org.kane.base.immutability.StandardImmutableObject;
+import java.util.Collection;
+
+import org.kane.base.immutability.StandardImmutableJeffDeckList;
 import org.kane.base.immutability.collections.FieldArrayList;
 import org.kane.base.immutability.collections.FieldList;
-import org.kane.base.immutability.decks.StandardImmutableDeckList;
+import org.kane.base.serialization.Validator;
 
 
-public class Deck extends StandardImmutableObject<Deck> implements StandardImmutableDeckList<Card>
+public class Deck extends StandardImmutableJeffDeckList<Deck, Card>
 {
     private FieldArrayList<Card> cards = new FieldArrayList<>();
-
-    public Deck()
+    
+    private Deck(Builder builder)
+    {
+    }
+    
+    public Deck(Collection<Card> cards)
     {
         super();
-        // TODO Auto-generated constructor stub
+        
+        this.cards.addAll(cards);
+        
+        complete();
     }
-
-    @Override
-    public int compareTo(Deck other)
-    {
-        return contentsCompareTo(other);
-    }
-
+    
     @Override
     public FieldList<Card> getSimpleContents()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return cards;
     }
-
-    @Override
-    public void freeze()
-    {
-        // TODO Auto-generated method stub
-        
-    }
-
+    
     @Override
     public void normalize()
     {
-        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public void validate() 
+    {
+        Validator.containsNoNulls(cards);
+        Validator.containsOnlyInstancesOf(Card.class, cards);
+    }
+    
+    static public class Builder
+    {
+        private Deck under_construction;
         
-    }
-
-    @Override
-    public void validate()
-    {
-        // TODO Auto-generated method stub
+        public Builder()
+        {
+            under_construction = new Deck(this);
+        }
         
-    }
+        public Builder(Deck starting_point)
+        {
+            under_construction = starting_point.deepMutableCloneForBuilder();
+        }
 
-    @Override
-    public int hashCode()
-    {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
-    public boolean equals(Object obj)
-    {
-        // TODO Auto-generated method stub
-        return false;
+        public FieldList<Card> getCards()
+        {
+            return under_construction.getSimpleContents();
+        }
+        
+        public Deck create()
+        {
+            return under_construction.deepClone();
+        }
     }
 }

@@ -22,6 +22,8 @@ public enum Value
     QUEEN("queen", "Q"),
     KING("king", "K"),
     
+    JOKER("joker", "Joker"),
+    
     UNKNOWN("unknown", "Unknown Value");
     
     
