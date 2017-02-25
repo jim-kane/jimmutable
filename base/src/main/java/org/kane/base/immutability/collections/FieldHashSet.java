@@ -3,6 +3,8 @@ package org.kane.base.immutability.collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+
 /**
  * An implementation of a Field object backed by an HashSet. Generally
  * speaking, this Field will have all of the characteristics of an HashSet
@@ -19,6 +21,7 @@ import java.util.Set;
  *
  * @param <T>
  */
+@XStreamAlias("jimmutable-field-hash-set")
 public class FieldHashSet<T> extends FieldSet<T>
 {
 	public FieldHashSet()

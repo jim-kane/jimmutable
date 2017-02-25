@@ -1,26 +1,33 @@
 package org.kane.base.examples.card;
 
 import java.util.Collection;
+import java.util.Collections;
 
 import org.kane.base.immutability.collections.FieldArrayList;
 import org.kane.base.immutability.collections.FieldList;
 import org.kane.base.immutability.decks.StandardImmutableJeffDeckList;
 import org.kane.base.serialization.Validator;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 
+@XStreamAlias("deck")
 public class Deck extends StandardImmutableJeffDeckList<Deck, Card>
 {
-    private FieldArrayList<Card> cards = new FieldArrayList<>();
+    private FieldList<Card> cards = new FieldArrayList<>();
     
     private Deck(Builder builder)
     {
     }
     
+    public Deck()
+    {
+        this(Collections.emptyList());
+    }
+    
     public Deck(Collection<Card> cards)
     {
         super();
-        
-        this.cards.addAll(cards);
+        this.cards.addAll(cards); 
         
         complete();
     }
@@ -66,5 +73,41 @@ public class Deck extends StandardImmutableJeffDeckList<Deck, Card>
         {
             return under_construction.deepClone();
         }
+    }
+    
+    static public Deck createDefaultDeck(boolean include_jokers, boolean shuffle)
+    {
+        Builder deck_builder = new Builder();
+        
+        // 1) Add all the cards
+        for (Suit suit : Suit.values())
+        {
+            if (Suit.UNKNOWN == suit) continue;
+            
+            if (Suit.JOKER == suit)
+            {
+                if (! include_jokers) continue;
+                
+                deck_builder.getCards().add(new Card(suit, Value.JOKER));
+                deck_builder.getCards().add(new Card(suit, Value.JOKER));
+            }
+            
+            for (Value value : Value.values())
+            {
+                if (Value.UNKNOWN == value) continue;
+                if (Value.JOKER == value) continue;
+                
+                deck_builder.getCards().add(new Card(suit, value));
+            }
+        }
+        
+        // 2) Shuffle
+        if (shuffle)
+        {
+            Collections.shuffle(deck_builder.getCards());
+        }
+        
+        // 3) Serve
+        return deck_builder.create();
     }
 }

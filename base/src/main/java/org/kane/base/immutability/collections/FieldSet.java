@@ -21,7 +21,7 @@ import java.util.Set;
  */
 abstract public class FieldSet<E> extends FieldCollection<E> implements Set<E>
 {
-	private Set<E> contents;
+	private Set<E> contents = createNewMutableInstance();
 	
 	@Override
 	protected Set<E> getContents() { return contents; }
@@ -31,7 +31,6 @@ abstract public class FieldSet<E> extends FieldCollection<E> implements Set<E>
 	public FieldSet()
 	{
 		super();
-		contents = createNewMutableInstance();
 	}
 	
 	public FieldSet(Iterable<E> objs)

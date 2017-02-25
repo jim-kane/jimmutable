@@ -27,7 +27,7 @@ abstract public class FieldMap<K,V> implements Map<K,V>, Field
 {
 	transient private boolean is_frozen = true;
 	
-	private Map<K,V> contents;
+	private Map<K,V> contents = createNewMutableInstance();
 	
 	abstract protected Map<K,V> createNewMutableInstance();
 	
@@ -35,7 +35,6 @@ abstract public class FieldMap<K,V> implements Map<K,V>, Field
 	public FieldMap()
 	{
 		is_frozen = false;
-		contents = createNewMutableInstance();
 	}
 	
 	public FieldMap(Map<K,V> initial_values)

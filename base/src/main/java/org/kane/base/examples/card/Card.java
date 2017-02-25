@@ -90,7 +90,7 @@ public class Card extends StandardImmutableObject<Card>
     {
         if (Suit.JOKER == suit) return "Joker";
         
-        return value + " of " + suit;
+        return value.getSimpleDescription() + " of " + suit.getSimpleDescription();
     }
     
     static public class Builder

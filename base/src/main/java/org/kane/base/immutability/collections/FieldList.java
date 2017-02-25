@@ -35,7 +35,7 @@ import java.util.ListIterator;
  */
 abstract public class FieldList<E> extends FieldCollection<E> implements List<E>
 {
-	private List<E> contents;
+	private List<E> contents = createNewMutableInstance();
 	
 	@Override
 	protected List<E> getContents() { return contents; }
@@ -45,7 +45,6 @@ abstract public class FieldList<E> extends FieldCollection<E> implements List<E>
 	public FieldList()
 	{
 		super();
-		contents = createNewMutableInstance();
 	}
 	
 	public FieldList(Iterable<E> objs)

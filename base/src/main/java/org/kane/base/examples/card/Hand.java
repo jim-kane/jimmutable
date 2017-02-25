@@ -1,6 +1,7 @@
 package org.kane.base.examples.card;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Objects;
 
 import org.kane.base.immutability.collections.FieldHashSet;
@@ -11,7 +12,7 @@ import org.kane.base.serialization.Validator;
 
 import com.google.common.collect.ComparisonChain;
 
-
+// @XStreamAlias intentionally missing to test serialization
 public class Hand extends StandardImmutableJeffDeckSet<Hand, Card>
 {
     private String name; // Optional, free form
@@ -21,6 +22,11 @@ public class Hand extends StandardImmutableJeffDeckSet<Hand, Card>
     
     private Hand(Builder builder)
     {
+    }
+    
+    public Hand(int max_size)
+    {
+        this(max_size, null, Collections.emptyList());
     }
     
     public Hand(int max_size, Collection<Card> cards)
