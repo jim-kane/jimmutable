@@ -31,6 +31,11 @@ public class S3Benchmark
 	static private final String BUCKET_NAME = "rws-dev-jimmutable-s3-benchmark-us-west-2";
 	static private final String EXPERIMENT_NAME = "first";
 	
+	static public void loadFilesFromS3() throws Exception
+	{
+		
+	}
+	
 	static public void uploadFilesToS3(File src) throws Exception
 	{
 		System.out.println("Uploading objects into s3");
@@ -49,13 +54,14 @@ public class S3Benchmark
 		SmallDocumentReader reader = new SmallDocumentReader(reader_raw);
 		
 		long t1 = System.currentTimeMillis();
-		int object_count = 0;
 		
 		TransferManager manager = new TransferManager(AWSAPIKeys.getAWSCredentialsDev()); 
+		 
+		
 
 		List<Upload> in_progress = new ArrayList();
 		
-		for ( int i = 0; i < 10_000; i++ )
+		for ( int i = 0; i < 100_000; i++ )
 		{
 		
 			reader.readNextDocument();
@@ -86,7 +92,7 @@ public class S3Benchmark
 
 		
 		System.out.println();
-		System.out.println(String.format("Finished! Uploaded %,d objects in %,d ms", object_count, System.currentTimeMillis()-t1));
+		System.out.println(String.format("Finished! Uploaded %,d objects in %,d ms", in_progress.size(), System.currentTimeMillis()-t1));
 		
 		System.exit(0);
 	}
