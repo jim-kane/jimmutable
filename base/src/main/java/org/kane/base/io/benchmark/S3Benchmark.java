@@ -55,7 +55,7 @@ public class S3Benchmark
 
 		List<Upload> in_progress = new ArrayList();
 		
-		for ( int i = 0; i < 1_000; i++ )
+		for ( int i = 0; i < 10_000; i++ )
 		{
 		
 			reader.readNextDocument();
@@ -81,10 +81,14 @@ public class S3Benchmark
 			
 			Thread.currentThread().sleep(500);
 		}
+		
+		manager.shutdownNow();
 
 		
 		System.out.println();
 		System.out.println(String.format("Finished! Uploaded %,d objects in %,d ms", object_count, System.currentTimeMillis()-t1));
+		
+		System.exit(0);
 	}
 	
 	static private int getCompleteCount(List<Upload> uploads)
