@@ -56,7 +56,8 @@ public class IOBenchmark
 			//args = new String[]{"--file=c:\\test.dat", "--write=100,000"}; 
 			//args = new String[]{"--file=c:\\test.dat", "--read=2"}; 
 			//args = new String[]{"--file=c:\\small_spec_data.dat", "--transform=c:\\spec_data_small.xml"};
-			args = new String[]{"--file=c:\\small_spec_data.dat", "--s3write"};
+			//args = new String[]{"--file=c:\\small_spec_data.dat", "--s3write"};
+			args = new String[]{"--s3read=10,000"};
 		}
 		
 		CommandLineParser parser = new DefaultParser();
@@ -150,6 +151,34 @@ public class IOBenchmark
 	        	had_operation = true;
 	        }
 	        
+	        if ( line.hasOption("s3read") )
+	        {
+	        	try
+	        	{
+	        		String num_objects_str = line.getOptionValue("s3read");
+		        	if ( num_objects_str == null ) num_objects_str = "1,000";
+		        	
+		        	int num_objects = 1_000;
+		        	
+		        	try
+		        	{
+		        		num_objects = NumberFormat.getNumberInstance(java.util.Locale.US).parse(num_objects_str).intValue();
+		        	}
+		        	catch(Exception e)
+		        	{
+		        		System.out.println(String.format("Unable to read the number: %s, defaulting to %,d objects", num_objects_str, num_objects));
+		        	}
+		        	
+	        		S3Benchmark.loadFilesFromS3(num_objects);
+	        	}
+	        	catch(Exception e)
+	        	{
+	        		e.printStackTrace();
+	        	}
+	        	
+	        	had_operation = true;
+	        }
+	        
 	        if ( !had_operation || line.hasOption("help") )
 	        {
 	        	onHelp();
@@ -199,7 +228,14 @@ public class IOBenchmark
 		}
 		
 		{
-			cur = new Option(null, "s3write", false, "Write objects into s3 as quickly as possible");
+			cur = new Option(null, "s3read", true, "Write objects into s3 as quickly as possible");
+			cur.setOptionalArg(true);
+			cur.setArgName("OBJECT COUNT");
+			options.addOption(cur);
+		}
+		
+		{
+			cur = new Option(null, "s3write", false, "Read objects from s3 as quickly as possible");
 			
 			options.addOption(cur);
 		}
