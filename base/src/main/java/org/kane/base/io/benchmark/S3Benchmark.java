@@ -41,6 +41,44 @@ public class S3Benchmark
 	static private final String BUCKET_NAME = "rws-dev-jimmutable-s3-benchmark-us-west-2";
 	static private final String EXPERIMENT_NAME = "first";
 	
+	static public void uploadLargeFile(File src) throws Exception
+	{
+		String dest_key = String.format("second/large_file.dat");
+		
+		System.out.println("Uploading a large object oto S3");
+		System.out.println(String.format("Source Bucket: %s, experiment name: %s", BUCKET_NAME, EXPERIMENT_NAME));
+		System.out.println(String.format("file name: %s, size %,d kb", src.getAbsolutePath(), src.length()/1024l));
+		System.out.println(String.format("Destination: %s", dest_key));
+		System.out.println();
+		
+		AmazonS3Client client = new AmazonS3Client(AWSAPIKeys.getAWSCredentialsDev());
+		client.setRegion(Region.getRegion(Regions.US_WEST_2));
+		
+		TransferManager manager = new TransferManager(AWSAPIKeys.getAWSCredentialsDev()); 
+		
+		long t1 = System.currentTimeMillis();
+		
+		PutObjectRequest request = new PutObjectRequest(BUCKET_NAME, dest_key, src);
+		Upload upload = manager.upload(request);
+		
+		while(true)
+		{
+			if ( upload.isDone() ) break;
+			
+			long bytes_uploaded = upload.getProgress().getBytesTransfered();
+			
+			System.out.println(String.format("Uploaded %,d kb in %,d ms", bytes_uploaded/1024l, System.currentTimeMillis()-t1));
+			
+			Thread.currentThread().sleep(500);
+		}
+		
+		manager.shutdownNow();
+		
+		System.out.println();
+		System.out.println(String.format("Finished! Uploaded %,d kb in %,d ms", src.length()/1024l, System.currentTimeMillis()-t1));
+		System.exit(0);
+	}
+	
 	static public void loadFilesFromS3(int max_objects) throws Exception
 	{
 		System.out.println("Loading objects from s3");
@@ -56,7 +94,6 @@ public class S3Benchmark
 		req = req.withPrefix(EXPERIMENT_NAME+"/");
 		
 		List<Future<TestObjectProductData>> in_progress = new ArrayList();
-		
 		
 		long t1 = System.currentTimeMillis();
 		

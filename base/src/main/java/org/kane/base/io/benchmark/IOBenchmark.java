@@ -57,7 +57,9 @@ public class IOBenchmark
 			//args = new String[]{"--file=c:\\test.dat", "--read=2"}; 
 			//args = new String[]{"--file=c:\\small_spec_data.dat", "--transform=c:\\spec_data_small.xml"};
 			//args = new String[]{"--file=c:\\small_spec_data.dat", "--s3write"};
-			args = new String[]{"--s3read=10,000"};
+			//args = new String[]{"--s3read=10,000"};
+			args = new String[]{"--file=c:\\small_spec_data.dat","--s3_big_file_write"};
+			
 		}
 		
 		CommandLineParser parser = new DefaultParser();
@@ -151,6 +153,20 @@ public class IOBenchmark
 	        	had_operation = true;
 	        }
 	        
+	        
+	        if ( line.hasOption("s3_big_file_write") )
+	        {
+	        	try
+	        	{
+	        		S3Benchmark.uploadLargeFile(dest);
+	        	}
+	        	catch(Exception e)
+	        	{
+	        		e.printStackTrace();
+	        	}
+	        	
+	        	had_operation = true;
+	        }
 	        if ( line.hasOption("s3read") )
 	        {
 	        	try
@@ -239,6 +255,12 @@ public class IOBenchmark
 			
 			options.addOption(cur);
 		}
+		
+		{
+			cur = new Option(null, "s3_big_file_write", false, "Write a big file into S3");
+			options.addOption(cur);
+		}
+		
 		
 		{
 			cur = new Option(null, "help", false, "Print out help content");
