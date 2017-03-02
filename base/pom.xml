@@ -127,7 +127,7 @@
   
     <archive>
       <manifest>
-        <mainClass>org.kane.db_experiments.IOBenchmark</mainClass>
+        <mainClass>org.kane.base.io.benchmark.IOBenchmark</mainClass>
       </manifest>
     </archive>
   </configuration>
