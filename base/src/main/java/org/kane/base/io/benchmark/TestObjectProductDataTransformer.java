@@ -17,7 +17,6 @@ import com.thoughtworks.xstream.io.xml.StaxDriver;
 public class TestObjectProductDataTransformer
 {
 	private long start_time;
-	private TestObjectProductData.Builder item_builder = new TestObjectProductData.Builder();
 
 	private SmallDocumentWriter writer;
 	private int max_document_count = Integer.MAX_VALUE;
@@ -55,8 +54,7 @@ public class TestObjectProductDataTransformer
 			
 			reader.moveUp();
 
-			
-			if ( writer.getDocumentCount() % 10_000 == 0 )
+			if ( writer.getDocumentCount() % 100 == 0 )
 			{
 				writer.printStatus();
 				writer.flush();
@@ -73,6 +71,8 @@ public class TestObjectProductDataTransformer
 	
 	private void readProductSpecs(HierarchicalStreamReader reader)  throws IOException
 	{ 
+		TestObjectProductData.Builder item_builder = new TestObjectProductData.Builder();
+				
 		item_builder.setBrandCode(reader.getAttribute("brand"));
 		item_builder.setPN(reader.getAttribute("pn"));
 		

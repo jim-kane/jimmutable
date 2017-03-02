@@ -34,6 +34,7 @@ public class TestObjectProductData extends StandardImmutableObject
 	public String getSimpleBrandCode() { return brand_code; }
 	public String getSimplePN() { return pn; }
 	public Map<String,String> getSimpleKVData() { return kv_data; }
+	public String getSimpleKey() { return String.format("%s:%s", brand_code,pn); }
 	 
 	public int compareTo(Object o)
 	{

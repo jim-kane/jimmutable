@@ -51,8 +51,9 @@ public class IOBenchmark
 		
 		//args = new String[]{"--help"};
 		//args = new String[]{"--file=c:\\test.dat", "--write=100,000"}; 
-		args = new String[]{"--file=c:\\test.dat", "--read=2"}; 
-		//args = new String[]{"--file=c:\\test.dat", "--transform=c:\\spec_data.xml"};
+		//args = new String[]{"--file=c:\\test.dat", "--read=2"}; 
+		//args = new String[]{"--file=c:\\small_spec_data.dat", "--transform=c:\\spec_data_small.xml"};
+		//args = new String[]{"--file=c:\\small_spec_data.dat", "--s3write"};
 		
 		CommandLineParser parser = new DefaultParser();
 	    try 
@@ -100,7 +101,7 @@ public class IOBenchmark
 	        	
 	        	try
 	        	{
-	        		TestObjectProductDataTransformer xform = new TestObjectProductDataTransformer(new File(src_file),dest, true, 100_000);
+	        		TestObjectProductDataTransformer xform = new TestObjectProductDataTransformer(new File(src_file),dest, false, 100_000);
 	        		had_operation = true;
 	        	}
 	        	catch(Exception e)
@@ -128,6 +129,20 @@ public class IOBenchmark
 	        	}
 	        	
 	        	read(num_threads);
+	        	had_operation = true;
+	        }
+	        
+	        if ( line.hasOption("s3write") )
+	        {
+	        	try
+	        	{
+	        		S3Benchmark.uploadFilesToS3(dest);
+	        	}
+	        	catch(Exception e)
+	        	{
+	        		e.printStackTrace();
+	        	}
+	        	
 	        	had_operation = true;
 	        }
 	        
@@ -176,6 +191,12 @@ public class IOBenchmark
 			cur = new Option(null, "transform", true, "Transform the old XML Spec Data file into TestObjectProductData objects");
 			cur.setOptionalArg(false);
 			cur.setArgName("Spec Data XML File");
+			options.addOption(cur);
+		}
+		
+		{
+			cur = new Option(null, "s3write", false, "Write objects into s3 as quickly as possible");
+			
 			options.addOption(cur);
 		}
 		
