@@ -63,26 +63,46 @@ public class S3Benchmark
 		Reader reader_raw = new BufferedReader(new InputStreamReader(obj.getObjectContent(),"UTF-8"));
 		SmallDocumentReader reader = new SmallDocumentReader(reader_raw);
 		
-		List<TestObjectProductData> objects = new ArrayList(max_objects);
+		List<Future<TestObjectProductData>> in_progress = new ArrayList();
+		
+		ExecutorService pool = Executors.newFixedThreadPool(64);
 		
 		while(true)
 		{
 			if ( reader.readNextDocument() != SmallDocumentSource.State.DOCUMENT_AVAILABLE ) break;
-			if ( objects.size() >= max_objects ) break;
+			if ( in_progress.size() >= max_objects ) break;
 			
-			TestObjectProductData item = (TestObjectProductData)TestObjectProductData.fromXML(reader.getCurrentDocument(null));
+			in_progress.add(pool.submit(new CreateObjectTask(reader.getCurrentDocument(null))));
 			
-			objects.add(item);
-			
-			if ( objects.size() % 1_000 == 0 ) 
+			if ( in_progress.size() % 1_000 == 0 ) 
 			{
-				System.out.println(String.format("Loading objects: %,d objects loaded in %,d ms", objects.size(), System.currentTimeMillis()-t1));
+				System.out.println(String.format("Creating load tasks: %,d tasks created in %,d ms", in_progress.size(), System.currentTimeMillis()-t1));
 			}
 		}
 		
+		System.out.println(String.format("Task Creation Complete! Created %,d tasks in %,d ms", in_progress.size(), System.currentTimeMillis()-t1));
 		System.out.println();
+	
 		
-		System.out.println(String.format("Finished! Loading objects: %,d objects loaded in %,d ms", objects.size(), System.currentTimeMillis()-t1));
+		while(true)
+		{
+			int complete_count = getDownloadCompleteCount(in_progress);
+			
+			if ( complete_count >= in_progress.size() )
+				break;
+			
+			System.out.println(String.format("Read %,d objects in %,d ms", complete_count, System.currentTimeMillis()-t1));
+			
+			Thread.currentThread().sleep(500);
+		}
+		
+		pool.shutdown();
+		
+		
+		System.out.println();
+		System.out.println(String.format("Finished! Loading objects: %,d objects loaded in %,d ms", in_progress.size(), System.currentTimeMillis()-t1));
+		
+		System.exit(0);
 	}
 	
 	static public void uploadLargeFile(File src) throws Exception
@@ -223,6 +243,30 @@ public class S3Benchmark
 				byte[] bytes = IOUtils.toByteArray(s3_obj.getObjectContent());
 				
 				TestObjectProductData ret = (TestObjectProductData)TestObjectProductData.fromXML(new String(bytes));
+				return ret;
+			}
+			catch(Exception e)
+			{
+				e.printStackTrace();
+				return null;
+			}
+		}
+	}
+	
+	static private final class CreateObjectTask implements Callable<TestObjectProductData>
+	{
+		private String document;
+		
+		public CreateObjectTask(String document)
+		{
+			this.document = document;
+		}
+		
+		public TestObjectProductData call() 
+		{
+			try
+			{
+				TestObjectProductData ret = (TestObjectProductData)TestObjectProductData.fromXML(document);
 				return ret;
 			}
 			catch(Exception e)
