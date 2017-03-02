@@ -43,7 +43,7 @@ public class S3Benchmark
 		long t1 = System.currentTimeMillis();
 		int object_count = 0;
 		
-		for ( int i = 0; i < 100; i++ )
+		for ( int i = 0; i < 1_000; i++ )
 		{
 		
 			reader.readNextDocument();
