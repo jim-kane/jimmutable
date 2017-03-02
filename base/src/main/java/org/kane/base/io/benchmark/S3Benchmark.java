@@ -17,6 +17,7 @@ import java.util.concurrent.Future;
 import org.kane.base.immutability.StandardImmutableObject;
 import org.kane.base.io.GZIPUtils;
 import org.kane.base.io.SmallDocumentReader;
+import org.kane.base.io.SmallDocumentSource;
 
 import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
@@ -40,6 +41,49 @@ public class S3Benchmark
 {
 	static private final String BUCKET_NAME = "rws-dev-jimmutable-s3-benchmark-us-west-2";
 	static private final String EXPERIMENT_NAME = "first";
+	
+	static public void s3bulkRead(int max_objects) throws Exception
+	{
+		String src_key = String.format("second/large_file.dat");
+		
+		System.out.println("Loading objects in bulk from an S3 file");
+		System.out.println(String.format("Source Bucket: %s, experiment name: %s", BUCKET_NAME, EXPERIMENT_NAME));
+		System.out.println(String.format("Maximum number of objects: %,d", max_objects));
+		System.out.println();
+		
+		
+		AmazonS3Client client = new AmazonS3Client(AWSAPIKeys.getAWSCredentialsDev());
+		client.setRegion(Region.getRegion(Regions.US_WEST_2));
+		
+		long t1 = System.currentTimeMillis();
+		
+		GetObjectRequest request = new GetObjectRequest(BUCKET_NAME,src_key);
+		S3Object obj = client.getObject(request);
+		
+		Reader reader_raw = new BufferedReader(new InputStreamReader(obj.getObjectContent(),"UTF-8"));
+		SmallDocumentReader reader = new SmallDocumentReader(reader_raw);
+		
+		List<TestObjectProductData> objects = new ArrayList(max_objects);
+		
+		while(true)
+		{
+			if ( reader.readNextDocument() != SmallDocumentSource.State.DOCUMENT_AVAILABLE ) break;
+			if ( objects.size() >= max_objects ) break;
+			
+			TestObjectProductData item = (TestObjectProductData)TestObjectProductData.fromXML(reader.getCurrentDocument(null));
+			
+			objects.add(item);
+			
+			if ( objects.size() % 1_000 == 0 ) 
+			{
+				System.out.println(String.format("Loading objects: %,d objects loaded in %,d ms", objects.size(), System.currentTimeMillis()-t1));
+			}
+		}
+		
+		System.out.println();
+		
+		System.out.println(String.format("Finished! Loading objects: %,d objects loaded in %,d ms", objects.size(), System.currentTimeMillis()-t1));
+	}
 	
 	static public void uploadLargeFile(File src) throws Exception
 	{

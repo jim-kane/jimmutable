@@ -58,8 +58,9 @@ public class IOBenchmark
 			//args = new String[]{"--file=c:\\small_spec_data.dat", "--transform=c:\\spec_data_small.xml"};
 			//args = new String[]{"--file=c:\\small_spec_data.dat", "--s3write"};
 			//args = new String[]{"--s3read=10,000"};
-			args = new String[]{"--file=c:\\small_spec_data.dat","--s3_big_file_write"};
+			//args = new String[]{"--file=c:\\small_spec_data.dat","--s3_big_file_write"};
 			
+			args = new String[]{"--s3_bulk_read=100,000"};
 		}
 		
 		CommandLineParser parser = new DefaultParser();
@@ -167,6 +168,36 @@ public class IOBenchmark
 	        	
 	        	had_operation = true;
 	        }
+	        
+	        if ( line.hasOption("s3_bulk_read") )
+	        {
+	        	try
+	        	{
+	        		String num_objects_str = line.getOptionValue("s3_bulk_read");
+		        	if ( num_objects_str == null ) num_objects_str = "1,000";
+		        	
+		        	int num_objects = 1_000;
+		        	
+		        	try
+		        	{
+		        		num_objects = NumberFormat.getNumberInstance(java.util.Locale.US).parse(num_objects_str).intValue();
+		        	}
+		        	catch(Exception e)
+		        	{
+		        		System.out.println(String.format("Unable to read the number: %s, defaulting to %,d objects", num_objects_str, num_objects));
+		        	}
+		        	
+	        		S3Benchmark.s3bulkRead(num_objects);
+	        	}
+	        	catch(Exception e)
+	        	{
+	        		e.printStackTrace();
+	        	}
+	        	
+	        	had_operation = true;
+	        }
+	        
+	        
 	        if ( line.hasOption("s3read") )
 	        {
 	        	try
@@ -244,14 +275,21 @@ public class IOBenchmark
 		}
 		
 		{
-			cur = new Option(null, "s3read", true, "Write objects into s3 as quickly as possible");
+			cur = new Option(null, "s3read", true, "Read objects from s3 as quickly as possible");
 			cur.setOptionalArg(true);
 			cur.setArgName("OBJECT COUNT");
 			options.addOption(cur);
 		}
 		
 		{
-			cur = new Option(null, "s3write", false, "Read objects from s3 as quickly as possible");
+			cur = new Option(null, "s3_bulk_read", true, "Read objects (from a large file) from s3 as quickly as possible");
+			cur.setOptionalArg(true);
+			cur.setArgName("OBJECT COUNT");
+			options.addOption(cur);
+		}
+		
+		{
+			cur = new Option(null, "s3write", false, "Write objects into s3 as quickly as possible");
 			
 			options.addOption(cur);
 		}
@@ -260,6 +298,8 @@ public class IOBenchmark
 			cur = new Option(null, "s3_big_file_write", false, "Write a big file into S3");
 			options.addOption(cur);
 		}
+		
+		
 		
 		
 		{
