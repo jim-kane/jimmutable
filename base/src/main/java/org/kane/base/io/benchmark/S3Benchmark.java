@@ -1,11 +1,14 @@
 package org.kane.base.io.benchmark;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.kane.base.immutability.StandardImmutableObject;
 import org.kane.base.io.GZIPUtils;
@@ -16,7 +19,12 @@ import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.BucketVersioningConfiguration;
 import com.amazonaws.services.s3.model.CreateBucketRequest;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.SetBucketVersioningConfigurationRequest;
+import com.amazonaws.services.s3.transfer.TransferManager;
+import com.amazonaws.services.s3.transfer.Upload;
+import com.amazonaws.util.StringUtils;
 
 public class S3Benchmark 
 {
@@ -43,30 +51,68 @@ public class S3Benchmark
 		long t1 = System.currentTimeMillis();
 		int object_count = 0;
 		
+		TransferManager manager = new TransferManager(AWSAPIKeys.getAWSCredentialsDev()); 
+
+		List<Upload> in_progress = new ArrayList();
+		
 		for ( int i = 0; i < 1_000; i++ )
 		{
 		
 			reader.readNextDocument();
+			TestObjectProductData data = (TestObjectProductData)StandardImmutableObject.fromXML(reader.getCurrentDocument(null));
 			
-			String document = reader.getCurrentDocument(null);
+			PutObjectRequest request = createRequest(data);
 			
-			TestObjectProductData data = (TestObjectProductData)StandardImmutableObject.fromXML(document);
-			
-			client.putObject(BUCKET_NAME, getS3ObjectKey(data), data.toXML());
-			object_count++;
-			
-			if ( object_count % 5 == 0 )
-			{
-				System.out.println(String.format("Uploaded %,d objects in %,d ms", object_count, System.currentTimeMillis()-t1));
-			}
-			
+			Upload upload = manager.upload(request);
+			in_progress.add(upload);
 		}
+		
+		System.out.println(String.format("Requests Created! Created %,d PutObjectRequest(s) objects in %,d ms", in_progress.size(), System.currentTimeMillis()-t1));
+		System.out.println();
+		
+		while(true)
+		{
+			int complete_count = getCompleteCount(in_progress);
+			
+			if ( complete_count >= in_progress.size() )
+				break;
+			
+			System.out.println(String.format("Uploaded %,d objects in %,d ms", complete_count, System.currentTimeMillis()-t1));
+			
+			Thread.currentThread().sleep(500);
+		}
+
 		
 		System.out.println();
 		System.out.println(String.format("Finished! Uploaded %,d objects in %,d ms", object_count, System.currentTimeMillis()-t1));
 	}
 	
-	static public String getS3ObjectKey(TestObjectProductData data)
+	static private int getCompleteCount(List<Upload> uploads)
+	{
+		int count = 0;
+		
+		for ( Upload upload : uploads )
+		{
+			if ( upload.isDone() )
+				count++;
+		}
+		
+		return count;
+	}
+	
+	static private PutObjectRequest createRequest(TestObjectProductData data)
+	{
+		byte[] contentBytes = data.toXML().getBytes(StringUtils.UTF8);
+
+        InputStream is = new ByteArrayInputStream(contentBytes);
+        ObjectMetadata metadata = new ObjectMetadata();
+        metadata.setContentType("text/plain");
+        metadata.setContentLength(contentBytes.length);
+
+        return new PutObjectRequest(BUCKET_NAME, getS3ObjectKey(data), is, metadata);
+	}
+	
+	static private String getS3ObjectKey(TestObjectProductData data)
 	{
 		return String.format("%s/%s/%s.xml", EXPERIMENT_NAME, data.getSimpleBrandCode(), data.getSimplePN());
 	}

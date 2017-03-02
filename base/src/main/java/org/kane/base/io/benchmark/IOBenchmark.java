@@ -53,7 +53,7 @@ public class IOBenchmark
 		//args = new String[]{"--file=c:\\test.dat", "--write=100,000"}; 
 		//args = new String[]{"--file=c:\\test.dat", "--read=2"}; 
 		//args = new String[]{"--file=c:\\small_spec_data.dat", "--transform=c:\\spec_data_small.xml"};
-		//args = new String[]{"--file=c:\\small_spec_data.dat", "--s3write"};
+		args = new String[]{"--file=c:\\small_spec_data.dat", "--s3write"};
 		
 		CommandLineParser parser = new DefaultParser();
 	    try 
