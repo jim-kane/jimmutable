@@ -3,10 +3,10 @@ package org.kane.base.immutability.decks;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.kane.base.examples.BindingType;
-import org.kane.base.examples.Book;
-import org.kane.base.examples.BookDeckMap;
-import org.kane.base.examples.BookDeckMap.Builder;
+import org.kane.base.examples.book.BindingType;
+import org.kane.base.examples.book.Book;
+import org.kane.base.examples.book.BookDeckMap;
+import org.kane.base.examples.book.BookDeckMap.Builder;
 import org.kane.base.serialization.StandardObject;
 
 import junit.framework.Test;

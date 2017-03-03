@@ -1,4 +1,4 @@
-package org.kane.base.examples;
+package org.kane.base.examples.book;
 
 import java.util.Collection;
 

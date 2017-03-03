@@ -1,4 +1,4 @@
-package org.kane.base.examples;
+package org.kane.base.examples.book;
 
 import org.kane.base.serialization.Normalizer;
 import org.kane.base.serialization.Validator;
