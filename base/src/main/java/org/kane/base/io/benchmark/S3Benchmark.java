@@ -18,6 +18,9 @@ import org.kane.base.immutability.StandardImmutableObject;
 import org.kane.base.io.GZIPUtils;
 import org.kane.base.io.SmallDocumentReader;
 import org.kane.base.io.SmallDocumentSource;
+import org.kane.base.io.snapshot.S3ListRequest;
+import org.kane.base.io.snapshot.TakeSnapshotThread;
+import org.kane.base.io.snapshot.ThreadedOperationState;
 
 import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
@@ -41,6 +44,35 @@ public class S3Benchmark
 {
 	static private final String BUCKET_NAME = "rws-dev-jimmutable-s3-benchmark-us-west-2";
 	static private final String EXPERIMENT_NAME = "first";
+	
+	static public void snapshot(int maximum_object_count) throws Exception
+	{
+		System.out.println("Creating snapshot");
+		System.out.println(String.format("Source Bucket: %s, experiment name: %s", BUCKET_NAME, EXPERIMENT_NAME)); 
+		System.out.println(String.format("Maximum object count: %,d", maximum_object_count));
+		System.out.println();
+		
+		S3ListRequest request;
+		
+		{
+			S3ListRequest.Builder builder = new S3ListRequest.Builder(Regions.US_WEST_2, BUCKET_NAME);
+			builder.setListPrefix(EXPERIMENT_NAME+"/");
+			builder.setMaximumObjectCount(maximum_object_count);
+			request = builder.create();
+		}
+		
+		TakeSnapshotThread snapshot = new TakeSnapshotThread(request, BUCKET_NAME, "third/.snapshot");
+		snapshot.start();
+		
+		while(true)
+		{
+			Thread.currentThread().sleep(500);
+			if ( snapshot.getSimpleState() != ThreadedOperationState.IN_PROGRESS ) break;
+		}
+		
+		System.out.println();
+		System.out.println("Finished taking snapshot: "+snapshot.getSimpleState());
+	}
 	
 	static public void s3bulkRead(int max_objects) throws Exception
 	{
