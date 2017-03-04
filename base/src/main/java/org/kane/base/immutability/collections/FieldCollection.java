@@ -5,118 +5,188 @@ import java.util.Collections;
 import java.util.Iterator;
 
 /**
- * An implementation of a collection that begins life as immutable but can, at
- * any time, be "frozen" (made immutable) by calling the freeze method. In other
- * words, a Collection class that implements Field.
+ * An implementation of a {@link Collection} that begins life as mutable but can,
+ * at any time, be "{@link #freeze() frozen}" (made immutable). In other
+ * words, a wrapper for a {@link Collection} that implements {@link Field}.
  * 
- * Do not fear extending this collection object as needed, such implementations
- * tend to go very quickly as the base class does nearly all of the work for
- * you. Notwithstanding the foregoing, would be extenders of this class should
- * take time to carefully understand the immutability principles involved and
- * write careful unit tests to make sure that their implementations are as
- * strictly immutable as possible.
+ * <p>What's hard about that? If you have to ask... ;)
  * 
+ * <p>Java has a number of really quirky mutability issues... For example, think
+ * about the following code:
+ * <pre><code>
+ * List<String> my_list = new ArrayList();
+ * Iterator<String> itr = my_list.iterator();
+ *  
+ * my_list.add("foo");
+ * my_list.add("bar");
+ *  
+ * my_list = Collections.unmodifiableList(my_list);
+ *  
+ * itr.remove();
+ * </code></pre>
  * 
- * @author jim.kane
+ * <p>Believe it or not, this code <b>removes {@code foo}</b>.
+ *  
+ * <p>So, immutable coder beware... and use {@code FieldCollection} (or one of
+ * its sub-classes)!
+ * 
+ * <p>This class is designed to be extended. Most of the <em>collection hierarchy</em>
+ * is already wrapped as part of the standard <em>jimmutable</em> library, but further
+ * extensions should go quickly as the base class does nearly all of the work. However,
+ * extension implementors should take time to carefully understand the immutability
+ * principles involved and to write careful unit tests to make sure that the implementations
+ * are as strictly immutable as possible.
+ * 
+ * @author Jim Kane
  *
- * @param <E>
+ * @param <E> The type of elements in this collection
  */
-abstract public class FieldCollection<E> implements Collection<E>, Field
+abstract public class FieldCollection<E> implements Field, Collection<E> 
 {
-	transient private boolean is_frozen = true;
+	transient volatile private boolean is_frozen;
 	
-	abstract protected Collection<E> getContents();
-	
+	/**
+	 * Default constructor (for an empty collection)
+	 */
 	public FieldCollection()
 	{
 		is_frozen = false;
 	}
-
+	
+	/**
+     * Constructs a collection containing the elements of the specified {@link Iterable},
+     * in the order they are returned by the {@link Iterable#iterator() iterator}.
+     *
+     * @param objs The {code Iterable} whose elements are to be placed into this collection
+     * 
+     * @throws NullPointerException if the specified {@code Iterable} is {@code null}
+	 */
 	public FieldCollection(Iterable<E> objs)
 	{
 		this();
 		
-		if ( objs == null ) objs = Collections.emptyList();
-		
-		for ( E obj : objs )
+		if ( objs != null )
 		{
-			add(obj);
+			for ( E obj : objs )
+			{
+				add(obj);
+			}
 		}
 	}
 	
+	@Override
 	public void freeze() { is_frozen = true; }
-	public boolean getSimpleIsFrozen()  { return is_frozen; }
+	
+	@Override
+	public boolean isFrozen()  { return is_frozen; }
 
+	/**
+	 * Get the mutable contents of the {@link Collection} that this object
+	 * wraps.
+	 * 
+	 * <p>This is the main interface between the {@link Field} specification
+	 * that this implementation enforces and the {@link Collection} that
+	 * it wraps.
+	 * 
+	 * @return The <em>mutable</em> collection that this object wraps
+	 */
+	abstract protected Collection<E> getContents();
+	
+	@Override
 	public int size() { return getContents().size(); }
+	
+	@Override
 	public boolean isEmpty() { return getContents().isEmpty(); }
+	
+	@Override
 	public boolean contains(Object o) { return getContents().contains(o); }
+	
+	@Override
 	public Object[] toArray() { return getContents().toArray(); }
+	
+	@Override
 	public <T> T[] toArray(T[] a) { return getContents().toArray(a); }
+	
+	@Override
 	public boolean containsAll(Collection<?> c) { return getContents().containsAll(c); }
 	
+	@Override
 	public boolean add(E e)
 	{
 		assertNotFrozen();
 		return getContents().add(e);
 	}
 	
+	@Override
 	public boolean remove(Object o)
 	{
 		assertNotFrozen();
 		return getContents().remove(o);
 	}
 	
+	@Override
 	public boolean addAll(Collection<? extends E> c)
 	{
 		assertNotFrozen();
 		return getContents().addAll(c);
 	}
 	
+	@Override
 	public boolean retainAll(Collection<?> c)
 	{
 		assertNotFrozen();
 		return getContents().retainAll(c);
 	}
 	
+	@Override
 	public boolean removeAll(Collection<?> c)
 	{
 		assertNotFrozen();
 		return getContents().removeAll(c);
 	}
 	
+	@Override
 	public void clear()
 	{
 		assertNotFrozen();
 		getContents().clear();
 	}
 	
+	@Override
 	public int hashCode() 
 	{
 		return getContents().hashCode();
 	}
 
+	@Override
 	public boolean equals(Object obj) 
 	{
 		if (!(obj instanceof Collection) ) return false;
 		
-		@SuppressWarnings("unchecked")
-		Collection<E> other = (Collection<E>)obj;
+		Collection<?> other = (Collection<?>)obj;
 		
 		if ( size() != other.size() ) return false;
 		
 		return containsAll(other);
 	}
 
+	@Override
 	public String toString() 
 	{
 		return super.toString();
 	}
 
+	@Override
 	public Iterator<E> iterator()
 	{
 		return new MyIterator();
 	}
 	
+	/**
+	 * An {@link Iterator} that enforces {@link FieldCollection#freeze() freeze()}
+	 * 
+	 * @author Jim Kane
+	 */
 	private class MyIterator implements Iterator<E>
 	{
 		private Iterator<E> itr;

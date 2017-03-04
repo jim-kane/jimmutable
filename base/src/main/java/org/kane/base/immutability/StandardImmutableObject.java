@@ -71,7 +71,7 @@ abstract public class StandardImmutableObject<T extends StandardImmutableObject<
     /**
      * Returns {@code true} if this object is {@link #complete() complete}.
      *
-     * @return {@code true} if this object is {@link #isComplete() complete}
+     * @return {@code true} if this object is {@link #complete() complete}
      */
 	public boolean isComplete() { return is_complete; }
 	

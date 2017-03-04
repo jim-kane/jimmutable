@@ -46,7 +46,7 @@ abstract public class FieldMap<K,V> implements Map<K,V>, Field
 	}
 	
 	public void freeze() { is_frozen = true; }
-	public boolean getSimpleIsFrozen()  { return is_frozen; }
+	public boolean isFrozen()  { return is_frozen; }
 	
 	public int size() { return contents.size(); }
 	public boolean isEmpty() { return contents.isEmpty(); }
