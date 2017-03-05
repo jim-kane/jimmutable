@@ -73,9 +73,9 @@ public class TakeSnapshotThread extends Thread implements ThreadedOperation
 			thread_pool = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
 			
 			// Start the listing process
-			ListThread list_thread = new ListThread(list_request, new ListListener());
+			ListRunnable list_thread = new ListRunnable(list_request, new ListListener());
 			all_operations.add(list_thread);
-			list_thread.start();
+			thread_pool.submit(list_thread);
 			
 			// Setup the I/O
 			temporary_file = File.createTempFile("snapshot", "dat");
@@ -182,7 +182,7 @@ public class TakeSnapshotThread extends Thread implements ThreadedOperation
 		return true;
 	}
 	
-	private class ListListener implements ListThread.Listener
+	private class ListListener implements ListRunnable.Listener
 	{
 		public void onListObject(S3ListRequest list_request, S3ObjectSummary summary)
 		{

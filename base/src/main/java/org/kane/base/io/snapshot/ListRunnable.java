@@ -19,14 +19,14 @@ import com.amazonaws.services.s3.model.ListObjectsV2Request;
 import com.amazonaws.services.s3.model.ListObjectsV2Result;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 
-public class ListThread extends Thread implements ThreadedOperation
+public class ListRunnable implements ThreadedOperation, Runnable
 {
 	private S3ListRequest request;
 	private Listener listener;
 	
 	private volatile ThreadedOperationState state = ThreadedOperationState.IN_PROGRESS;
 	
-	public ListThread(S3ListRequest request, Listener listener)
+	public ListRunnable(S3ListRequest request, Listener listener)
 	{
 		Validator.notNull(request);
 		Validator.notNull(listener);
