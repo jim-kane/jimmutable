@@ -19,12 +19,11 @@ import com.amazonaws.services.s3.model.ListObjectsV2Request;
 import com.amazonaws.services.s3.model.ListObjectsV2Result;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 
-public class ListRunnable implements ThreadedOperation, Runnable
+public class ListRunnable implements OperationRunnable
 {
 	private S3ListRequest request;
-	private Listener listener;
+	private 
 	
-	private volatile ThreadedOperationState state = ThreadedOperationState.IN_PROGRESS;
 	
 	public ListRunnable(S3ListRequest request, Listener listener)
 	{
