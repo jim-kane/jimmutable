@@ -3,6 +3,8 @@ package org.kane.base.immutability.collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+
 
 /**
  * An implementation of a {@link CopyOnWriteArrayList} that begins life as mutable
@@ -25,6 +27,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * @see FieldList
  * @see FieldArrayList
  */
+@XStreamAlias("field-copy-on-write-array-list")
 public class FieldCopyOnWriteArrayList<E> extends FieldList<E>
 {
 	/**

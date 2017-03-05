@@ -3,6 +3,8 @@ package org.kane.base.immutability.collections;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+
 
 /**
  * An implementation of a {@link ArrayList} that begins life as mutable but can,
@@ -24,6 +26,7 @@ import java.util.List;
  * @see FieldList
  * @see FieldCopyOnWriteArrayList
  */
+@XStreamAlias("field-array-list")
 public class FieldArrayList<E> extends FieldList<E>
 {
 	/**
