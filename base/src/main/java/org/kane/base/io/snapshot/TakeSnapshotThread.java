@@ -24,7 +24,7 @@ import com.amazonaws.services.s3.transfer.TransferManager;
 import com.amazonaws.services.s3.transfer.Upload;
 import com.amazonaws.util.IOUtils;
 
-public class TakeSnapshotThread extends Thread implements ThreadedOperation
+public class TakeSnapshotThread // extends OperationPool
 {
 	static public final long MAXIMUM_OBJECT_SIZE = 1024l*1024l; // 1 Megabye
 	static public final int THREAD_POOL_SIZE = 100;
@@ -34,20 +34,12 @@ public class TakeSnapshotThread extends Thread implements ThreadedOperation
 	private String snapshot_bucket_name;
 	private String snapshot_key_name;
 	
-	private AmazonS3Client s3_client;
-	
-	private ExecutorService thread_pool;
-	private Set<ThreadedOperation> all_operations = Collections.newSetFromMap(new ConcurrentHashMap());
-	
-	private SmallDocumentWriter snapshot_writer;
-	
-	private volatile ThreadedOperationState state = ThreadedOperationState.IN_PROGRESS;
-	
 	// Statistics
 	volatile  int stats_objects_written_to_snapshot = 0;
 	volatile long stats_bytes_written_to_snapshot = 0;
 	
 	
+	/*
 	public TakeSnapshotThread(S3ListRequest request, String snapshot_bucket_name, String snapshot_key_name)
 	{
 		this.list_request = request;
@@ -251,7 +243,7 @@ public class TakeSnapshotThread extends Thread implements ThreadedOperation
 	{
 		if ( state == ThreadedOperationState.IN_PROGRESS ) 
 			state = ThreadedOperationState.FINISHED_STOPPED;
-	}
+	}*/
 	
 	
 }

@@ -30,9 +30,33 @@ public class Validator
 	 * @param minimum_valid_value
 	 *            The minimum valid value
 	 */
-	static public void min(Comparable value, Comparable minimum_valid_value)
+	static public void minObject(Comparable value, Comparable minimum_valid_value)
 	{
 		if ( value.compareTo(minimum_valid_value) < 0 ) 
+			throw new ValidationException("Value ("+value+") is below minimum allowed value ("+minimum_valid_value+")");
+	}
+
+	static public void min(byte value, byte minimum_valid_value)
+	{
+		if ( value < minimum_valid_value ) 
+			throw new ValidationException("Value ("+value+") is below minimum allowed value ("+minimum_valid_value+")");
+	}
+	
+	static public void min(short value, short minimum_valid_value)
+	{
+		if ( value < minimum_valid_value ) 
+			throw new ValidationException("Value ("+value+") is below minimum allowed value ("+minimum_valid_value+")");
+	}
+	
+	static public void min(int value, int minimum_valid_value)
+	{
+		if ( value < minimum_valid_value ) 
+			throw new ValidationException("Value ("+value+") is below minimum allowed value ("+minimum_valid_value+")");
+	}
+	
+	static public void min(long value, long minimum_valid_value)
+	{
+		if ( value < minimum_valid_value ) 
 			throw new ValidationException("Value ("+value+") is below minimum allowed value ("+minimum_valid_value+")");
 	}
 	
@@ -44,9 +68,33 @@ public class Validator
 	 * @param maximum_valid_value
 	 *            The maximum valid value
 	 */
-	static public void max(Comparable value, Comparable maximum_valid_value)
+	static public void maxObject(Comparable value, Comparable maximum_valid_value)
 	{
 		if ( value.compareTo(maximum_valid_value) > 0 ) 
+			throw new ValidationException("Value ("+value+") is above the maximum allowed value ("+maximum_valid_value+")");
+	}
+	
+	static public void max(byte value, byte maximum_valid_value)
+	{
+		if ( value > maximum_valid_value ) 
+			throw new ValidationException("Value ("+value+") is above the maximum allowed value ("+maximum_valid_value+")");
+	}
+	
+	static public void max(short value, short maximum_valid_value)
+	{
+		if ( value > maximum_valid_value ) 
+			throw new ValidationException("Value ("+value+") is above the maximum allowed value ("+maximum_valid_value+")");
+	}
+	
+	static public void max(int value, int maximum_valid_value)
+	{
+		if ( value > maximum_valid_value ) 
+			throw new ValidationException("Value ("+value+") is above the maximum allowed value ("+maximum_valid_value+")");
+	}
+	
+	static public void max(long value, long maximum_valid_value)
+	{
+		if ( value > maximum_valid_value ) 
 			throw new ValidationException("Value ("+value+") is above the maximum allowed value ("+maximum_valid_value+")");
 	}
 	

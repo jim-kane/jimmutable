@@ -1,4 +1,4 @@
-package org.kane.base.io.snapshot;
+package org.kane.base.threading;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -9,25 +9,39 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class OperationPool extends OperationRunnable
+import org.kane.base.serialization.Validator;
+
+final public class OperationPool extends OperationRunnable
 {
 	private List<OperationRunnable> seed_operations = new ArrayList();
 	private int thread_count;
 	
-	private Set<OperationRunnable> all_tasks = Collections.newSetFromMap(new ConcurrentHashMap());
+	private List<OperationRunnable> all_tasks = new ArrayList();
 	private ExecutorService thread_pool;
 	
+	private StatusMonitor status_monitor;
 	
-	public OperationPool(OperationRunnable seed_operation, int thread_count)
+	
+	public OperationPool(OperationRunnable seed_operation, StatusMonitor status_monitor, int thread_count)
 	{
+		Validator.notNull(seed_operation); 
+		Validator.min(thread_count, 1);
+		
+		
 		this.seed_operations.add(seed_operation);
 		this.thread_count = thread_count;
+		this.status_monitor = status_monitor;
 	}
 	
-	public OperationPool(Collection<OperationRunnable> seed_operations, int thread_count)
+	public OperationPool(Collection<OperationRunnable> seed_operations, StatusMonitor status_monitor, int thread_count)
 	{
+		Validator.notNull(seed_operations); 
+		Validator.containsNoNulls(seed_operations);
+		Validator.min(thread_count, 1);
+		
 		this.seed_operations.addAll(seed_operations);
 		this.thread_count = thread_count;
+		this.status_monitor = status_monitor;
 	}
 	
 	protected Result performOperation() throws Exception
@@ -43,23 +57,111 @@ public class OperationPool extends OperationRunnable
 		
 		while(true)
 		{
-			if ( shouldStop() )
-				break;
-			
-			
+			if ( shouldStop() ) break;
+			if ( areAnyTasksWithResult(Result.ERROR) ) break;
+			if ( areAllTasksInState(State.FINISHED) ) break;
 			
 			try { Thread.currentThread().sleep(500); } catch(Exception e) { e.printStackTrace(); }
+			
+			if ( status_monitor != null ) 
+				status_monitor.onOperationPoolHeatbeat(this);
+		}
+		
+		stopAllTasks();
+		thread_pool.shutdown(); // shutdown the thread pool as well, no more requests will be accepted
+		
+		if ( areAnyTasksWithResult(Result.ERROR) ) return Result.ERROR;
+		if ( areAllTasksInState(State.FINISHED) && areAllTasksWithResult(Result.SUCCESS) ) return Result.SUCCESS;
+		
+		return Result.STOPPED;
+	}
+	
+	public void stopAllTasks()
+	{
+		synchronized(all_tasks) 
+		{
+			for ( OperationRunnable runnable : all_tasks )
+				runnable.stop();
 		}
 	}
 	
 	public void submitOperation(OperationRunnable operation)
 	{
+		if ( operation == null ) return;
+		if ( thread_pool.isShutdown() ) return; // can not accept the operation, the thread pool has been shutdown...
+		
 		if ( shouldStop() ) return; // don't accept any new tasks if this (parent) task shoudl stop...
 		
-		
-		all_tasks.add(operation);
 		thread_pool.submit(operation);
+		
+		synchronized(all_tasks) 
+		{
+			all_tasks.add(operation);
+		}
 	}
 	
+	public boolean areAllTasksInState(State state)
+	{
+		if ( state == null ) return false;
+		
+		synchronized(all_tasks)
+		{
+			for ( OperationRunnable runnable : all_tasks )
+			{
+				if ( runnable.getSimpleState() != state ) return false;
+			}
+		}
+		
+		return true;
+	}
 	
+	public boolean areAnyTasksInState(State state)
+	{
+		if ( state == null ) return false;
+		
+		synchronized(all_tasks)
+		{
+			for ( OperationRunnable runnable : all_tasks )
+			{
+				if ( runnable.getSimpleState() == state ) return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	public boolean areAnyTasksWithResult(Result result)
+	{
+		if ( result == null ) return false;
+		
+		synchronized(all_tasks)
+		{
+			for ( OperationRunnable runnable : all_tasks )
+			{
+				if ( runnable.getOptionalResult(null) == result ) return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	public boolean areAllTasksWithResult(Result result)
+	{
+		if ( result == null ) return false;
+		
+		synchronized(all_tasks)
+		{
+			for ( OperationRunnable runnable : all_tasks )
+			{
+				if ( runnable.getOptionalResult(null) != result ) return false;
+			}
+		}
+		
+		return true;
+	}
+	
+	static public interface StatusMonitor
+	{
+		public void onOperationPoolHeatbeat(OperationPool pool);
+	}
 }

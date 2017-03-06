@@ -1,8 +1,9 @@
 package org.kane.base.io.snapshot;
 
 import org.kane.base.io.SmallDocumentWriter;
-import org.kane.base.io.snapshot.OperationRunnable.Result;
 import org.kane.base.serialization.Validator;
+import org.kane.base.threading.OperationRunnable;
+import org.kane.base.threading.OperationRunnable.Result;
 
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.GetObjectRequest;
@@ -14,18 +15,18 @@ public class DownloadSmallObjectRunnable extends OperationRunnable
 {
 	private AmazonS3Client client;
 	private S3ObjectSummary object_summary;
-	private SmallDocumentWriter writer;
+	private TakeSnapshotThread snapshot_operation;
 	
-	public DownloadSmallObjectRunnable(AmazonS3Client client, S3ObjectSummary object_summary, SmallDocumentWriter writer)
+	public DownloadSmallObjectRunnable(AmazonS3Client client, S3ObjectSummary object_summary, TakeSnapshotThread snapshot_operation)
 	{
 		Validator.notNull(client);
 		Validator.notNull(object_summary);
-		Validator.notNull(writer);
+		Validator.notNull(snapshot_operation);
 		
 		
 		this.client = client;
 		this.object_summary = object_summary;
-		this.writer = writer;
+		this.snapshot_operation = snapshot_operation;
 	}
 	
 	protected Result performOperation() throws Exception
@@ -47,7 +48,7 @@ public class DownloadSmallObjectRunnable extends OperationRunnable
 		if ( shouldStop() ) 
 			return Result.STOPPED;
 
-		writer.writeDocument(new String(data));
+		//writer.writeDocument(new String(data));
 
 		return Result.SUCCESS;
 	}

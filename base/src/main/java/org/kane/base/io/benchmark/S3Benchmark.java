@@ -20,7 +20,6 @@ import org.kane.base.io.SmallDocumentReader;
 import org.kane.base.io.SmallDocumentSource;
 import org.kane.base.io.snapshot.S3ListRequest;
 import org.kane.base.io.snapshot.TakeSnapshotThread;
-import org.kane.base.io.snapshot.ThreadedOperationState;
 
 import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
@@ -61,7 +60,7 @@ public class S3Benchmark
 			request = builder.create();
 		}
 		
-		TakeSnapshotThread snapshot = new TakeSnapshotThread(request, BUCKET_NAME, "third/.snapshot");
+		/*TakeSnapshotThread snapshot = new TakeSnapshotThread(request, BUCKET_NAME, "third/.snapshot");
 		snapshot.start();
 		
 		while(true)
@@ -71,7 +70,7 @@ public class S3Benchmark
 		}
 		
 		System.out.println();
-		System.out.println("Finished taking snapshot: "+snapshot.getSimpleState());
+		System.out.println("Finished taking snapshot: "+snapshot.getSimpleState());*/
 	}
 	
 	static public void s3bulkRead(int max_objects) throws Exception
