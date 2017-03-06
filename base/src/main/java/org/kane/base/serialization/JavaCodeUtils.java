@@ -75,7 +75,7 @@ public class JavaCodeUtils
 	{
 		Validator.notNull(src);
 		
-		List<String> lines = new ArrayList();
+		List<String> lines = new ArrayList<>();
 		
 		StringBuilder format_string = new StringBuilder();
 		StringBuilder cur_line = new StringBuilder();
@@ -132,7 +132,7 @@ public class JavaCodeUtils
 	 * 
 	 * @return Java code that will construct obj
 	 */
-	static public String toJavaStringLiteral(StandardObject obj)
+	static public String toJavaStringLiteral(StandardObject<?> obj)
 	{
 		Validator.notNull(obj);
 		

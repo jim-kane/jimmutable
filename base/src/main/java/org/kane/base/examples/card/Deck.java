@@ -5,13 +5,13 @@ import java.util.Collections;
 
 import org.kane.base.immutability.collections.FieldArrayList;
 import org.kane.base.immutability.collections.FieldList;
-import org.kane.base.immutability.decks.StandardImmutableJeffDeckList;
+import org.kane.base.immutability.decks.StandardImmutableListDeck;
 import org.kane.base.serialization.Validator;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
-@XStreamAlias("deck")
-public class Deck extends StandardImmutableJeffDeckList<Deck, Card>
+@XStreamAlias("card-deck")
+final public class Deck extends StandardImmutableListDeck<Deck, Card>
 {
     private FieldList<Card> cards = new FieldArrayList<>();
     

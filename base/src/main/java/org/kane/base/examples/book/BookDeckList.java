@@ -1,29 +1,29 @@
 package org.kane.base.examples.book;
 
 import java.util.Collection;
+import java.util.Collections;
 
-import org.kane.base.immutability.StandardImmutableObject;
 import org.kane.base.immutability.collections.FieldArrayList;
 import org.kane.base.immutability.collections.FieldList;
-import org.kane.base.immutability.decks.StandardImmutableDeckList;
+import org.kane.base.immutability.decks.StandardImmutableListDeck;
 import org.kane.base.serialization.Validator;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
-/**
- * This class serves as the pattern for a list backed "Deck"
- * 
- * @author jim.kane
- *
- */
 
 @XStreamAlias("book-list")
-public class BookDeckList extends StandardImmutableObject implements StandardImmutableDeckList<Book>
+final public class BookDeckList extends StandardImmutableListDeck<BookDeckList, Book>
 {
-	private FieldArrayList<Book> books = new FieldArrayList();
+	private FieldList<Book> books = new FieldArrayList<>();
+	
 	
 	private BookDeckList(Builder builder)
 	{
+	}
+	
+	public BookDeckList()
+	{
+		this(Collections.emptyList());
 	}
 	
 	public BookDeckList(Collection<Book> books)
@@ -34,24 +34,22 @@ public class BookDeckList extends StandardImmutableObject implements StandardImm
 		
 		complete();
 	}
-	
-	public FieldList<Book> getSimpleContents() { return books; }
+
+	@Override
+	public FieldList<Book> getSimpleContents()
+	{
+		return books;
+	}
 	
 	public void normalize() 
 	{
 	}
-
 	
 	public void validate() 
 	{
-		Validator.containsNoNulls(books);
-		Validator.containsOnlyInstancesOf(Book.class, books);
+		Validator.containsNoNulls(getSimpleContents());
+		Validator.containsOnlyInstancesOf(Book.class, getSimpleContents());
 	}
-	
-	public void freeze() { freezeContents(); }
-	public int hashCode() { return hashContents(); }
-	public boolean equals(Object obj) { return contentsEqual(obj); }
-	public int compareTo(Object o) { return contentsCompareTo(o); }
 
 	static public class Builder
 	{
@@ -64,7 +62,7 @@ public class BookDeckList extends StandardImmutableObject implements StandardImm
 		
 		public Builder(BookDeckList starting_point)
 		{
-			under_construction = (BookDeckList)starting_point.deepMutableCloneForBuilder();
+			under_construction = starting_point.deepMutableCloneForBuilder();
 		}
 
 		public void addBook(Book book)
@@ -75,7 +73,7 @@ public class BookDeckList extends StandardImmutableObject implements StandardImm
 		
 		public BookDeckList create()
 		{
-			return (BookDeckList)under_construction.deepClone();
+			return under_construction.deepClone();
 		}
 	}
 }

@@ -4,7 +4,7 @@ import org.kane.base.immutability.StandardImmutableObject;
 import org.kane.base.immutability.collections.FieldMap;
 
 
-abstract public class StandardImmutableJeffDeckMap<T extends StandardImmutableJeffDeckMap<T, K, V>, K, V> extends StandardImmutableObject<T>
+abstract public class StandardImmutableMapDeck<T extends StandardImmutableMapDeck<T, K, V>, K, V> extends StandardImmutableObject<T>
 {
     abstract public FieldMap<K, V> getSimpleContents();
     
@@ -33,7 +33,7 @@ abstract public class StandardImmutableJeffDeckMap<T extends StandardImmutableJe
         if (! getClass().isInstance(obj)) return false;
         
         @SuppressWarnings("unchecked")
-        StandardImmutableJeffDeckMap<T, K, V> other = (StandardImmutableJeffDeckMap<T, K, V>) obj;
+        StandardImmutableMapDeck<T, K, V> other = (StandardImmutableMapDeck<T, K, V>) obj;
         
         return getSimpleContents().equals(other.getSimpleContents());
     }

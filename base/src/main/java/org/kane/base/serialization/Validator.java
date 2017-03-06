@@ -30,7 +30,7 @@ public class Validator
 	 * @param minimum_valid_value
 	 *            The minimum valid value
 	 */
-	static public void min(Comparable value, Comparable minimum_valid_value)
+	static public <T extends Comparable<T>> void min(T value, T minimum_valid_value)
 	{
 		if ( value.compareTo(minimum_valid_value) < 0 ) 
 			throw new ValidationException("Value ("+value+") is below minimum allowed value ("+minimum_valid_value+")");
@@ -44,7 +44,7 @@ public class Validator
 	 * @param maximum_valid_value
 	 *            The maximum valid value
 	 */
-	static public void max(Comparable value, Comparable maximum_valid_value)
+	static public <T extends Comparable<T>> void max(T value, T maximum_valid_value)
 	{
 		if ( value.compareTo(maximum_valid_value) > 0 ) 
 			throw new ValidationException("Value ("+value+") is above the maximum allowed value ("+maximum_valid_value+")");
@@ -57,7 +57,7 @@ public class Validator
 	 * @param c
 	 *            The collection to test
 	 */
-	static public void containsNoNulls(Collection collection)
+	static public void containsNoNulls(Collection<?> collection)
 	{
 		for ( Object obj : collection )
 		{
@@ -65,7 +65,7 @@ public class Validator
 		}
 	}
 	
-	static public void containsOnlyInstancesOf(Class c, Collection collection)
+	static public void containsOnlyInstancesOf(Class<?> c, Collection<?> collection)
 	{
 		for ( Object obj : collection )
 		{
@@ -74,7 +74,7 @@ public class Validator
 		}
 	}
 	
-	static public void containsOnlyInstancesOf(Class key, Class value, Map map)
+	static public void containsOnlyInstancesOf(Class<?> key, Class<?> value, Map<?, ?> map)
 	{
 		containsOnlyInstancesOf(key,map.keySet());
 		containsOnlyInstancesOf(value,map.values());

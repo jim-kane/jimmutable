@@ -120,7 +120,7 @@ public class StandardImmutableDeckHashSetTest extends TestCase
     		     , "</book-set>"
     		);
 
-    	BookDeckSet obj = (BookDeckSet)StandardObject.fromXML(obj_as_xml_string);
+    	BookDeckSet obj = StandardObject.fromXML(obj_as_xml_string);
     	
     	
     	List<Book> test_books = new ArrayList();

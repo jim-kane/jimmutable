@@ -7,6 +7,7 @@ package org.kane.base.serialization;
  * @author jim.kane
  *
  */
+@SuppressWarnings("serial")
 public class ValidationException extends RuntimeException
 {
 	public ValidationException()

@@ -1,25 +1,19 @@
 package org.kane.base.examples.book;
 
+import java.util.Collections;
 import java.util.Map;
 
-import org.kane.base.immutability.StandardImmutableObject;
 import org.kane.base.immutability.collections.FieldHashMap;
 import org.kane.base.immutability.collections.FieldMap;
-import org.kane.base.immutability.decks.StandardImmutableDeckMap;
+import org.kane.base.immutability.decks.StandardImmutableMapDeck;
 import org.kane.base.serialization.Validator;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
-/**
- * A test of a "hash map backed deck"
- * 
- * @author jim.kane
- *
- */
 @XStreamAlias("book-map")
-public class BookDeckMap extends StandardImmutableObject implements StandardImmutableDeckMap<String,Book>
+final public class BookDeckMap extends StandardImmutableMapDeck<BookDeckMap, String, Book>
 {
-	private FieldHashMap<String,Book> books = new FieldHashMap();
+	private FieldHashMap<String,Book> books = new FieldHashMap<>();
 	
 	private BookDeckMap(Builder builder)
 	{
@@ -27,7 +21,7 @@ public class BookDeckMap extends StandardImmutableObject implements StandardImmu
 	
 	public BookDeckMap()
 	{
-		complete();
+		this(Collections.emptyMap());
 	}
 	
 	public BookDeckMap(Map<String,Book> initial_contents)
@@ -42,18 +36,12 @@ public class BookDeckMap extends StandardImmutableObject implements StandardImmu
 	public void normalize() 
 	{
 	}
-
 	
 	public void validate() 
 	{
 		Validator.containsOnlyInstancesOf(String.class, Book.class, books);
 	}
 	
-	public void freeze() { freezeContents();	}
-	public int hashCode() { return hashContents(); }
-	public boolean equals(Object obj) { return contentsEqual(obj); }
-	public int compareTo(Object o) { return contentsCompareTo(o); }
-
 	static public class Builder
 	{
 		private BookDeckMap under_construction;
@@ -65,7 +53,7 @@ public class BookDeckMap extends StandardImmutableObject implements StandardImmu
 		
 		public Builder(BookDeckMap starting_point)
 		{
-			under_construction = (BookDeckMap)starting_point.deepMutableCloneForBuilder();
+			under_construction = starting_point.deepMutableCloneForBuilder();
 		}
 
 		public void putBook(String key, Book book)
@@ -76,7 +64,7 @@ public class BookDeckMap extends StandardImmutableObject implements StandardImmu
 		
 		public BookDeckMap create()
 		{
-			return (BookDeckMap)under_construction.deepClone();
+			return under_construction.deepClone();
 		}
 	}
 }

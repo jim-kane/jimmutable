@@ -9,7 +9,7 @@ import com.google.common.collect.ComparisonChain;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @XStreamAlias("card")
-public class Card extends StandardImmutableObject<Card>
+final public class Card extends StandardImmutableObject<Card>
 {
     private Suit suit; // Required
     private Value value; // Required

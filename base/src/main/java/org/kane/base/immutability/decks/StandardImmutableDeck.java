@@ -6,7 +6,7 @@ import org.kane.base.immutability.StandardImmutableObject;
 import org.kane.base.immutability.collections.FieldCollection;
 
 
-abstract public class StandardImmutableJeffDeck<T extends StandardImmutableJeffDeck<T, E>, E> extends StandardImmutableObject<T> implements Iterable<E>
+abstract public class StandardImmutableDeck<T extends StandardImmutableDeck<T, E>, E> extends StandardImmutableObject<T> implements Iterable<E>
 {
     abstract public FieldCollection<E> getSimpleContents();
     
@@ -41,7 +41,7 @@ abstract public class StandardImmutableJeffDeck<T extends StandardImmutableJeffD
         if (! getClass().isInstance(obj)) return false;
         
         @SuppressWarnings("unchecked")
-        StandardImmutableJeffDeck<T, E> other = (StandardImmutableJeffDeck<T, E>) obj;
+        StandardImmutableDeck<T, E> other = (StandardImmutableDeck<T, E>) obj;
         
         return getSimpleContents().equals(other.getSimpleContents());
     }

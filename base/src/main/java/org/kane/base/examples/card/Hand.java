@@ -6,14 +6,15 @@ import java.util.Objects;
 
 import org.kane.base.immutability.collections.FieldHashSet;
 import org.kane.base.immutability.collections.FieldSet;
-import org.kane.base.immutability.decks.StandardImmutableJeffDeckSet;
+import org.kane.base.immutability.decks.StandardImmutableSetDeck;
 import org.kane.base.serialization.Normalizer;
 import org.kane.base.serialization.Validator;
 
 import com.google.common.collect.ComparisonChain;
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 
-// @XStreamAlias intentionally missing to test serialization
-public class Hand extends StandardImmutableJeffDeckSet<Hand, Card>
+@XStreamAlias("card-hand")
+final public class Hand extends StandardImmutableSetDeck<Hand, Card>
 {
     private String name; // Optional, free form
     private int max_size; // Required, non-negative

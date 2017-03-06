@@ -13,14 +13,8 @@ import org.kane.base.serialization.Validator;
 import com.google.common.collect.ComparisonChain;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
-/**
- * An example of a proper implementation of a StandardImmutableObject
- * 
- * @author jim.kane
- *
- */
 @XStreamAlias("book")
-final public class Book extends StandardImmutableObject
+final public class Book extends StandardImmutableObject<Book>
 {
 	private String title; // required, upper-case
 	private int page_count; // required, must be 0 or greater
@@ -37,7 +31,7 @@ final public class Book extends StandardImmutableObject
 		super();
 		
 		// building constructor.  Builder will call complete...
-		this.authors = new FieldArrayList();
+		this.authors = new FieldArrayList<>();
 	}
 	
 	// copy constructor...
@@ -51,7 +45,7 @@ final public class Book extends StandardImmutableObject
 		this.isbn = isbn;
 		this.binding = binding;
 		
-		this.authors = new FieldArrayList(authors);
+		this.authors = new FieldArrayList<>(authors);
 		
 		complete();
 	}
@@ -64,7 +58,7 @@ final public class Book extends StandardImmutableObject
 	
 	static private Collection<String> toCollection(String author)
 	{
-		List<String> ret = new ArrayList();
+		List<String> ret = new ArrayList<>();
 		ret.add(author);
 		return ret;
 	}
@@ -111,12 +105,8 @@ final public class Book extends StandardImmutableObject
 		return isbn;
 	}
 
-	public int compareTo(Object o) 
+	public int compareTo(Book other) 
 	{
-		if ( !(o instanceof Book) ) return 0;
-		
-		Book other = (Book)o;
-		
 		return ComparisonChain.start()
 				.compare(getSimpleTitle(), other.getSimpleTitle())
 				.compare(getSimplePageCount(), other.getSimplePageCount())
@@ -159,7 +149,7 @@ final public class Book extends StandardImmutableObject
 		
 		public Builder(Book starting_point)
 		{
-			under_construction = (Book)starting_point.deepMutableCloneForBuilder();
+			under_construction = starting_point.deepMutableCloneForBuilder();
 		}
 		
 		public void setTitle(String title) 
@@ -189,7 +179,7 @@ final public class Book extends StandardImmutableObject
 		
 		public Book create()
 		{
-			return (Book)under_construction.deepClone();
+			return under_construction.deepClone();
 		}
 	}
 }

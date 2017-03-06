@@ -1,8 +1,5 @@
 package org.kane.base.serialization;
 
-import java.util.Collections;
-import java.util.List;
-
 /**
  * Various static methods useful when normalizing objects
  * 
