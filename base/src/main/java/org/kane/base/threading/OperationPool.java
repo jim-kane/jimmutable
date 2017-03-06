@@ -19,10 +19,7 @@ final public class OperationPool extends OperationRunnable
 	private List<OperationRunnable> all_tasks = new ArrayList();
 	private ExecutorService thread_pool;
 	
-	private StatusMonitor status_monitor;
-	
-	
-	public OperationPool(OperationRunnable seed_operation, StatusMonitor status_monitor, int thread_count)
+	public OperationPool(OperationRunnable seed_operation, int thread_count)
 	{
 		Validator.notNull(seed_operation); 
 		Validator.min(thread_count, 1);
@@ -30,10 +27,9 @@ final public class OperationPool extends OperationRunnable
 		
 		this.seed_operations.add(seed_operation);
 		this.thread_count = thread_count;
-		this.status_monitor = status_monitor;
 	}
 	
-	public OperationPool(Collection<OperationRunnable> seed_operations, StatusMonitor status_monitor, int thread_count)
+	public OperationPool(Collection<OperationRunnable> seed_operations, int thread_count)
 	{
 		Validator.notNull(seed_operations); 
 		Validator.containsNoNulls(seed_operations);
@@ -41,7 +37,6 @@ final public class OperationPool extends OperationRunnable
 		
 		this.seed_operations.addAll(seed_operations);
 		this.thread_count = thread_count;
-		this.status_monitor = status_monitor;
 	}
 	
 	protected Result performOperation() throws Exception
@@ -62,9 +57,6 @@ final public class OperationPool extends OperationRunnable
 			if ( areAllTasksInState(State.FINISHED) ) break;
 			
 			try { Thread.currentThread().sleep(500); } catch(Exception e) { e.printStackTrace(); }
-			
-			if ( status_monitor != null ) 
-				status_monitor.onOperationPoolHeatbeat(this);
 		}
 		
 		stopAllTasks();
@@ -158,10 +150,5 @@ final public class OperationPool extends OperationRunnable
 		}
 		
 		return true;
-	}
-	
-	static public interface StatusMonitor
-	{
-		public void onOperationPoolHeatbeat(OperationPool pool);
 	}
 }

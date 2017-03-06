@@ -5,6 +5,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import org.kane.base.serialization.Optional;
+import org.kane.base.serialization.Validator;
 
 abstract public class OperationRunnable implements Runnable
 {
@@ -87,6 +88,8 @@ abstract public class OperationRunnable implements Runnable
 	
 	static public Result execute(OperationRunnable runnable, Result default_value)
 	{
+		Validator.notNull(runnable);
+		
 		ExecutorService single_thread = Executors.newSingleThreadExecutor();
 		Future f = single_thread.submit(runnable);
 		
@@ -102,5 +105,37 @@ abstract public class OperationRunnable implements Runnable
 		}
 		
 		return runnable.getOptionalResult(default_value);
+	}
+	
+	static public Result executeWithMonitor(OperationRunnable runnable, long heartbeat_interval, OperationMonitor monitor, Result default_value)
+	{
+		Validator.notNull(runnable);
+		Validator.min(heartbeat_interval, 50);
+		
+		
+		ExecutorService single_thread = Executors.newSingleThreadExecutor();
+		single_thread.submit(runnable);
+		
+		try 
+		{ 
+			while(true)
+			{
+				if ( runnable.hasResult() ) break;
+				
+				try { Thread.currentThread().sleep(heartbeat_interval); } catch(Exception e) { }
+				
+				if ( monitor != null )
+					monitor.onOperationMonitorHeartbeat(runnable);
+				
+			}
+			single_thread.shutdown();
+			
+			return runnable.getOptionalResult(default_value);
+		} 
+		catch(Exception e) 
+		{ 
+			e.printStackTrace(); 
+			return default_value; 
+		}
 	}
 }
