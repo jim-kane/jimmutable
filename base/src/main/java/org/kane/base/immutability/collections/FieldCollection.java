@@ -1,7 +1,6 @@
 package org.kane.base.immutability.collections;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
 
 /**

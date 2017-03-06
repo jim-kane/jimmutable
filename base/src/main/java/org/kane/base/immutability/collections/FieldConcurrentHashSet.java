@@ -4,40 +4,57 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+
 
 /**
- * An implementation of a Field (Set) object backed by an ConcurrentHashMap (via
- * Collections.newSetFromMap(new ConcurrentHashMap())). Generally speaking, this
- * Field will have all of the characteristics of a Concurrent HashSet object
- * that can be made immutable by calling freeze()
+ * An implementation of a {@link Set} wrapper around {@link ConcurrentHashMap}
+ * ({@link Collections#newSetFromMap(java.util.Map)}) that begins life as mutable
+ * but can, at any time, be "{@link #freeze() frozen}" (made immutable). In other
+ * words, a wrapper for a {@link ConcurrentHashMap concurrent}
+ * {@link Collections#newSetFromMap(java.util.Map) Set} that implements {@link Field}.
  * 
- * Why does one need a thread safe immutable set? Well... if your *construction*
- * code (when the object is mutable) is threaded then it is *much safer* to use
- * this set as, the java language being what it is, it is neigh on impossible to
- * guarantee the mutable -> immutable transition in this multithreaded context
- * absent a concurrent backing store.
+ * <p>Why does one need a thread safe immutable set? Well... if your
+ * <em>construction</em> code (when the object is mutable) is threaded then it is
+ * <em>much</em> safer to use a concurrent backing store. In Java, it is nigh
+ * impossible to guarantee the mutable -> immutable transition in a multi-threaded
+ * context absent a concurrent backing store.
  * 
- * In general, however (when the field is being created in single threaded code)
- * don't worry about a thing and just use FieldHashSet.
+ * <p>In general, however (when the field is being created in single threaded code),
+ * just use {@link FieldHashSet}, which is <em>far</em> faster to construct.
  * 
- * @author jim.kane
+ * @author Jim Kane
  *
- * @param <T>
+ * @param <E> The type of elements in this list
+ * 
+ * @see FieldSet
+ * @see FieldHashSet
  */
-
-public class FieldConcurrentHashSet<T> extends FieldSet<T>
+@XStreamAlias("field-concurrent-hash-set")
+public class FieldConcurrentHashSet<E> extends FieldSet<E>
 {
+	/**
+	 * Default constructor (for an empty set)
+	 */
 	public FieldConcurrentHashSet()
 	{
 		super();
 	}
 	
-	public FieldConcurrentHashSet(Iterable<T> objs)
+	/**
+     * Constructs a set containing the elements of the specified {@link Iterable}
+     *
+     * @param objs The {code Iterable} whose elements are to be placed into this set
+     * 
+     * @throws NullPointerException if the specified {@code Iterable} is {@code null}
+	 */
+	public FieldConcurrentHashSet(Iterable<E> objs)
 	{
 		super(objs);
 	}
 	
-	protected Set<T> createNewMutableInstance()
+	@Override
+	protected Set<E> createNewMutableInstance()
 	{
 		return Collections.newSetFromMap(new ConcurrentHashMap<>());
 	}

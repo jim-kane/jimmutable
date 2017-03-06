@@ -3,35 +3,54 @@ package org.kane.base.immutability.collections;
 import java.util.Set;
 import java.util.TreeSet;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+
+
 /**
- * An implementation of a Field object backed by an TreeSet. Generally
- * speaking, this Field will have all of the characteristics of an TreeSet
- * object that can be made immutable by calling freeze()
+ * An implementation of a {@link TreeSet} that begins life as mutable but can,
+ * at any time, be "{@link #freeze() frozen}" (made immutable). In other
+ * words, a wrapper for a {@link TreeSet} that implements {@link Field}.
  * 
- * Note: TreeSet, and consequently FieldTreeSet is not thread safe. This is
- * *generally* not a concern once "frozen" but if you a construction process
- * that is multi-threaded you should use FieldConcurrentHashSet 
+ * <p><b>Note:</b> {@link TreeSet}, and consequently {@code FieldTreeSet} is
+ * not thread safe. This is generally not a concern once "{@link #freeze() frozen}"
+ * but if the construction process is multi-threaded, consider
+ * {@link FieldConcurrentSkipListSet}.
  * 
- * In the "standard" case (construction in one thread) don't worry about any of
- * this and just use FieldHashSet or FieldTreeSet.
+ * <p>In the standard case (construction in one thread), {@code FieldTreeSet} will
+ * work well.
  * 
- * @author jim.kane
+ * @author Jim Kane
  *
- * @param <T>
+ * @param <E> The type of elements in this set
+ * 
+ * @see FieldSet
+ * @see FieldConcurrentSkipListSet
  */
-public class FieldTreeSet<T> extends FieldSet<T>
+@XStreamAlias("field-tree-set")
+public class FieldTreeSet<E> extends FieldSet<E>
 {
+	/**
+	 * Default constructor (for an empty set)
+	 */
 	public FieldTreeSet()
 	{
 		super();
 	}
 	
-	public FieldTreeSet(Iterable<T> objs)
+	/**
+     * Constructs a set containing the elements of the specified {@link Iterable}
+     *
+     * @param objs The {code Iterable} whose elements are to be placed into this set
+     * 
+     * @throws NullPointerException if the specified {@code Iterable} is {@code null}
+	 */
+	public FieldTreeSet(Iterable<E> objs)
 	{
 		super(objs);
 	}
 	
-	protected Set<T> createNewMutableInstance()
+	@Override
+	protected Set<E> createNewMutableInstance()
 	{
 		return new TreeSet<>();
 	}

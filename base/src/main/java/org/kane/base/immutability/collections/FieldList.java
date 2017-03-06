@@ -2,8 +2,6 @@ package org.kane.base.immutability.collections;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
@@ -24,6 +22,7 @@ abstract public class FieldList<E> extends FieldCollection<E> implements List<E>
 	/*
 	 * Never access _contents_ directly.
 	 * Use getContents so that SubList (and future) inheritance works
+	 * correctly.
 	 */
 	private List<E> contents = createNewMutableInstance();
 	
