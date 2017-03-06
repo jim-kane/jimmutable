@@ -15,16 +15,13 @@ public class DownloadSmallObjectRunnable extends OperationRunnable
 {
 	private AmazonS3Client client;
 	private S3ObjectSummary object_summary;
-	private TakeSnapshotThread snapshot_operation;
+	private TakeSnapshotRunnable snapshot_operation;
 	
-	public DownloadSmallObjectRunnable(AmazonS3Client client, S3ObjectSummary object_summary, TakeSnapshotThread snapshot_operation)
+	public DownloadSmallObjectRunnable(TakeSnapshotRunnable snapshot_operation, S3ObjectSummary object_summary)
 	{
-		Validator.notNull(client);
-		Validator.notNull(object_summary);
 		Validator.notNull(snapshot_operation);
+		Validator.notNull(object_summary);
 		
-		
-		this.client = client;
 		this.object_summary = object_summary;
 		this.snapshot_operation = snapshot_operation;
 	}
@@ -34,7 +31,7 @@ public class DownloadSmallObjectRunnable extends OperationRunnable
 		if ( shouldStop() ) 
 			return Result.STOPPED;
 		
-		if ( object_summary.getSize() > TakeSnapshotThread.MAXIMUM_OBJECT_SIZE ) return Result.SUCCESS; // don't add the object to the snapshot, it is too large (THIS IS NOT AN ERROR -- SILENTLY SKIP)
+		if ( object_summary.getSize() > Constants.MAXIMUM_OBJECT_SIZE ) return Result.SUCCESS; // don't add the object to the snapshot, it is too large (THIS IS NOT AN ERROR -- SILENTLY SKIP)
 
 		GetObjectRequest request = new GetObjectRequest(object_summary.getBucketName(),object_summary.getKey());
 
@@ -48,7 +45,7 @@ public class DownloadSmallObjectRunnable extends OperationRunnable
 		if ( shouldStop() ) 
 			return Result.STOPPED;
 
-		//writer.writeDocument(new String(data));
+		snapshot_operation.addObjectToSnapshot(data);
 
 		return Result.SUCCESS;
 	}

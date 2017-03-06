@@ -19,7 +19,7 @@ import org.kane.base.io.GZIPUtils;
 import org.kane.base.io.SmallDocumentReader;
 import org.kane.base.io.SmallDocumentSource;
 import org.kane.base.io.snapshot.SnapshotRequest;
-import org.kane.base.io.snapshot.TakeSnapshotThread;
+import org.kane.base.io.snapshot.TakeSnapshotRunnable;
 
 import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;

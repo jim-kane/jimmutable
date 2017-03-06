@@ -24,15 +24,12 @@ import com.amazonaws.services.s3.model.S3ObjectSummary;
 
 public class ListRunnable extends OperationRunnable
 {
-	private SnapshotRequest request;
-	private TakeSnapshotThread snapshot_operation;
+	private TakeSnapshotRunnable snapshot_operation;
 	
-	public ListRunnable(SnapshotRequest request, TakeSnapshotThread snapshot_operation)
+	public ListRunnable(TakeSnapshotRunnable snapshot_operation)
 	{
-		Validator.notNull(request);
 		Validator.notNull(snapshot_operation);
-		
-		this.request = request;
+	
 		this.snapshot_operation = snapshot_operation;
 	}
 	
@@ -40,8 +37,7 @@ public class ListRunnable extends OperationRunnable
 	{
 		if ( shouldStop() ) return Result.STOPPED;
 
-		AmazonS3Client client = new AmazonS3Client(AWSAPIKeys.getAWSCredentialsDev());
-		client.setRegion(Region.getRegion(request.getSimpleRegion()));
+		SnapshotRequest request = snapshot_operation.getSimpleRequest();
 
 		ListObjectsV2Request req = new ListObjectsV2Request();
 		req = req.withBucketName(request.getSimpleSourceBucketName());
@@ -50,8 +46,6 @@ public class ListRunnable extends OperationRunnable
 		if ( request.getSimpleSourceListPrefix().length() > 0 )
 			req = req.withPrefix(request.getSimpleSourceListPrefix());
 
-		
-
 		int object_count = 0;
 
 
@@ -59,14 +53,16 @@ public class ListRunnable extends OperationRunnable
 		{
 			if ( shouldStop() ) return Result.STOPPED;
 
-			ListObjectsV2Result result = client.listObjectsV2(req);
+			ListObjectsV2Result result = snapshot_operation.getSimpleS3Client().listObjectsV2(req);
 
 			for ( S3ObjectSummary summary : result.getObjectSummaries() ) 
 			{
 				if ( shouldStop() ) return Result.STOPPED;
 				if ( object_count >= request.getSimpleMaximumObjectCount() ) return Result.SUCCESS;
 
-				//pool.submitOperation(new DownloadSmallObjectRunnable(client, summary, snapshot_operation));
+				DownloadSmallObjectRunnable task = new DownloadSmallObjectRunnable(snapshot_operation, summary);
+				
+				snapshot_operation.getSimpleChildOperations().submitOperation(task);
 				object_count++;
 			}
 			
