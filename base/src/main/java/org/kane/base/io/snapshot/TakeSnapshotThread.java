@@ -30,7 +30,7 @@ public class TakeSnapshotThread // extends OperationPool
 	static public final int THREAD_POOL_SIZE = 100;
 	
 	// Request
-	private S3ListRequest list_request;
+	private SnapshotRequest list_request;
 	private String snapshot_bucket_name;
 	private String snapshot_key_name;
 	

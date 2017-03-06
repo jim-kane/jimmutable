@@ -18,7 +18,7 @@ import org.kane.base.immutability.StandardImmutableObject;
 import org.kane.base.io.GZIPUtils;
 import org.kane.base.io.SmallDocumentReader;
 import org.kane.base.io.SmallDocumentSource;
-import org.kane.base.io.snapshot.S3ListRequest;
+import org.kane.base.io.snapshot.SnapshotRequest;
 import org.kane.base.io.snapshot.TakeSnapshotThread;
 
 import com.amazonaws.regions.Region;
@@ -51,14 +51,14 @@ public class S3Benchmark
 		System.out.println(String.format("Maximum object count: %,d", maximum_object_count));
 		System.out.println();
 		
-		S3ListRequest request;
+		SnapshotRequest request;
 		
-		{
+	/*	{
 			S3ListRequest.Builder builder = new S3ListRequest.Builder(Regions.US_WEST_2, BUCKET_NAME);
 			builder.setListPrefix(EXPERIMENT_NAME+"/");
 			builder.setMaximumObjectCount(maximum_object_count);
 			request = builder.create();
-		}
+		}*/
 		
 		/*TakeSnapshotThread snapshot = new TakeSnapshotThread(request, BUCKET_NAME, "third/.snapshot");
 		snapshot.start();

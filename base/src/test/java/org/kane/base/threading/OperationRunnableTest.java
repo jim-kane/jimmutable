@@ -46,7 +46,7 @@ public class OperationRunnableTest extends TestCase
     	seed.add(new SampleOperation(300,true));
     	seed.add(new SampleOperation(100,true));
     	
-    	OperationPool pool = new OperationPool(seed, null, 2);
+    	OperationPool pool = new OperationPool(seed, 2);
     	
     	Result result = OperationRunnable.execute(pool, null);
     	
@@ -63,7 +63,7 @@ public class OperationRunnableTest extends TestCase
     	seed.add(new SampleOperation(300,false));
     	seed.add(new SampleOperation(100,true));
     	
-    	OperationPool pool = new OperationPool(seed, null, 2);
+    	OperationPool pool = new OperationPool(seed, 2);
     	
     	Result result = OperationRunnable.execute(pool, null);
     	
@@ -83,7 +83,7 @@ public class OperationRunnableTest extends TestCase
     	seed.add(new SampleOperation(300,true));
     	seed.add(to_be_stopped);
     	
-    	OperationPool pool = new OperationPool(seed, null, 2);
+    	OperationPool pool = new OperationPool(seed, 2);
     	
     	Result result = OperationRunnable.execute(pool, null);
     	

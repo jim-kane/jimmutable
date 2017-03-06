@@ -24,10 +24,10 @@ import com.amazonaws.services.s3.model.S3ObjectSummary;
 
 public class ListRunnable extends OperationRunnable
 {
-	private S3ListRequest request;
+	private SnapshotRequest request;
 	private TakeSnapshotThread snapshot_operation;
 	
-	public ListRunnable(S3ListRequest request, TakeSnapshotThread snapshot_operation)
+	public ListRunnable(SnapshotRequest request, TakeSnapshotThread snapshot_operation)
 	{
 		Validator.notNull(request);
 		Validator.notNull(snapshot_operation);
@@ -44,14 +44,13 @@ public class ListRunnable extends OperationRunnable
 		client.setRegion(Region.getRegion(request.getSimpleRegion()));
 
 		ListObjectsV2Request req = new ListObjectsV2Request();
-		req = req.withBucketName(request.getSimpleBucketName());
+		req = req.withBucketName(request.getSimpleSourceBucketName());
 		req = req.withMaxKeys(1000);
 
-		if ( request.hasListPrefix() )
-			req = req.withPrefix(request.getOptionalListPrefix(null));
+		if ( request.getSimpleSourceListPrefix().length() > 0 )
+			req = req.withPrefix(request.getSimpleSourceListPrefix());
 
-		if ( request.hasStartAfter() )
-			req = req.withStartAfter(request.getOptionalStartAfter(null));
+		
 
 		int object_count = 0;
 
@@ -65,7 +64,6 @@ public class ListRunnable extends OperationRunnable
 			for ( S3ObjectSummary summary : result.getObjectSummaries() ) 
 			{
 				if ( shouldStop() ) return Result.STOPPED;
-				if ( isAfterEnd(summary) ) return Result.SUCCESS;
 				if ( object_count >= request.getSimpleMaximumObjectCount() ) return Result.SUCCESS;
 
 				//pool.submitOperation(new DownloadSmallObjectRunnable(client, summary, snapshot_operation));
@@ -76,14 +74,6 @@ public class ListRunnable extends OperationRunnable
 
 			req.setContinuationToken(result.getNextContinuationToken());
 		}
-	}
-
-	
-	private boolean isAfterEnd(S3ObjectSummary obj)
-	{
-		if ( !request.hasEndAfter() ) return false;
-		
-		return request.getOptionalEndAfter("").compareTo(obj.getKey()) > 0;
 	}
 
 }
