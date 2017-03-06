@@ -138,6 +138,12 @@ final public class Book extends StandardImmutableObject<Book>
 		return true;
 	}
 	
+	@Override
+	public String toString()
+	{
+		return getSimpleTitle() + " by " + getSimpleAuthors();
+	}
+	
 	static public class Builder
 	{
 		private Book under_construction;

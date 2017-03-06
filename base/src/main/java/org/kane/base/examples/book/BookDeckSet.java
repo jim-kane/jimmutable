@@ -27,7 +27,10 @@ final public class BookDeckSet extends StandardImmutableSetDeck<BookDeckSet, Boo
 	
 	public BookDeckSet(Collection<Book> books)
 	{
-		this.books.addAll(books);
+		if ( books != null )
+		{
+			this.books.addAll(books);
+		}
 		
 		complete();
 	}

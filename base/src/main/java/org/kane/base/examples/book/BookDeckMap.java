@@ -26,7 +26,10 @@ final public class BookDeckMap extends StandardImmutableMapDeck<BookDeckMap, Str
 	
 	public BookDeckMap(Map<String,Book> initial_contents)
 	{
-		books.putAll(initial_contents);
+		if ( initial_contents != null )
+		{
+			this.books.putAll(initial_contents);
+		}
 		
 		complete();
 	}

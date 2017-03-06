@@ -41,7 +41,11 @@ final public class Hand extends StandardImmutableSetDeck<Hand, Card>
         
         this.max_size = max_size;
         this.name = name;
-        this.cards.addAll(cards);
+        
+        if (null != cards)
+        {
+            this.cards.addAll(cards);
+        }
         
         complete();
     }

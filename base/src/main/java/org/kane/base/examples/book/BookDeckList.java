@@ -30,7 +30,10 @@ final public class BookDeckList extends StandardImmutableListDeck<BookDeckList, 
 	{
 		super();
 		
-		books.addAll(books);
+		if ( books != null )
+		{
+			this.books.addAll(books);
+		}
 		
 		complete();
 	}

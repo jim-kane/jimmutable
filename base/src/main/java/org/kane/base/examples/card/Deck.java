@@ -27,7 +27,11 @@ final public class Deck extends StandardImmutableListDeck<Deck, Card>
     public Deck(Collection<Card> cards)
     {
         super();
-        this.cards.addAll(cards); 
+        
+        if (null != cards)
+        {
+            this.cards.addAll(cards); 
+        }
         
         complete();
     }
