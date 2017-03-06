@@ -3,38 +3,73 @@ package org.kane.base.immutability.collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
 import com.thoughtworks.xstream.converters.Converter;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
+import com.thoughtworks.xstream.converters.collections.MapConverter;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 
+
 /**
- * Since it is used *so frequently* a special String/String hash map is
- * provided. It has a custom converter that is (approximately) 75% than the
- * built in, reflection based converter for map.
+ * A specialization of a {@link FieldMap} for the extremely common use
+ * case of:
+ * <ul>
+ * 	<li>Backing store is a {@link HashMap}
+ * 	<li>Key type ({@code K}) is {@code String}
+ * 	<li>Value type ({@code V}) is {@code String}
+ * </ul>
  * 
- * @author jim.kane
+ * <p>It implements a custom {@link Converter} that improves serialization
+ * performance by 75% over the default reflection-based converter for {@link MapConverter}.
+ * 
+ * @author Jim Kane
  *
+ * @param <K> the type of keys maintained by this map
+ * @param <V> the type of mapped values
+ * 
+ * @see FieldMap
+ * @see FieldHashMap
  */
+@XStreamAlias("field-string-string-hash-map")
 @XStreamConverter(FieldStringStringHashMap.MyConverter.class)
-public class FieldStringStringHashMap extends FieldMap<String,String>
+final public class FieldStringStringHashMap extends FieldMap<String,String>
 {
+	/**
+	 * Default constructor (for an empty map)
+	 */
 	public FieldStringStringHashMap()
 	{
 		super();
 	}
 	
+	/**
+     * Constructs a collection containing the elements of the specified {@link Map},
+     * in the order they are returned by the {@link Iterable#iterator() iterator}.
+     *
+     * @param objs The {@code Map} whose elements are to be placed into this map
+     * 
+     * @throws NullPointerException if the specified {@code Map} is {@code null}
+	 */
 	public FieldStringStringHashMap(Map<String,String> initial_values)
 	{
 		super(initial_values);
 	}
 	
+	@Override
 	protected Map<String, String> createNewMutableInstance()
 	{
 		return new HashMap<>();
 	}
+	
+	/**
+	 * A {@link Converter} specialized for
+	 * {{@code String} => {@code String}} {@link Map Maps} 
+	 * 
+	 * @author Jim Kane
+	 */
 
 	static public class MyConverter implements Converter
 	{

@@ -1,42 +1,76 @@
 package org.kane.base.immutability.collections;
 
 import java.util.Collection;
-import java.util.Iterator;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
+
 
 /**
- * An implementation of a map that begins life as immutable but can, at
- * any time, be "frozen" (made immutable) by calling the freeze method. In other
- * words, a Map class that implements Field.
+ * An implementation of a {@link Collection} that begins life as mutable but can,
+ * at any time, be "{@link #freeze() frozen}" (made immutable). In other
+ * words, a wrapper for a {@link Collection} that implements {@link Field}.
  * 
- * Do not fear extending this collection object as needed, such implementations
- * tend to go very quickly as the base class does nearly all of the work for
- * you. Notwithstanding the foregoing, would be extenders of this class should
- * take time to carefully understand the immutability principles involved and
- * write careful unit tests to make sure that their implementations are as
- * strictly immutable as possible.
+ * <p>This class is designed to be extended. Most of the <em>collection hierarchy</em>
+ * is already wrapped as part of the standard <em>jimmutable</em> library, but further
+ * extensions should go quickly as the base class does nearly all of the work. However,
+ * extension implementors should take time to carefully understand the immutability
+ * principles involved and to write careful unit tests to make sure that the implementations
+ * are as strictly immutable as possible.
  * 
- * 
- * @author jim.kane
+ * @author Jim Kane
  *
- * @param <T>
+ * @param <K> the type of keys maintained by this map
+ * @param <V> the type of mapped values
  */
-
 abstract public class FieldMap<K,V> implements Map<K,V>, Field
 {
-	transient private boolean is_frozen = true;
+	transient volatile private boolean is_frozen;
 	
+	/*
+	 * Never access _contents_ directly.
+	 * Use getContents so that SubList (and future) inheritance works
+	 * correctly.
+	 */
 	private Map<K,V> contents = createNewMutableInstance();
 	
+	/**
+	 * Get the mutable contents of the {@link Map} that this object wraps.
+	 * 
+	 * <p>This is the main interface between the {@link Field} specification
+	 * that this implementation enforces and the {@link Map} that it wraps.
+	 * 
+	 * @return The <em>mutable</em> map that this object wraps
+	 */
+	protected Map<K,V> getContents() { return contents; }
+
+	/**
+	 * Instantiate a <em>new</em>, <em>mutable</em> {@link Map}.
+	 * This allows sub-classes to control the {@link Map} implementation
+	 * that is used (e.g. {@link HashMap}, {@link TreeMap}, etc.).
+	 *  
+	 * @return The new {@link Map} instance
+	 */
 	abstract protected Map<K,V> createNewMutableInstance();
 	
 	
+	/**
+	 * Default constructor (for an empty map)
+	 */
 	public FieldMap()
 	{
 		is_frozen = false;
 	}
 	
+	/**
+     * Constructs a collection containing the elements of the specified {@link Map},
+     * in the order they are returned by the {@link Iterable#iterator() iterator}.
+     *
+     * @param objs The {@code Map} whose elements are to be placed into this map
+     * 
+     * @throws NullPointerException if the specified {@code Map} is {@code null}
+	 */
 	public FieldMap(Map<K,V> initial_values)
 	{
 		this();
@@ -45,166 +79,124 @@ abstract public class FieldMap<K,V> implements Map<K,V>, Field
 			contents.putAll(initial_values);
 	}
 	
+	@Override
 	public void freeze() { is_frozen = true; }
+	
+	@Override
 	public boolean isFrozen()  { return is_frozen; }
 	
-	public int size() { return contents.size(); }
-	public boolean isEmpty() { return contents.isEmpty(); }
-	public boolean containsKey(Object key) { return contents.containsKey(key); }
-	public boolean containsValue(Object value) { return contents.containsValue(value); }
-	public V get(Object key) { return contents.get(key); }
-
+	@Override
+	public int size() { return getContents().size(); }
 	
+	@Override
+	public boolean isEmpty() { return getContents().isEmpty(); }
+	
+	@Override
+	public boolean containsKey(Object key) { return getContents().containsKey(key); }
+	
+	@Override
+	public boolean containsValue(Object value) { return getContents().containsValue(value); }
+	
+	@Override
+	public V get(Object key) { return getContents().get(key); }
+
+	@Override
 	public V put(K key, V value)
 	{
 		assertNotFrozen();
-		return contents.put(key, value);
+		return getContents().put(key, value);
 	}
 	
+	@Override
 	public V remove(Object key)
 	{
 		assertNotFrozen();
-		return contents.remove(key);
+		return getContents().remove(key);
 	}
 
+	@Override
 	public void putAll(Map<? extends K, ? extends V> m)
 	{
 		assertNotFrozen();
-		contents.putAll(m);
+		getContents().putAll(m);
 	}
 	
+	@Override
 	public void clear()
 	{
 		assertNotFrozen();
-		contents.clear();
+		getContents().clear();
 	}
 	
+	@Override
 	public Set<K> keySet()
 	{
-		return new InnerSet<>(contents.keySet());
+		return new InnerSet<>(getContents().keySet());
 	}
 
-	
+	@Override
 	public Collection<V> values()
 	{
-		return new InnerCollection<>(contents.values());
+		return new InnerCollection<>(getContents().values());
 	}
 
-	
+	@Override
 	public Set<Map.Entry<K, V>> entrySet()
 	{
-		return new InnerSet<>(contents.entrySet());
+		return new InnerSet<>(getContents().entrySet());
 	}
 
+	@Override
 	public boolean equals(Object obj) 
 	{
 		if ( !(obj instanceof Map) ) return false;
 		
-		@SuppressWarnings("unchecked")
-		Map<K, V> other = (Map<K, V>)obj;
+		Map<?, ?> other = (Map<?, ?>)obj;
 		
 		if ( size() != other.size() ) return false;
 		
-		return entrySet().containsAll(other.entrySet());
+		return entrySet().equals(other.entrySet());
 	}
 	
+	@Override
 	public String toString() 
 	{
-		return contents.toString();
+		return getContents().toString();
 	}
 	
-	private class InnerCollection<E> implements Collection<E>
+	private class InnerCollection<E> extends FieldCollection<E>
 	{
 		private Collection<E> inner_contents;
 		
-		private InnerCollection(Collection<E> c)
+		private InnerCollection(Collection<E> collection)
 		{
-			inner_contents = c;
-		}
-		
-		public int size() { return inner_contents.size(); }
-		public boolean isEmpty() { return inner_contents.isEmpty(); }
-		public boolean contains(Object o) { return inner_contents.contains(o); }
-		
-		public Iterator<E> iterator() 
-		{
-			return new InnerIterator<>(inner_contents.iterator());
-		}
-		
-		public Object[] toArray() { return inner_contents.toArray(); }
-		public <T> T[] toArray(T[] a) { return inner_contents.toArray(a); }
-
-		public boolean add(E e)
-		{
-			assertNotFrozen();
-			return inner_contents.add(e);
-		}
-		
-		public boolean remove(Object o) 
-		{
-			assertNotFrozen();
-			return inner_contents.remove(o);
+			inner_contents = collection;
 		}
 
-		
-		public boolean containsAll(Collection<?> c) { return inner_contents.containsAll(c); }
-
-		
-		public boolean addAll(Collection<? extends E> c) 
+		@Override
+		protected Collection<E> getContents()
 		{
-			assertNotFrozen();
-			return inner_contents.addAll(c);
+			return inner_contents;
 		}
 
-		public boolean removeAll(Collection<?> c) 
+		@Override
+		public void freeze()
 		{
-			assertNotFrozen();
-			return inner_contents.removeAll(c);
+			FieldMap.this.freeze();
 		}
 
-		
-		public boolean retainAll(Collection<?> c) 
+		@Override
+		public boolean isFrozen()
 		{
-			assertNotFrozen();
-			return inner_contents.retainAll(c);
-		}
-
-		
-		public void clear() 
-		{
-			assertNotFrozen();
-			inner_contents.clear();
+			return FieldMap.this.isFrozen();
 		}
 	}
 	
 	private class InnerSet<E> extends InnerCollection<E> implements Set<E>
 	{
-		private InnerSet(Collection<E> c)
+		private InnerSet(Collection<E> collection)
 		{
-			super(c);
-		}
-	}
-	
-	private class InnerIterator<E> implements Iterator<E>
-	{
-		private Iterator<E> inner_contents;
-		
-		private InnerIterator(Iterator<E> i) { inner_contents = i; }
-
-		public boolean hasNext() 
-		{
-			return inner_contents.hasNext();
-		}
-
-		public E next() 
-		{
-			return inner_contents.next();
-		}
-
-		public void remove() 
-		{
-			assertNotFrozen();
-			inner_contents.remove();
+			super(collection);
 		}
 	}
 }

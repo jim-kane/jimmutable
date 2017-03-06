@@ -27,7 +27,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
  * @see FieldConcurrentSkipListSet
  */
 @XStreamAlias("field-tree-set")
-public class FieldTreeSet<E> extends FieldSet<E>
+final public class FieldTreeSet<E> extends FieldSet<E>
 {
 	/**
 	 * Default constructor (for an empty set)

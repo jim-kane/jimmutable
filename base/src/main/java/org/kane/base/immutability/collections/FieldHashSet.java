@@ -27,7 +27,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
  * @see FieldConcurrentHashSet
  */
 @XStreamAlias("field-hash-set")
-public class FieldHashSet<E> extends FieldSet<E>
+final public class FieldHashSet<E> extends FieldSet<E>
 {
 	/**
 	 * Default constructor (for an empty set)

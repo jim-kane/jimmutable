@@ -27,7 +27,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
  * @see FieldCopyOnWriteArrayList
  */
 @XStreamAlias("field-array-list")
-public class FieldArrayList<E> extends FieldList<E>
+final public class FieldArrayList<E> extends FieldList<E>
 {
 	/**
 	 * Default constructor (for an empty list)

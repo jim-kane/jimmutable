@@ -3,33 +3,55 @@ package org.kane.base.immutability.collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+
+
 /**
- * An implementation of a Field object backed by an HashMap. Generally speaking,
- * this Field will have all of the characteristics of a HahsMap object that can
- * be made immutable by calling freeze()
+ * An implementation of a {@link HashMap} that begins life as mutable but can,
+ * at any time, be "{@link #freeze() frozen}" (made immutable). In other
+ * words, a wrapper for a {@link HashMap} that implements {@link Field}.
  * 
- * Please note: HashMap is *not* threadsafe while mutable. Once frozen the
- * object is, for the most part, thread safe. That being said, if your
- * construction process is threaded, you should make use of
- * FieldConcurrentHashMap as the thread safety of the transition from mutable to
- * immutable is a complicated and hard to guarantee one.
+ * <p><b>Note:</b> {@link HashMap}, and consequently {@code FieldHashMap} is
+ * not thread safe. This is generally not a concern once "{@link #freeze() frozen}"
+ * but if the construction process is multi-threaded, consider
+ * {@link FieldConcurrentHashMap}.
  * 
- * @author jim.kane
+ * <p>In the standard case (construction in one thread), {@code FieldHashMap} will
+ * work well.
+ * 
+ * @author Jim Kane
  *
- * @param <T>
+ * @param <K> the type of keys maintained by this map
+ * @param <V> the type of mapped values
+ * 
+ * @see FieldMap
+ * @see FieldConcurrentHashMap
  */
-public class FieldHashMap<K,V> extends FieldMap<K,V>
+@XStreamAlias("field-hash-map")
+final public class FieldHashMap<K,V> extends FieldMap<K,V>
 {
+	/**
+	 * Default constructor (for an empty map)
+	 */
 	public FieldHashMap()
 	{
 		super();
 	}
 	
+	/**
+     * Constructs a collection containing the elements of the specified {@link Map},
+     * in the order they are returned by the {@link Iterable#iterator() iterator}.
+     *
+     * @param objs The {@code Map} whose elements are to be placed into this map
+     * 
+     * @throws NullPointerException if the specified {@code Map} is {@code null}
+	 */
 	public FieldHashMap(Map<K,V> initial_values)
 	{
 		super(initial_values);
 	}
 	
+	@Override
 	protected Map<K, V> createNewMutableInstance() 
 	{
 		return new HashMap<>();

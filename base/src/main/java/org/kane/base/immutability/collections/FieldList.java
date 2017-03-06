@@ -186,7 +186,7 @@ abstract public class FieldList<E> extends FieldCollection<E> implements List<E>
  * 
  * @author Jeff Dezso
  */
-class SubList<E> extends FieldList<E>
+final class SubList<E> extends FieldList<E>
 {
 	private final FieldList<E> parent;
     private final List<E> contents;
