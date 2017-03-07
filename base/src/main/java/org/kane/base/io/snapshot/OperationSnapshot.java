@@ -16,7 +16,7 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.transfer.TransferManager;
 import com.amazonaws.services.s3.transfer.Upload;
 
-public class TakeSnapshotRunnable extends OperationRunnable
+public class OperationSnapshot extends OperationRunnable
 {
 	static public final int THREAD_COUNT = 100;
 	
@@ -33,7 +33,7 @@ public class TakeSnapshotRunnable extends OperationRunnable
 	volatile  int stats_objects_written_to_snapshot = 0;
 	volatile long stats_bytes_written_to_snapshot = 0;
 	
-	public TakeSnapshotRunnable(SnapshotRequest request)
+	public OperationSnapshot(SnapshotRequest request)
 	{
 		this.request = request;
 	}
@@ -69,7 +69,7 @@ public class TakeSnapshotRunnable extends OperationRunnable
 		}
 
 		// Setup the child operations pool
-		ListRunnable list_operation = new ListRunnable(this);
+		OperationList list_operation = new OperationList(this);
 		
 		
 		child_operations = new OperationPool(list_operation, THREAD_COUNT);
@@ -84,7 +84,7 @@ public class TakeSnapshotRunnable extends OperationRunnable
 		System.out.println();
 		
 		
-		UploadSnapshotRunnable upload = new UploadSnapshotRunnable(this);
+		OperationUploadSnapshot upload = new OperationUploadSnapshot(this);
 		
 		result = OperationRunnable.executeWithMonitor(upload, 500, new UploadSnapshotMonitor(), Result.ERROR);
 		
@@ -108,9 +108,9 @@ public class TakeSnapshotRunnable extends OperationRunnable
 	{
 		public void onOperationMonitorHeartbeat(OperationRunnable runnable)
 		{
-			if ( !(runnable instanceof UploadSnapshotRunnable) ) return;
+			if ( !(runnable instanceof OperationUploadSnapshot) ) return;
 			
-			UploadSnapshotRunnable upload = (UploadSnapshotRunnable)runnable;
+			OperationUploadSnapshot upload = (OperationUploadSnapshot)runnable;
 			
 			long bytes_uploaded = upload.getBytesUploaded();
 			

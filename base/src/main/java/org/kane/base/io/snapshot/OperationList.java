@@ -22,11 +22,11 @@ import com.amazonaws.services.s3.model.ListObjectsV2Request;
 import com.amazonaws.services.s3.model.ListObjectsV2Result;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 
-public class ListRunnable extends OperationRunnable
+public class OperationList extends OperationRunnable
 {
-	private TakeSnapshotRunnable snapshot_operation;
+	private OperationSnapshot snapshot_operation;
 	
-	public ListRunnable(TakeSnapshotRunnable snapshot_operation)
+	public OperationList(OperationSnapshot snapshot_operation)
 	{
 		Validator.notNull(snapshot_operation);
 	
@@ -60,7 +60,7 @@ public class ListRunnable extends OperationRunnable
 				if ( shouldStop() ) return Result.STOPPED;
 				if ( object_count >= request.getSimpleMaximumObjectCount() ) return Result.SUCCESS;
 
-				DownloadSmallObjectRunnable task = new DownloadSmallObjectRunnable(snapshot_operation, summary);
+				OperationDownloadObject task = new OperationDownloadObject(snapshot_operation, summary);
 				
 				snapshot_operation.getSimpleChildOperations().submitOperation(task);
 				object_count++;

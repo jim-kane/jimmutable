@@ -7,12 +7,12 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.transfer.TransferManager;
 import com.amazonaws.services.s3.transfer.Upload;
 
-public class UploadSnapshotRunnable extends OperationRunnable
+public class OperationUploadSnapshot extends OperationRunnable
 {
-	private TakeSnapshotRunnable snapshot_operation;
+	private OperationSnapshot snapshot_operation;
 	private Upload my_upload;
 	
-	public UploadSnapshotRunnable(TakeSnapshotRunnable snapshot_operation)
+	public OperationUploadSnapshot(OperationSnapshot snapshot_operation)
 	{
 		this.snapshot_operation = snapshot_operation;
 	}

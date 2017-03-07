@@ -11,12 +11,12 @@ import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 import com.amazonaws.util.IOUtils;
 
-public class DownloadSmallObjectRunnable extends OperationRunnable
+public class OperationDownloadObject extends OperationRunnable
 {
 	private S3ObjectSummary object_summary;
-	private TakeSnapshotRunnable snapshot_operation;
+	private OperationSnapshot snapshot_operation;
 	
-	public DownloadSmallObjectRunnable(TakeSnapshotRunnable snapshot_operation, S3ObjectSummary object_summary)
+	public OperationDownloadObject(OperationSnapshot snapshot_operation, S3ObjectSummary object_summary)
 	{
 		Validator.notNull(snapshot_operation);
 		Validator.notNull(object_summary);

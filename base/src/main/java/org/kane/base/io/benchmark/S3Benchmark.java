@@ -19,7 +19,7 @@ import org.kane.base.io.GZIPUtils;
 import org.kane.base.io.SmallDocumentReader;
 import org.kane.base.io.SmallDocumentSource;
 import org.kane.base.io.snapshot.SnapshotRequest;
-import org.kane.base.io.snapshot.TakeSnapshotRunnable;
+import org.kane.base.io.snapshot.OperationSnapshot;
 import org.kane.base.threading.OperationRunnable;
 import org.kane.base.threading.OperationRunnable.Result;
 
@@ -68,7 +68,7 @@ public class S3Benchmark
 			request = builder.create();
 		}
 		
-		TakeSnapshotRunnable snapshot_operation = new TakeSnapshotRunnable(request);
+		OperationSnapshot snapshot_operation = new OperationSnapshot(request);
 		Result result = OperationRunnable.execute(snapshot_operation, Result.ERROR);
 		
 		System.out.println(result);
