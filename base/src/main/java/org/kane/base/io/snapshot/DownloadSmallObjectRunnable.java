@@ -13,7 +13,6 @@ import com.amazonaws.util.IOUtils;
 
 public class DownloadSmallObjectRunnable extends OperationRunnable
 {
-	private AmazonS3Client client;
 	private S3ObjectSummary object_summary;
 	private TakeSnapshotRunnable snapshot_operation;
 	
@@ -35,7 +34,7 @@ public class DownloadSmallObjectRunnable extends OperationRunnable
 
 		GetObjectRequest request = new GetObjectRequest(object_summary.getBucketName(),object_summary.getKey());
 
-		S3Object s3_obj = client.getObject(request);
+		S3Object s3_obj = snapshot_operation.getSimpleS3Client().getObject(request);
 		
 		if ( shouldStop() ) 
 			return Result.STOPPED;

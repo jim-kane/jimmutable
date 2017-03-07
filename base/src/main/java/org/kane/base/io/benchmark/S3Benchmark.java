@@ -20,6 +20,8 @@ import org.kane.base.io.SmallDocumentReader;
 import org.kane.base.io.SmallDocumentSource;
 import org.kane.base.io.snapshot.SnapshotRequest;
 import org.kane.base.io.snapshot.TakeSnapshotRunnable;
+import org.kane.base.threading.OperationRunnable;
+import org.kane.base.threading.OperationRunnable.Result;
 
 import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
@@ -53,24 +55,23 @@ public class S3Benchmark
 		
 		SnapshotRequest request;
 		
-	/*	{
-			S3ListRequest.Builder builder = new S3ListRequest.Builder(Regions.US_WEST_2, BUCKET_NAME);
-			builder.setListPrefix(EXPERIMENT_NAME+"/");
-			builder.setMaximumObjectCount(maximum_object_count);
-			request = builder.create();
-		}*/
-		
-		/*TakeSnapshotThread snapshot = new TakeSnapshotThread(request, BUCKET_NAME, "third/.snapshot");
-		snapshot.start();
-		
-		while(true)
 		{
-			Thread.currentThread().sleep(500);
-			if ( snapshot.getSimpleState() != ThreadedOperationState.IN_PROGRESS ) break;
+			SnapshotRequest.Builder builder = new SnapshotRequest.Builder();
+			
+			builder.setSourceBucketName(BUCKET_NAME);
+			builder.setSourceListPrefix(EXPERIMENT_NAME+"/");
+			
+			builder.setDestinationBucketName(BUCKET_NAME);
+			builder.setDestinationKey("third/.snapshot");
+			builder.setMaximumObjectCount(maximum_object_count);
+			
+			request = builder.create();
 		}
 		
-		System.out.println();
-		System.out.println("Finished taking snapshot: "+snapshot.getSimpleState());*/
+		TakeSnapshotRunnable snapshot_operation = new TakeSnapshotRunnable(request);
+		Result result = OperationRunnable.execute(snapshot_operation, Result.ERROR);
+		
+		System.out.println(result);
 	}
 	
 	static public void s3bulkRead(int max_objects) throws Exception

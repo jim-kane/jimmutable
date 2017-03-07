@@ -48,6 +48,9 @@ public class TakeSnapshotRunnable extends OperationRunnable
 		synchronized(snapshot_writer)
 		{
 			snapshot_writer.writeDocument(new String(data));
+			
+			stats_objects_written_to_snapshot++;
+			stats_bytes_written_to_snapshot += data.length;
 		}
 	}
 	
@@ -81,38 +84,15 @@ public class TakeSnapshotRunnable extends OperationRunnable
 		System.out.println();
 		
 		
+		UploadSnapshotRunnable upload = new UploadSnapshotRunnable(this);
 		
-
-		long t2 = System.currentTimeMillis();
-
-		if ( state == ThreadedOperationState.IN_PROGRESS )
-		{
-			TransferManager manager = new TransferManager(AWSAPIKeys.getAWSCredentialsDev()); 
-
-			PutObjectRequest request = new PutObjectRequest(snapshot_bucket_name, snapshot_key_name, temporary_file);
-			Upload upload = manager.upload(request);
-
-			while(true)
-			{
-				if ( upload.isDone() ) break;
-
-				long bytes_uploaded = upload.getProgress().getBytesTransfered();
-
-				System.out.println(String.format("Uploaded %,d kb in %,d ms", bytes_uploaded/1024l, System.currentTimeMillis()-t2));
-
-				Thread.currentThread().sleep(500);
-			}
-
-			manager.shutdownNow();
-
-			System.out.println();
-			System.out.println(String.format("Finished Upload %,d kb in %,d ms", temporary_file.length()/1024l, System.currentTimeMillis()-t2));
-			System.out.println(String.format("Snapshot finished! %,d ms", System.currentTimeMillis()-t1));
-		}
-		else
-		{
-			System.out.println("Not uploading, state = "+state);
-		}
+		result = OperationRunnable.executeWithMonitor(upload, 500, new UploadSnapshotMonitor(), Result.ERROR);
+		
+		long bytes_uploaded = upload.getBytesUploaded();
+		
+		System.out.println(String.format("Finished Upload! Uploaded %,d kb in %,d ms", bytes_uploaded/1024l, System.currentTimeMillis()-upload.getOptionalStartTime(0)));
+		
+		return result;
 	}
 	
 	private class TakeSnapshotMonitor implements OperationMonitor
