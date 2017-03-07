@@ -28,7 +28,7 @@ public class SmallDocumentWriter
 		this(new OutputStreamWriter(out));
 	}
 	
-	synchronized public void writeDocument(String xml) throws IOException
+	public void writeDocument(String xml) throws IOException
 	{
 		if ( xml == null ) return;
 		if ( document_count == 0 ) time_of_first_write = System.currentTimeMillis();
@@ -43,11 +43,11 @@ public class SmallDocumentWriter
 		document_count++;
 	}
 	
-	synchronized public int getDocumentCount() { return document_count; }
-	synchronized public boolean hasWrittenFirstDocument() { return time_of_first_write != 0; }
-	synchronized public long getTimeOfFirstWrite() { return time_of_first_write; }
+	public int getDocumentCount() { return document_count; }
+	public boolean hasWrittenFirstDocument() { return time_of_first_write != 0; }
+	public long getTimeOfFirstWrite() { return time_of_first_write; }
 	
-	synchronized public void close() throws IOException
+	public void close() throws IOException
 	{
 		writeDocument(SmallDocumentReader.EOF_DOCUMENT);
 		out.close();
@@ -67,13 +67,13 @@ public class SmallDocumentWriter
 		}
 	}
 
-	synchronized public void printStatus(int every_n)
+	public void printStatus(int every_n)
 	{
 		if ( document_count % every_n != 0 ) return;
 		printStatus();
 	}
 	
-	synchronized public void printStatus()
+	public void printStatus()
 	{
 		System.out.println(String.format("Write documents: %,d documents written in %,d ms, %,d MB RAM used"
 				, document_count
@@ -81,7 +81,7 @@ public class SmallDocumentWriter
 				, (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1024 / 1024));
 	}
 	
-	synchronized public void flush() throws IOException
+	public void flush() throws IOException
 	{
 		out.flush();
 	}
