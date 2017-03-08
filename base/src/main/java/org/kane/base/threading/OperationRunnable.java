@@ -7,27 +7,107 @@ import java.util.concurrent.Future;
 import org.kane.base.serialization.Optional;
 import org.kane.base.serialization.Validator;
 
+/**
+ * An abstract base class used to provide uniform behavior of runnable(s).
+ * 
+ * Every operation evaluates to a result (OperationRunnable.Result). The only
+ * valid results are SUCCESS (the operation worked), ERROR (the operation did
+ * not succeed because it encountered an error) and STOPPED (the runnable was
+ * stopped by another thread before it could finish)
+ * 
+ * @author jim.kane
+ *
+ */
 abstract public class OperationRunnable implements Runnable
 {
 	volatile private Result result = null;
 	volatile State state = State.AWAITING_START;
 	volatile private long start_time = -1;
 
-	public boolean hasResult() { return result != null; }
-	public Result getOptionalResult(Result default_value) { return result != null ? result : default_value; }
 	
-	public boolean hasStartTime() { return Optional.has(start_time, -1); }
-	public long getOptionalStartTime(long default_value) { return Optional.getOptional(start_time, -1, default_value); }
+	/**
+	 * Check to see if the operation has a result
+	 * 
+	 * @return True if the operation has finished running, false otherwise
+	 */
+	final public boolean hasResult() 
+	{ 
+		return result != null; 
+	}
 	
-	public State getSimpleState() { return state; }
+	/**
+	 * Get the result of the operation.
+	 * 
+	 * @param default_value
+	 *            The value to return if the operation has not finished yet.
+	 * @return The result of the operation, or default_value if the operation
+	 *         has not finished yet.
+	 */
+	final public Result getOptionalResult(Result default_value) 
+	{ 
+		return result != null ? result : default_value; 
+	}
 	
-	public boolean isInState(State state_to_check) 
+	/**
+	 * Check to see if the operation has a start time (i.e. has it started
+	 * running)
+	 * 
+	 * @return True if the operation has started and has a start time, false
+	 *         otherwise
+	 * 
+	 */
+	final public boolean hasStartTime() 
+	{ 
+		return Optional.has(start_time, -1); 
+	}
+	
+	/**
+	 * Get the start time of the operation
+	 * 
+	 * @param default_value
+	 *            The value to return if the operation has not started yet
+	 *            (hence, no start time)
+	 * @return The start time of the operation, or default_value if the
+	 *         operation has not started yet.
+	 */
+	final public long getOptionalStartTime(long default_value) 
+	{ 
+		return Optional.getOptional(start_time, -1, default_value); 
+	}
+	
+	/**
+	 * Get the state of the operation
+	 * 
+	 * @return The state of the operation
+	 */
+	final public State getSimpleState() 
+	{ 
+		return state; 
+	}
+	
+	/**
+	 * Check to see if the operation is in a particular state
+	 * 
+	 * @param state_to_check
+	 *            The state to check
+	 * @return True if the operation is in the state (state_to_check), false
+	 *         otherwise.
+	 */
+	final public boolean isInState(State state_to_check) 
 	{
 		if ( state_to_check == null ) return false;
 		return state == state_to_check;
 	}
 	
-	public void stop() 
+	/**
+	 * Signal the operation that it should stop.
+	 * 
+	 * Calling stop() does *NOT* halt the thread running the operation. It
+	 * simply guarantees that any future calls to shouldStop() return true. Well
+	 * behaved operations call shouldStop() regularly and will quickly stop
+	 * after stop() is called.
+	 */
+	final public void stop() 
 	{ 
 		if ( isInState(State.STOPPING) ) return; // nothing to do
 		if ( isInState(State.FINISHED) ) return; // nothing to do, already stopped (finished)
@@ -35,7 +115,15 @@ abstract public class OperationRunnable implements Runnable
 		state = State.STOPPING;
 	}
 	
-	public boolean shouldStop()
+	/**
+	 * Check if the operation shouldStop()
+	 * 
+	 * Authors of operation(s) should routinely check to see if they have been
+	 * signaled to stop and halt (returning Result.STOPPED)
+	 * 
+	 * @return True if the operation should stop, false otherwise.
+	 */
+	final public boolean shouldStop()
 	{
 		if ( isInState(State.STOPPING) ) return true;
 		if ( isInState(State.FINISHED) ) return true;
@@ -43,9 +131,20 @@ abstract public class OperationRunnable implements Runnable
 		return false;
 	}
 	
+	/**
+	 * 
+	 * All OperationRunnable implementations use the same run method (hence the
+	 * final). The default implementation simply calls performOperation() and
+	 * provides nice handling for state changes and any exceptions thrown by
+	 * performOperation (exceptions are printed and the operation resutls in
+	 * Result.ERROR)
+	 * 
+	 */
 	final public void run()
 	{
+		state = State.RUNNING;
 		start_time = System.currentTimeMillis();
+		
 		try
 		{
 			if ( shouldStop() )
@@ -69,6 +168,14 @@ abstract public class OperationRunnable implements Runnable
 		}
 	}
 	
+	/**
+	 * Do the work associated with the operation, returning the appropriate
+	 * result. Any exceptions thrown will be printed and will result in the
+	 * operation evaluating to Result.ERROR
+	 * 
+	 * @return The result of the operation (SUCCESS, ERROR, or STOPPED)
+	 * @throws Exception
+	 */
 	abstract protected Result performOperation() throws Exception;
 	
 	static public enum Result
@@ -86,27 +193,51 @@ abstract public class OperationRunnable implements Runnable
 		FINISHED;
 	}
 	
+	/**
+	 * Execute an operation (in this thread).
+	 * 
+	 * @param runnable
+	 *            The OperationRunnable to execute
+	 * @param default_value
+	 *            The Result to return in the event that an error occurs while
+	 *            executing the operation
+	 *            
+	 * @return The result of the operation
+	 */
 	static public Result execute(OperationRunnable runnable, Result default_value)
 	{
 		Validator.notNull(runnable);
 		
-		ExecutorService single_thread = Executors.newSingleThreadExecutor();
-		Future f = single_thread.submit(runnable);
-		
-		try 
-		{ 
-			f.get(); 
-			single_thread.shutdown();
-		} 
-		catch(Exception e) 
-		{ 
-			e.printStackTrace(); 
-			return default_value; 
+		try
+		{
+			runnable.run();
+			return runnable.getOptionalResult(default_value);
 		}
-		
-		return runnable.getOptionalResult(default_value);
+		catch(Exception e)
+		{
+			e.printStackTrace();
+			return default_value;
+		}
 	}
 	
+	/**
+	 * Execute an operation in a separate thread. The current thread is used to
+	 * execute the monitoring of the operation. This function will not return
+	 * until the operation is completed.
+	 * 
+	 * @param runnable
+	 *            The operation to perform
+	 * @param heartbeat_interval
+	 *            The approximate waiting interval between calls to
+	 *            monitor.onOperationMonitorHeartbeat(runnable)
+	 * @param monitor
+	 *            The (optional, can be null) monitor for the operation
+	 * @param default_value
+	 *            The result to return in the event of an (unexpected) error.
+	 * @return The result of the operation, or default_value if an unexpected
+	 *         error occurs.
+	 *         
+	 */
 	static public Result executeWithMonitor(OperationRunnable runnable, long heartbeat_interval, OperationMonitor monitor, Result default_value)
 	{
 		Validator.notNull(runnable);
