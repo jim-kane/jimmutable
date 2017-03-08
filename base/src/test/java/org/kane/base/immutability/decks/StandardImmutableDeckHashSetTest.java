@@ -3,11 +3,11 @@ package org.kane.base.immutability.decks;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.kane.base.examples.BindingType;
-import org.kane.base.examples.Book;
-import org.kane.base.examples.BookDeckList;
-import org.kane.base.examples.BookDeckSet;
-import org.kane.base.examples.BookDeckSet.Builder;
+import org.kane.base.examples.book.BindingType;
+import org.kane.base.examples.book.Book;
+import org.kane.base.examples.book.BookDeckList;
+import org.kane.base.examples.book.BookDeckSet;
+import org.kane.base.examples.book.BookDeckSet.Builder;
 import org.kane.base.serialization.JavaCodeUtils;
 import org.kane.base.serialization.StandardObject;
 
@@ -120,7 +120,7 @@ public class StandardImmutableDeckHashSetTest extends TestCase
     		     , "</book-set>"
     		);
 
-    	BookDeckSet obj = (BookDeckSet)StandardObject.fromXML(obj_as_xml_string);
+    	BookDeckSet obj = StandardObject.fromXML(obj_as_xml_string);
     	
     	
     	List<Book> test_books = new ArrayList();

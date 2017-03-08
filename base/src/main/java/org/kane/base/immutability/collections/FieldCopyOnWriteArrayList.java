@@ -3,45 +3,58 @@ package org.kane.base.immutability.collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-/**
- * An implementation of a Field object backed by an FieldCopyOnWriteArrayList.
- * Generally speaking, this Field will have all of the characteristics of a
- * FieldCopyOnWriteArrayList object that can be made immutable by calling
- * freeze()
- * 
- * Why does one need a thread safe immutable list? Well... if your
- * *construction* code (when the object is mutable) is threaded then it is *much
- * safer* to use this list afs, the java language being what it is, it is neigh
- * on impossible to guarantee the mutable -> immutable transition in this
- * multi-threaded context absent a concurrent backing store.
- * 
- * In general, however (when the field is being created in single threaded code)
- * don't worry about a thing and just use FieldArrayList, which is also *far*
- * faster to construct.
- * 
- * @author jim.kane
- *
- * @param <T>
- */
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 
-public class FieldCopyOnWriteArrayList<T> extends FieldList<T>
+
+/**
+ * An implementation of a {@link CopyOnWriteArrayList} that begins life as mutable
+ * but can, at any time, be "{@link #freeze() frozen}" (made immutable). In other
+ * words, a wrapper for a {@link CopyOnWriteArrayList} that implements {@link Field}.
+ * 
+ * <p>Why does one need a thread safe immutable list? Well... if your
+ * <em>construction</em> code (when the object is mutable) is threaded then it is
+ * <em>much</em> safer to use a concurrent backing store. In Java, it is nigh
+ * impossible to guarantee the mutable -> immutable transition in a multi-threaded
+ * context absent a concurrent backing store.
+ * 
+ * <p>In general, however (when the field is being created in single threaded code),
+ * just use {@link FieldArrayList}, which is <em>far</em> faster to construct.
+ * 
+ * @author Jim Kane
+ *
+ * @param <E> The type of elements in this list
+ * 
+ * @see FieldList
+ * @see FieldArrayList
+ */
+@XStreamAlias("field-copy-on-write-array-list")
+final public class FieldCopyOnWriteArrayList<E> extends FieldList<E>
 {
+	/**
+	 * Default constructor (for an empty list)
+	 */
 	public FieldCopyOnWriteArrayList()
 	{
 		super();
 	}
 	
-	
-	public FieldCopyOnWriteArrayList(Iterable<T> objs)
+	/**
+     * Constructs a list containing the elements of the specified {@link Iterable},
+     * in the order they are returned by the {@link Iterable#iterator() iterator}.
+     *
+     * @param objs The {code Iterable} whose elements are to be placed into this list
+     * 
+     * @throws NullPointerException if the specified {@code Iterable} is {@code null}
+	 */
+	public FieldCopyOnWriteArrayList(Iterable<E> objs)
 	{
 		super(objs);
 	}
-
-	protected List createNewMutableListInstance() 
+	
+	@Override
+	protected List<E> createNewMutableInstance() 
 	{
-		return new CopyOnWriteArrayList();
+		return new CopyOnWriteArrayList<>();
 	}
-	
-	
 }
 

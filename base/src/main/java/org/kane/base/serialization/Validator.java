@@ -105,7 +105,7 @@ public class Validator
 	 * @param c
 	 *            The collection to test
 	 */
-	static public void containsNoNulls(Collection collection)
+	static public void containsNoNulls(Collection<?> collection)
 	{
 		for ( Object obj : collection )
 		{
@@ -113,7 +113,7 @@ public class Validator
 		}
 	}
 	
-	static public void containsOnlyInstancesOf(Class c, Collection collection)
+	static public void containsOnlyInstancesOf(Class<?> c, Collection<?> collection)
 	{
 		for ( Object obj : collection )
 		{
@@ -122,9 +122,14 @@ public class Validator
 		}
 	}
 	
-	static public void containsOnlyInstancesOf(Class key, Class value, Map map)
+	static public void containsOnlyInstancesOf(Class<?> key, Class<?> value, Map<?, ?> map)
 	{
 		containsOnlyInstancesOf(key,map.keySet());
 		containsOnlyInstancesOf(value,map.values());
+	}
+
+	static public <E extends Enum<E>> void notEqual(Enum<E> one, Enum<E> two)
+	{
+	    if (one != two) throw new ValidationException();
 	}
 }

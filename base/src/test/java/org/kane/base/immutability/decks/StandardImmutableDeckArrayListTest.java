@@ -3,10 +3,10 @@ package org.kane.base.immutability.decks;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.kane.base.examples.BindingType;
-import org.kane.base.examples.Book;
-import org.kane.base.examples.BookDeckList;
-import org.kane.base.examples.BookDeckList.Builder;
+import org.kane.base.examples.book.BindingType;
+import org.kane.base.examples.book.Book;
+import org.kane.base.examples.book.BookDeckList;
+import org.kane.base.examples.book.BookDeckList.Builder;
 import org.kane.base.serialization.JavaCodeUtils;
 import org.kane.base.serialization.StandardObject;
 
@@ -125,7 +125,7 @@ public class StandardImmutableDeckArrayListTest extends TestCase
     		     , "</book-list>"
     		);
 
-    		BookDeckList obj = (BookDeckList)StandardObject.fromXML(obj_as_xml_string);
+    		BookDeckList obj = StandardObject.fromXML(obj_as_xml_string);
     		
     		assertEquals(obj.getSimpleContents().size(),3);
     		

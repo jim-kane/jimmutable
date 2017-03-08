@@ -7,6 +7,7 @@ package org.kane.base.immutability;
  * @author jim.kane
  *
  */
+@SuppressWarnings("serial")
 public class ImmutableException extends RuntimeException
 {
 	public ImmutableException()

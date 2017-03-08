@@ -1,8 +1,5 @@
 package org.kane.base.serialization;
 
-import java.util.Collections;
-import java.util.List;
-
 /**
  * Various static methods useful when normalizing objects
  * 
@@ -47,6 +44,17 @@ public class Normalizer
 	{
 		if ( str == null ) return null;
 		return str.toLowerCase();
+	}
+	
+	static public String trim(String str)
+	{
+	    if (null == str) return null;
+	    return str.trim();
+	}
+	
+	static public int positive(int value)
+	{
+	    return Math.abs(value);
 	}
 }
 

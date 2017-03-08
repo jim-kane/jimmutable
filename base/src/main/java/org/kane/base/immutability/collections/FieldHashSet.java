@@ -1,41 +1,57 @@
 package org.kane.base.immutability.collections;
 
-import java.util.Collection;
 import java.util.HashSet;
+import java.util.Set;
 
-import org.kane.base.immutability.StandardImmutableObject;
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+
 
 /**
- * An implementation of a Field object backed by an HashSet. Generally
- * speaking, this Field will have all of the characteristics of an HashSet
- * object that can be made immutable by calling freeze()
+ * An implementation of a {@link HashSet} that begins life as mutable but can,
+ * at any time, be "{@link #freeze() frozen}" (made immutable). In other
+ * words, a wrapper for a {@link HashSet} that implements {@link Field}.
  * 
- * Note: HashSet, and consequently FieldHashSet is not thread safe. This is
- * *generally* not a concern once "frozen" but if you a construction process
- * that is multi-threaded you should use FieldConcurrentHashSet 
+ * <p><b>Note:</b> {@link HashSet}, and consequently {@code FieldHashSet} is
+ * not thread safe. This is generally not a concern once "{@link #freeze() frozen}"
+ * but if the construction process is multi-threaded, consider
+ * {@link FieldConcurrentHashSet}.
  * 
- * In the "standard" case (construction in one thread) don't worry about any of
- * this and just use FieldHashSet.
+ * <p>In the standard case (construction in one thread), {@code FieldHashSet} will
+ * work well.
  * 
- * @author jim.kane
+ * @author Jim Kane
  *
- * @param <T>
+ * @param <E> The type of elements in this set
+ * 
+ * @see FieldSet
+ * @see FieldConcurrentHashSet
  */
-public class FieldHashSet<T> extends FieldSet<T>
+@XStreamAlias("field-hash-set")
+final public class FieldHashSet<E> extends FieldSet<E>
 {
+	/**
+	 * Default constructor (for an empty set)
+	 */
 	public FieldHashSet()
 	{
 		super();
 	}
 	
-	public FieldHashSet(Iterable<T> objs)
+	/**
+     * Constructs a set containing the elements of the specified {@link Iterable}
+     *
+     * @param objs The {code Iterable} whose elements are to be placed into this set
+     * 
+     * @throws NullPointerException if the specified {@code Iterable} is {@code null}
+	 */
+	public FieldHashSet(Iterable<E> objs)
 	{
 		super(objs);
 	}
 	
-	protected Collection<T> createNewMutableInstance()
+	@Override
+	protected Set<E> createNewMutableInstance()
 	{
-		return new HashSet();
+		return new HashSet<>();
 	}
-
 }

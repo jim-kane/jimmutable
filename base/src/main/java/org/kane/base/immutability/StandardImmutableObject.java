@@ -1,51 +1,53 @@
 package org.kane.base.immutability;
 
+import org.kane.base.immutability.collections.Field;
 import org.kane.base.serialization.StandardObject;
-import org.kane.base.serialization.ValidationException;
 import org.kane.base.serialization.XStreamSingleton;
 
-import com.thoughtworks.xstream.XStream;
-
 /**
- * An abstract base class representing a standard immutable objects.
+ * An abstract base class for {@link StandardObject standard} objects
+ * that want to guarantee immutability.
  * 
- * A standard immutable object may only be modified *before* it is complete
- * (i.e. before a call is made to the complete method. Calls to complete may
- * only be made one time. Calling complete results in the normalize method and
- * then the validate method being invoked on the object.
+ * <p>A standard immutable object may only be modified <em>before</em> it is
+ * {@link #complete() complete}.
  * 
- * A call complete executes normalize(), validate(), and then freeze()
+ * <p><b>Note:</b> It is important that the normalization code goes into
+ * {@link #normalize()}, the validation code into {@link #validate()}, and the
+ * freezing code into {@link #freeze()}. The latter is particularly important as
+ * deep cloning (and hence building) rely upon the ability to control the timing
+ * of these operations. 
  * 
- * Please note: it is important that the noramlization code goes into the
- * normalize() function, the validation code into validate() and the freezing
- * code into freeze(). The latter is particularly important as deep cloning (and
- * hence building) rely upon the ability to "freeze later" an object
- * serialized...
- * 
- * @author jim.kane
- *
+ * @author Jim Kane
  */
-abstract public class StandardImmutableObject extends StandardObject
+abstract public class StandardImmutableObject<T extends StandardImmutableObject<T>> extends StandardObject<T>
 {
-	transient private boolean is_complete = false;
+	transient volatile private boolean is_complete = false;
 	
 	/**
-	 * StandardImmutableObject's add one additional method to StandardObject's
-	 * complete cycle, freeze(). The job of freeze is to make any changes
-	 * required to the object to make it immutable. Frequently the only job of
-	 * freeze is to call freeze on any StandardImutableField objects contained
-	 * herein...
+	 * Make any changes to this object required to make this object
+	 * immutable. Frequently the only job of {@code freeze} is to call
+	 * {@code freeze()} on any non-primative fields.
+	 * 
+	 * @see Field#freeze()
 	 */
 	abstract public void freeze();
 	
 	/**
-	 * Complete the object (normailze(), validate(), freeze(), mark as complete)
+	 * Declare that an object is ready to use. In addition to normal
+	 * {@link super#complete() completion}, {@link #freeze()} is
+	 * called to toggle immutability.
 	 * 
-	 * Attempting to make multiple calls to this function will result in a
-	 * ImmutableException being thrown
+	 * <p>{@link #isComplete()} is guaranteed to return {@code true}
+	 * after {@code complete} has returned. 
 	 * 
+	 * <p>{@code complete} can only be called once for
+	 * immutable objects. Future invocations will result in an
+	 * {@link ImmutableException}.
+	 * 
+	 * @throws ImmutableException if the object is {@link #isComplete() complete}
 	 */
-	public void complete()
+	@Override
+	synchronized public void complete()
 	{
 		assertNotComplete();
 		
@@ -56,8 +58,9 @@ abstract public class StandardImmutableObject extends StandardObject
 	}
 	
 	/**
-	 * Test to see if the object is complete, throw an ImmutableException if the
-	 * object is complete
+	 * Test to see if the object is {@link #complete() complete}
+	 * 
+	 * @throws ImmutableException if the object is {@link #isComplete() complete}
 	 */
 	public void assertNotComplete()
 	{
@@ -65,10 +68,22 @@ abstract public class StandardImmutableObject extends StandardObject
 			throw new ImmutableException("Attempt to modify an object after construction is complete");
 	}
 	
+    /**
+     * Returns {@code true} if this object is {@link #complete() complete}.
+     *
+     * @return {@code true} if this object is {@link #complete() complete}
+     */
 	public boolean isComplete() { return is_complete; }
 	
-	public StandardImmutableObject deepMutableCloneForBuilder()
+	/**
+	 * Create an identical copy of this object that is still mutable.
+	 * Any changes to the returned object will <em>not</em> be reflected
+	 * by this object. 
+	 * 
+	 * @return A new, mutable object with all fields set to the same values as this instance
+	 */
+	protected T deepMutableCloneForBuilder()
 	{
-		return (StandardImmutableObject)fromSerializedData(toXML(), XStreamSingleton.getXMLStream(), false);
+		return fromSerializedData(toXML(), XStreamSingleton.getXMLStream(), false);
 	}
 }

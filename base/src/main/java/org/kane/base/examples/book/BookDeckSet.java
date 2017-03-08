@@ -1,37 +1,43 @@
-package org.kane.base.examples;
+package org.kane.base.examples.book;
 
 import java.util.Collection;
+import java.util.Collections;
 
-import org.kane.base.immutability.StandardImmutableObject;
 import org.kane.base.immutability.collections.FieldHashSet;
 import org.kane.base.immutability.collections.FieldSet;
-import org.kane.base.immutability.decks.StandardImmutableDeckSet;
+import org.kane.base.immutability.decks.StandardImmutableSetDeck;
 import org.kane.base.serialization.Validator;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @XStreamAlias("book-set")
-public class BookDeckSet extends StandardImmutableObject implements StandardImmutableDeckSet<Book>
+final public class BookDeckSet extends StandardImmutableSetDeck<BookDeckSet, Book>
 {
-	private FieldHashSet<Book> books = new FieldHashSet();
+	private FieldHashSet<Book> books = new FieldHashSet<>();
 	
 	
 	private BookDeckSet(Builder builder)
 	{
 	}
 	
+	public BookDeckSet()
+	{
+		this(Collections.emptySet());
+	}
+	
 	public BookDeckSet(Collection<Book> books)
 	{
-		this.books.addAll(books);
+		if ( books != null )
+		{
+			this.books.addAll(books);
+		}
 		
 		complete();
 	}
 	
-	
 	public void normalize() 
 	{	
 	}
-
 	
 	public void validate() 
 	{
@@ -39,12 +45,8 @@ public class BookDeckSet extends StandardImmutableObject implements StandardImmu
 		Validator.containsOnlyInstancesOf(Book.class, books);
 	}
 	
-	public void freeze() { freezeContents();	}
-	public int hashCode() { return hashContents(); }
-	public boolean equals(Object obj) { return contentsEqual(obj); }
-	public int compareTo(Object o) { return contentsCompareTo(o); }
-
 	public FieldSet<Book> getSimpleContents() { return books; }
+	
 	
 	static public class Builder
 	{
@@ -57,7 +59,7 @@ public class BookDeckSet extends StandardImmutableObject implements StandardImmu
 		
 		public Builder(BookDeckSet starting_point)
 		{
-			under_construction = (BookDeckSet)starting_point.deepMutableCloneForBuilder();
+			under_construction = starting_point.deepMutableCloneForBuilder();
 		}
 
 		public void addBook(Book book)
@@ -68,7 +70,7 @@ public class BookDeckSet extends StandardImmutableObject implements StandardImmu
 		
 		public BookDeckSet create()
 		{
-			return (BookDeckSet)under_construction.deepClone();
+			return under_construction.deepClone();
 		}
 	}
 }

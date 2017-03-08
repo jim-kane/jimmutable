@@ -49,7 +49,7 @@ public class XStreamSingleton
 		
 		if ( root_packages.contains(package_name) ) return;
 		
-		Set<String> new_root_packages = new HashSet(root_packages);
+		Set<String> new_root_packages = new HashSet<>(root_packages);
 		new_root_packages.add(package_name);
 		
 		xml_stream = null;
@@ -88,10 +88,12 @@ public class XStreamSingleton
 	{
 		for ( String root_package : root_packages )
 		{
-			Reflections reflections = new Reflections(root_package);    
-		    Set<Class<? extends StandardObject>> classes = reflections.getSubTypesOf(StandardObject.class);
+			Reflections reflections = new Reflections(root_package);
+			
+		    @SuppressWarnings("rawtypes")
+			Set<Class<? extends StandardObject>> classes = reflections.getSubTypesOf(StandardObject.class);
 				
-		    for ( Class c : classes )
+		    for ( Class<?> c : classes )
 		    {
 		    	xstream.processAnnotations(c);
 		    }
@@ -100,7 +102,7 @@ public class XStreamSingleton
 	
 	static private Set<String> createDefaultRootPackages()
 	{
-		Set<String> ret = new HashSet();
+		Set<String> ret = new HashSet<>();
 		
 		ret.add("org.kane");
 		

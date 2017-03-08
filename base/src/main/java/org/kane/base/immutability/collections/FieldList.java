@@ -2,234 +2,233 @@ package org.kane.base.immutability.collections;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 
-import org.kane.base.immutability.ImmutableException;
-import org.kane.base.immutability.StandardImmutableObject;
-import org.kane.base.serialization.ValidationException;
-
 /**
- * This is a utility class that makes it easy to create a properly behaved list
- * field of an StandardImmutableObject.
+ * An implementation of a {@link List} that begins life as mutable but can, at
+ * any time, be "{@link #freeze() frozen}" (made immutable). In other
+ * words, a wrapper for a {@link List} that implements {@link Field}.
  * 
- * What's hard about that? If you have to ask... ;)
- * 
- * Java has a number of really quirky mutability issues... For example, think
- * about the following code:
- * 
- *  List<String> my_list = new ArrayList();
- *  Iterator<String> itr = my_list.iterator();
- *  
- *  my_list.add("foo");
- *  my_list.add("bar");
- *  
- *  my_list = Collections.unmodifiableList(my_list);
- *  
- *  itr.remove();
- *  
- *  Believe it or not, this code *REMOVES FOO*...
- *  
- *  So, immutable coder beware... and use FieldList (or one of its implementing classes)!  
- *  (which will correctly throw an ImmutableException in this case)
- * 
- * @author jim.kane
+ * @author Jim Kane
  *
- * @param <T>
+ * @param <E> The type of elements in this list
+ * 
+ * @see FieldCollection
  */
-abstract public class FieldList<T> implements List<T>, Field
+abstract public class FieldList<E> extends FieldCollection<E> implements List<E>
 {
-	transient private boolean is_frozen = true;
+	/*
+	 * Never access _contents_ directly.
+	 * Use getContents so that SubList (and future) inheritance works
+	 * correctly.
+	 */
+	private List<E> contents = createNewMutableInstance();
 	
-	private List<T> contents;
+	@Override
+	protected List<E> getContents() { return contents; }
 	
-	abstract protected List createNewMutableListInstance();
+	/**
+	 * Instantiate a <em>new</em>, <em>mutable</em> {@link List}.
+	 * This allows sub-classes to control the {@link List} implementation
+	 * that is used (e.g. {@link ArrayList}, {@link LinkedList}, etc.).
+	 *  
+	 * @return The new {@link List} instance
+	 */
+	abstract protected List<E> createNewMutableInstance();
 	
+	
+	/**
+	 * Default constructor (for an empty list)
+	 */
 	public FieldList()
 	{
-		is_frozen = false;
-		contents = createNewMutableListInstance();
+		super();
 	}
 	
-	public FieldList(Iterable<T> objs)
+	/**
+     * Constructs a list containing the elements of the specified {@link Iterable},
+     * in the order they are returned by the {@link Iterable#iterator() iterator}.
+     *
+     * @param objs The {code Iterable} whose elements are to be placed into this list
+     * 
+     * @throws NullPointerException if the specified {@code Iterable} is {@code null}
+	 */
+	public FieldList(Iterable<E> objs)
 	{
-		this();
-		
-		if ( objs == null ) objs = Collections.EMPTY_LIST;
-		
-		for ( T obj : objs )
-		{
-			add(obj);
-		}
+		super(objs);
 	}
-
-	public void freeze() { is_frozen = true; }
-	public boolean getSimpleIsFrozen()  { return is_frozen; }
 	
-	
-	public List<T> subList(int fromIndex, int toIndex)
+	@Override
+	public E get(int index)
 	{
-		return Collections.unmodifiableList(contents.subList(fromIndex, toIndex));
+		return getContents().get(index);
 	}
 	
-	public int size() { return contents.size(); }
-	public boolean isEmpty() { return contents.isEmpty(); }
-	public boolean contains(Object o) { return contents.contains(o); }
-	public Object[] toArray() { return contents.toArray();	}
-	public <T> T[] toArray(T[] a) { return contents.toArray(a); }
-	public boolean containsAll(Collection<?> c) { return contents.containsAll(c); }
-	public T get(int index) { return contents.get(index); }
-	
-	
-
-	public boolean add(T e) 
+	@Override
+	public boolean addAll(int index, Collection<? extends E> c) 
 	{
 		assertNotFrozen();
-		return contents.add(e);
+		return getContents().addAll(index,c);
 	}
 	
-	public boolean remove(Object o) 
+	@Override
+	public E set(int index, E element) 
 	{
 		assertNotFrozen();
-		return contents.remove(o);
+		return getContents().set(index,element);
 	}
-
-	public boolean addAll(Collection<? extends T> c) 
-	{
-		assertNotFrozen();
-		return contents.addAll(c);
-	}
-
-
 	
-	public boolean addAll(int index, Collection<? extends T> c) 
+	@Override
+	public void add(int index, E element) 
 	{
 		assertNotFrozen();
-		return contents.addAll(index,c);
+		getContents().add(index,element);
 	}
 
+	@Override
+	public E remove(int index) 
+	{
+		assertNotFrozen();
+		return getContents().remove(index);
+	}
 
+	@Override
+	public int indexOf(Object o) { return getContents().indexOf(o); }
 	
-	public boolean removeAll(Collection<?> c) 
-	{
-		assertNotFrozen();
-		return contents.removeAll(c);
-	}
+	@Override
+	public int lastIndexOf(Object o) { return getContents().lastIndexOf(o); }
 
-	public boolean retainAll(Collection<?> c) 
-	{
-		assertNotFrozen();
-		return contents.retainAll(c);
-	}
-
-
+	@Override
+	public ListIterator<E> listIterator() { return new MyListIterator(getContents().listIterator()); }
 	
-	public void clear() 
-	{
-		assertNotFrozen();
-		contents.clear();
-	}
+	@Override
+	public ListIterator<E> listIterator(int index) { return new MyListIterator(getContents().listIterator(index)); }
 
+	@Override
+	public FieldList<E> subList(int from_index, int to_index)
+	{
+		return new SubList<>(this, getContents().subList(from_index, to_index));
+	}
 	
-	public T set(int index, T element) 
-	{
-		assertNotFrozen();
-		return contents.set(index,element);
-	}
-
-
-	
-	public void add(int index, T element) 
-	{
-		assertNotFrozen();
-		contents.add(index,element);
-	}
-
-	public T remove(int index) 
-	{
-		assertNotFrozen();
-		return contents.remove(index);
-	}
-
-	public int indexOf(Object o) { return contents.indexOf(o); }
-	public int lastIndexOf(Object o) { return contents.lastIndexOf(o); }
-
-
-	public Iterator<T> iterator() { return new MyListIterator(contents.listIterator()); }
-	public ListIterator<T> listIterator() { return new MyListIterator(contents.listIterator()); }
-	public ListIterator<T> listIterator(int index) { return new MyListIterator(contents.listIterator(index)); }
-	
-
-	public int hashCode() 
-	{
-		return contents.hashCode();
-	}
-
-
+	@Override
 	public boolean equals(Object obj) 
 	{
-		if (!(obj instanceof List) ) return false;
+		if (! (obj instanceof List)) return false;
 		
-		List other = (List)obj;
-		
-		if ( other.size() != size() ) return false;
-		
-		for ( int i = 0; i < size(); i++ )
+		// (Copied from AbstractList.equals)
+		// Using ListIterator behaves will for both sequential and
+		// random access lists (where other methods such as get may not)
+        ListIterator<E> my_it = listIterator();
+        ListIterator<?> other_it = ((List<?>) obj).listIterator();
+        
+		while (my_it.hasNext() && other_it.hasNext())
 		{
-			if ( !get(i).equals(other.get(i)) ) 
+			E my_elem = my_it.next();
+			Object other_elem = other_it.next();
+			
+			if (! (my_elem == null ? other_elem == null : my_elem.equals(other_elem)))
+			{
 				return false;
+			}
 		}
 		
-		return true;
+		// Check that the sizes are the same
+		return ! (my_it.hasNext() || other_it.hasNext());
 	}
 
-	public String toString() 
+	/**
+	 * An {@link ListIterator} that enforces {@link FieldCollection#freeze() freeze()}
+	 * 
+	 * @author Jim Kane
+	 */
+	private class MyListIterator implements ListIterator<E>
 	{
-		return super.toString();
-	}
-
-	private class MyListIterator implements ListIterator<T>
-	{
-		private ListIterator<T> itr;
+		private ListIterator<E> itr;
 		
-		public MyListIterator(ListIterator<T> itr)
+		public MyListIterator(ListIterator<E> itr)
 		{
 			this.itr = itr;
 		}
-
 		
 		public boolean hasNext() { return itr.hasNext(); }
-		public T next() { return (T)itr.next(); }
+		public E next() { return itr.next(); }
 
-		
 		public boolean hasPrevious() { return itr.hasPrevious(); }
-		public T previous() { return itr.previous(); }
+		public E previous() { return itr.previous(); }
 		public int nextIndex() { return itr.nextIndex(); }
 		public int previousIndex() { return itr.previousIndex(); }
 
-		
 		public void remove() 
 		{
 			assertNotFrozen();
 			itr.remove();
 		}
 
-		
-		public void set(T e) 
+		public void set(E e) 
 		{
 			assertNotFrozen();
 			itr.set(e);
 		}
 
-		
-		public void add(T e) 
+		public void add(E e) 
 		{
 			assertNotFrozen();
 			itr.add(e);
 		}
 	}
+}
+
+/**
+ * A {@link FieldList} that enforces {@link FieldCollection#freeze() freeze()}
+ * based on the parent
+ * 
+ * @author Jeff Dezso
+ */
+final class SubList<E> extends FieldList<E>
+{
+	private final FieldList<E> parent;
+    private final List<E> contents;
 	
+	public SubList(FieldList<E> parent, List<E> contents)
+	{
+		if (null == parent) throw new NullPointerException(); // Any well-behaved List will not let this happen
+		this.parent = parent;
+        this.contents = contents;
+	}
 	
+	/*
+	 * Overriding these methods provides the indirection necessary
+	 * for inheritance to do the heavy lifting while still connecting
+	 * the key Field behavior of the parent and the sub-list
+	 */
+	
+	@Override
+	public List<E> getContents()
+	{
+		return contents;
+	}
+	
+	@Override
+	public void freeze()
+	{
+		parent.freeze();
+	}
+
+	@Override
+	public boolean isFrozen()
+	{
+		return parent.isFrozen();
+	}
+	
+	/*
+	 * Dummied out but never used
+	 */
+	
+	@Override
+	protected List<E> createNewMutableInstance()
+	{
+		return parent.createNewMutableInstance();
+	}
 }

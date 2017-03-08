@@ -1,46 +1,58 @@
 package org.kane.base.immutability.collections;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
-import org.kane.base.immutability.StandardImmutableObject;
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+
 
 /**
- * An implementation of a Field object backed by an ArrayList. Generally
- * speaking, this Field will have all of the characteristics of an ArrayList
- * object that can be made immutable by calling freeze()
+ * An implementation of a {@link ArrayList} that begins life as mutable but can,
+ * at any time, be "{@link #freeze() frozen}" (made immutable). In other
+ * words, a wrapper for a {@link ArrayList} that implements {@link Field}.
  * 
- * Note: ArrayList, and consequently FieldArrayList is not thread safe. This is
- * *generally* not a concern once "frozen" but if you a construction process
- * that is multi-threaded you should use FieldCopyOnWriteArrayList (warning --
- * slow construction)
+ * <p><b>Note:</b> {@link ArrayList}, and consequently {@code FieldArrayList} is
+ * not thread safe. This is generally not a concern once "{@link #freeze() frozen}"
+ * but if the construction process is multi-threaded, consider
+ * {@link FieldCopyOnWriteArrayList}.
  * 
- * In the "standard" case (construction in one thread) don't worry about any of
- * this and just use FieldArrayList.
+ * <p>In the standard case (construction in one thread), {@code FieldArrayList} will
+ * work well.
  * 
- * @author jim.kane
+ * @author Jim Kane
  *
- * @param <T>
+ * @param <E> The type of elements in this list
+ * 
+ * @see FieldList
+ * @see FieldCopyOnWriteArrayList
  */
-public class FieldArrayList<T> extends FieldList<T>
+@XStreamAlias("field-array-list")
+final public class FieldArrayList<E> extends FieldList<E>
 {
+	/**
+	 * Default constructor (for an empty list)
+	 */
 	public FieldArrayList()
 	{
 		super();
 	}
 	
-	
-	public FieldArrayList(Iterable<T> objs)
+	/**
+     * Constructs a list containing the elements of the specified {@link Iterable},
+     * in the order they are returned by the {@link Iterable#iterator() iterator}.
+     *
+     * @param objs The {code Iterable} whose elements are to be placed into this list
+     * 
+     * @throws NullPointerException if the specified {@code Iterable} is {@code null}
+	 */
+	public FieldArrayList(Iterable<E> objs)
 	{
 		super(objs);
 	}
 
-	protected List createNewMutableListInstance() 
+	@Override
+	protected List<E> createNewMutableInstance() 
 	{
-		return new ArrayList();
-		
+		return new ArrayList<>();
 	}
-	
-	
 }

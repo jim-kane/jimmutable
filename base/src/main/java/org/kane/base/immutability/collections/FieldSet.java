@@ -1,39 +1,57 @@
 package org.kane.base.immutability.collections;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Set;
-
-import org.kane.base.immutability.ImmutableException;
-import org.kane.base.immutability.StandardImmutableObject;
+import java.util.TreeSet;
 
 /**
- * An implementation of a Set that begins life as immutable but can, at
- * any time, be "frozen" (made immutable) by calling the freeze method. In other
- * words, a Set implementation that also implements Field.
+ * An implementation of a {@link Set} that begins life as mutable but can, at
+ * any time, be "{@link #freeze() frozen}" (made immutable). In other
+ * words, a wrapper for a {@link Set} that implements {@link Field}.
  * 
- * Do not fear extending this collection object as needed, such implementations
- * tend to go very quickly as the base class does nearly all of the work for
- * you. Notwithstanding the foregoing, would be extenders of this class should
- * take time to carefully understand the immutability principles involved and
- * write careful unit tests to make sure that their implementations are as
- * strictly immutable as possible.
- * 
- * 
- * @author jim.kane
+ * @author Jim Kane
  *
- * @param <T>
+ * @param <E> The type of elements in this set
+ * 
+ * @see FieldCollection
  */
-abstract public class FieldSet<T> extends FieldCollection<T> implements Set<T>
+abstract public class FieldSet<E> extends FieldCollection<E> implements Set<E>
 {
+	/*
+	 * Never access _contents_ directly.
+	 * Use getContents so that inheritance works correctly.
+	 */
+	private Set<E> contents = createNewMutableInstance();
+	
+	@Override
+	protected Set<E> getContents() { return contents; }
+	
+	/**
+	 * Instantiate a <em>new</em>, <em>mutable</em> {@link Set}.
+	 * This allows sub-classes to control the {@link Set} implementation
+	 * that is used (e.g. {@link HashSet}, {@link TreeSet}, etc.).
+	 *  
+	 * @return The new {@link Set} instance
+	 */
+	abstract protected Set<E> createNewMutableInstance();
+	
+	
+	/**
+	 * Default constructor (for an empty set)
+	 */
 	public FieldSet()
 	{
 		super();
-		
 	}
 	
-	public FieldSet(Iterable<T> objs)
+	/**
+     * Constructs a set containing the elements of the specified {@link Iterable}
+     *
+     * @param objs The {code Iterable} whose elements are to be placed into this set
+     * 
+     * @throws NullPointerException if the specified {@code Iterable} is {@code null}
+	 */
+	public FieldSet(Iterable<E> objs)
 	{
 		super(objs);
 	}

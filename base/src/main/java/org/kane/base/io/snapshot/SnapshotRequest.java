@@ -2,7 +2,6 @@ package org.kane.base.io.snapshot;
 
 import java.util.Objects;
 
-import org.kane.base.examples.Book;
 import org.kane.base.immutability.StandardImmutableObject;
 import org.kane.base.serialization.Optional;
 import org.kane.base.serialization.Validator;

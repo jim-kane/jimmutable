@@ -1,25 +1,49 @@
 package org.kane.base.immutability.collections;
 
+import java.util.Collection;
+
 import org.kane.base.immutability.ImmutableException;
+import org.kane.base.immutability.StandardImmutableObject;
 
 /**
- * The Field interface should be implemented by any object that serves as a
- * member of a StandardImmtuableObject and requires custom code to "freeze" it.
- * Most notably, any collection or map used in a StandardImmutableObject will,
- * typically, be one of the types implemented in this package and will,
- * consequently, implement Field.
+ * An interface to represent a member of a {@link StandardImmtuableObject} that
+ * requires custom code to {@link StandardImmutableObject#freeze() freeze} it.
  * 
- * @author jim.kane
- *
+ * <p>{@code StandardImmutableObject} does not require that it's members implement
+ * {@code Field}, but it is useful as a declarative interface as a way for a
+ * developer to signal adherence to the behaviors defined by {@code Field}
+ * (i.e. well-behaved {@link #freeze() freezing).
+ * 
+ * <p>Most notably, most {@link Collection} or {@link Map} implementations in the
+ * JDK will have a matching wrapper that also implements {@code Field}.
+ * 
+ * @author Jim Kane
  */
-public interface Field 
+public interface Field
 {
+	/**
+	 * Make any changes to this object required to make this object
+	 * immutable.
+	 * 
+	 * @see StandardImmutableObject#freeze()
+	 */
 	public void freeze();
-	public boolean getSimpleIsFrozen();
 	
+	/**
+     * Returns {@code true} if this object is {@link #freeze() frozen}.
+     *
+     * @return {@code true} if this object is {@link #freeze() frozen}
+	 */
+	public boolean isFrozen();
+	
+	/**
+	 * Test to see if this object is {@link #freeze() frozen}
+	 * 
+	 * @throws ImmutableException if this {@link Field} is already {@link #isFrozen() frozen}
+	 */
 	default public void assertNotFrozen() 
 	{ 
-		if ( getSimpleIsFrozen() ) 
+		if ( isFrozen() ) 
 			throw new ImmutableException();
 	}
 }
