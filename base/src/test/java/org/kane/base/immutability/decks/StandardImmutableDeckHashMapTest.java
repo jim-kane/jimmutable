@@ -84,7 +84,7 @@ public class StandardImmutableDeckHashMapTest extends TestCase
     		     , "               <isbn>32423423711</isbn>"
     		     , "               <binding>TRADE_PAPER_BACK</binding>"
     		     , "               <authors>"
-    		     , "                  <contents>"
+    		     , "                  <contents class=\"list\">"
     		     , "                     <string>John Steinbeck</string>"
     		     , "                  </contents>"
     		     , "               </authors>"
@@ -98,7 +98,7 @@ public class StandardImmutableDeckHashMapTest extends TestCase
     		     , "               <isbn>1123234234</isbn>"
     		     , "               <binding>TRADE_PAPER_BACK</binding>"
     		     , "               <authors>"
-    		     , "                  <contents>"
+    		     , "                  <contents class=\"list\">"
     		     , "                     <string>Thomas Wolfe</string>"
     		     , "                  </contents>"
     		     , "               </authors>"
@@ -112,7 +112,7 @@ public class StandardImmutableDeckHashMapTest extends TestCase
     		     , "               <isbn>1123234234</isbn>"
     		     , "               <binding>TRADE_PAPER_BACK</binding>"
     		     , "               <authors>"
-    		     , "                  <contents>"
+    		     , "                  <contents class=\"list\">"
     		     , "                     <string>Thomas Wolfe</string>"
     		     , "                  </contents>"
     		     , "               </authors>"
@@ -122,7 +122,7 @@ public class StandardImmutableDeckHashMapTest extends TestCase
     		     , "   </books>"
     		     , "</book-map>"
     		);
-
+    	
     		BookDeckMap obj = StandardObject.fromXML(obj_as_xml_string);
     	
     	assertEquals(obj.getSimpleContents().size(),3); 

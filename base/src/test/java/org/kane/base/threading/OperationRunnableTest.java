@@ -50,7 +50,7 @@ public class OperationRunnableTest extends TestCase
     	
     	Result result = OperationRunnable.execute(pool, null);
     	
-    	assertEquals(result, Result.SUCCESS);
+    	assertEquals(Result.SUCCESS, result);
     }
     
     public void testMultiThreadError()
@@ -67,7 +67,7 @@ public class OperationRunnableTest extends TestCase
     	
     	Result result = OperationRunnable.execute(pool, null);
     	
-    	assertEquals(result, Result.ERROR);
+    	assertEquals(Result.ERROR, result);
     }
     
     
@@ -78,15 +78,12 @@ public class OperationRunnableTest extends TestCase
     	SampleOperation to_be_stopped = new SampleOperation(300,true);
     	
     	seed.add(new SampleStopOperation(50,to_be_stopped));
-    	seed.add(new SampleOperation(100,true));
-    	seed.add(new SampleOperation(200,true));
-    	seed.add(new SampleOperation(300,true));
     	seed.add(to_be_stopped);
     	
     	OperationPool pool = new OperationPool(seed, 2);
     	
     	Result result = OperationRunnable.execute(pool, null);
     	
-    	assertEquals(result, Result.STOPPED);
+    	assertEquals(Result.STOPPED, result);
     }
 }

@@ -19,25 +19,7 @@ import java.util.ListIterator;
  */
 abstract public class FieldList<E> extends FieldCollection<E> implements List<E>
 {
-	/*
-	 * Never access _contents_ directly.
-	 * Use getContents so that SubList (and future) inheritance works
-	 * correctly.
-	 */
-	private List<E> contents = createNewMutableInstance();
-	
-	@Override
-	protected List<E> getContents() { return contents; }
-	
-	/**
-	 * Instantiate a <em>new</em>, <em>mutable</em> {@link List}.
-	 * This allows sub-classes to control the {@link List} implementation
-	 * that is used (e.g. {@link ArrayList}, {@link LinkedList}, etc.).
-	 *  
-	 * @return The new {@link List} instance
-	 */
-	abstract protected List<E> createNewMutableInstance();
-	
+	protected final List<E> getContentsAsList() { return (List<E>)getContents(); }
 	
 	/**
 	 * Default constructor (for an empty list)
@@ -63,53 +45,53 @@ abstract public class FieldList<E> extends FieldCollection<E> implements List<E>
 	@Override
 	public E get(int index)
 	{
-		return getContents().get(index);
+		return getContentsAsList().get(index);
 	}
 	
 	@Override
 	public boolean addAll(int index, Collection<? extends E> c) 
 	{
 		assertNotFrozen();
-		return getContents().addAll(index,c);
+		return getContentsAsList().addAll(index,c);
 	}
 	
 	@Override
 	public E set(int index, E element) 
 	{
 		assertNotFrozen();
-		return getContents().set(index,element);
+		return getContentsAsList().set(index,element);
 	}
 	
 	@Override
 	public void add(int index, E element) 
 	{
 		assertNotFrozen();
-		getContents().add(index,element);
+		getContentsAsList().add(index,element);
 	}
 
 	@Override
 	public E remove(int index) 
 	{
 		assertNotFrozen();
-		return getContents().remove(index);
+		return getContentsAsList().remove(index);
 	}
 
 	@Override
-	public int indexOf(Object o) { return getContents().indexOf(o); }
+	public int indexOf(Object o) { return getContentsAsList().indexOf(o); }
 	
 	@Override
-	public int lastIndexOf(Object o) { return getContents().lastIndexOf(o); }
+	public int lastIndexOf(Object o) { return getContentsAsList().lastIndexOf(o); }
 
 	@Override
-	public ListIterator<E> listIterator() { return new MyListIterator(getContents().listIterator()); }
+	public ListIterator<E> listIterator() { return new MyListIterator(getContentsAsList().listIterator()); }
 	
 	@Override
-	public ListIterator<E> listIterator(int index) { return new MyListIterator(getContents().listIterator(index)); }
+	public ListIterator<E> listIterator(int index) { return new MyListIterator(getContentsAsList().listIterator(index)); }
 
 	@Override
 	public FieldList<E> subList(int from_index, int to_index)
 	{
-		return new SubList<>(this, getContents().subList(from_index, to_index));
+		return new FieldArrayList<>(getContentsAsList().subList(from_index, to_index));
 	}
 	
 	@Override
@@ -177,58 +159,5 @@ abstract public class FieldList<E> extends FieldCollection<E> implements List<E>
 			assertNotFrozen();
 			itr.add(e);
 		}
-	}
-}
-
-/**
- * A {@link FieldList} that enforces {@link FieldCollection#freeze() freeze()}
- * based on the parent
- * 
- * @author Jeff Dezso
- */
-final class SubList<E> extends FieldList<E>
-{
-	private final FieldList<E> parent;
-    private final List<E> contents;
-	
-	public SubList(FieldList<E> parent, List<E> contents)
-	{
-		if (null == parent) throw new NullPointerException(); // Any well-behaved List will not let this happen
-		this.parent = parent;
-        this.contents = contents;
-	}
-	
-	/*
-	 * Overriding these methods provides the indirection necessary
-	 * for inheritance to do the heavy lifting while still connecting
-	 * the key Field behavior of the parent and the sub-list
-	 */
-	
-	@Override
-	public List<E> getContents()
-	{
-		return contents;
-	}
-	
-	@Override
-	public void freeze()
-	{
-		parent.freeze();
-	}
-
-	@Override
-	public boolean isFrozen()
-	{
-		return parent.isFrozen();
-	}
-	
-	/*
-	 * Dummied out but never used
-	 */
-	
-	@Override
-	protected List<E> createNewMutableInstance()
-	{
-		return parent.createNewMutableInstance();
 	}
 }

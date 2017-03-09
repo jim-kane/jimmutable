@@ -17,25 +17,6 @@ import java.util.TreeSet;
  */
 abstract public class FieldSet<E> extends FieldCollection<E> implements Set<E>
 {
-	/*
-	 * Never access _contents_ directly.
-	 * Use getContents so that inheritance works correctly.
-	 */
-	private Set<E> contents = createNewMutableInstance();
-	
-	@Override
-	protected Set<E> getContents() { return contents; }
-	
-	/**
-	 * Instantiate a <em>new</em>, <em>mutable</em> {@link Set}.
-	 * This allows sub-classes to control the {@link Set} implementation
-	 * that is used (e.g. {@link HashSet}, {@link TreeSet}, etc.).
-	 *  
-	 * @return The new {@link Set} instance
-	 */
-	abstract protected Set<E> createNewMutableInstance();
-	
-	
 	/**
 	 * Default constructor (for an empty set)
 	 */

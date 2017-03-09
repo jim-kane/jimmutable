@@ -240,7 +240,7 @@ public class StandardImmutableFieldArrayListTest extends TestCase
     		     , "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>"
     		     , "<DummyObject-list>"
     		     , "   <list>"
-    		     , "      <contents>"
+    		     , "      <contents class=\"list\">"
     		     , "         <string>foo</string>"
     		     , "      </contents>"
     		     , "   </list>"

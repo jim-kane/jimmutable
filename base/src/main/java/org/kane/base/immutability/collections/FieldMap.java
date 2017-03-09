@@ -131,19 +131,19 @@ abstract public class FieldMap<K,V> implements Map<K,V>, Field
 	@Override
 	public Set<K> keySet()
 	{
-		return new InnerSet<>(getContents().keySet());
+		return new InnerKeySet<K>();
 	}
 
 	@Override
 	public Collection<V> values()
 	{
-		return new InnerCollection<>(getContents().values());
+		return new InnerValueCollection<V>();
 	}
 
 	@Override
 	public Set<Map.Entry<K, V>> entrySet()
 	{
-		return new InnerSet<>(getContents().entrySet());
+		return new InnerEntrySet<Map.Entry<K, V>>();
 	}
 
 	@Override
@@ -164,21 +164,13 @@ abstract public class FieldMap<K,V> implements Map<K,V>, Field
 		return getContents().toString();
 	}
 	
-	private class InnerCollection<E> extends FieldCollection<E>
+	private class InnerKeySet<E> extends FieldSet<E>
 	{
-		private Collection<E> inner_contents;
+		protected Set<E> createNewMutableInstance() 
+		{
+			return (Set<E>)(FieldMap.this.getContents().keySet());
+		}
 		
-		private InnerCollection(Collection<E> collection)
-		{
-			inner_contents = collection;
-		}
-
-		@Override
-		protected Collection<E> getContents()
-		{
-			return inner_contents;
-		}
-
 		@Override
 		public void freeze()
 		{
@@ -192,11 +184,43 @@ abstract public class FieldMap<K,V> implements Map<K,V>, Field
 		}
 	}
 	
-	private class InnerSet<E> extends InnerCollection<E> implements Set<E>
+	private class InnerEntrySet<E> extends FieldSet<E>
 	{
-		private InnerSet(Collection<E> collection)
+		protected Set<E> createNewMutableInstance() 
 		{
-			super(collection);
+			return (Set<E>)(FieldMap.this.getContents().entrySet());
+		}
+		
+		@Override
+		public void freeze()
+		{
+			FieldMap.this.freeze();
+		}
+
+		@Override
+		public boolean isFrozen()
+		{
+			return FieldMap.this.isFrozen();
+		}
+	}
+	
+	private class InnerValueCollection<E> extends FieldCollection<E>
+	{
+		protected Collection<E> createNewMutableInstance() 
+		{
+			return (Collection<E>)(FieldMap.this.getContents().values());
+		}
+		
+		@Override
+		public void freeze()
+		{
+			FieldMap.this.freeze();
+		}
+
+		@Override
+		public boolean isFrozen()
+		{
+			return FieldMap.this.isFrozen();
 		}
 	}
 }

@@ -1,7 +1,10 @@
 package org.kane.base.immutability.collections;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * An implementation of a {@link Collection} that begins life as mutable but can,
@@ -44,11 +47,18 @@ abstract public class FieldCollection<E> implements Field, Collection<E>
 {
 	transient volatile private boolean is_frozen;
 	
+	/*
+	 * Never access _contents_ directly.
+	 */
+	
+	private Collection<E> contents;
+	
 	/**
 	 * Default constructor (for an empty collection)
 	 */
 	public FieldCollection()
 	{
+		contents = createNewMutableInstance();
 		is_frozen = false;
 	}
 	
@@ -89,7 +99,7 @@ abstract public class FieldCollection<E> implements Field, Collection<E>
 	 * 
 	 * @return The <em>mutable</em> collection that this object wraps
 	 */
-	abstract protected Collection<E> getContents();
+	final protected Collection<E> getContents() { return contents; }
 	
 	@Override
 	public int size() { return getContents().size(); }
@@ -211,5 +221,14 @@ abstract public class FieldCollection<E> implements Field, Collection<E>
 			itr.remove();
 		}
 	}
+	
+	/**
+	 * Instantiate a <em>new</em>, <em>mutable</em> {@link Collection}.
+	 * This allows sub-classes to control the {@link Collection} implementation
+	 * that is used (e.g. {@link ArrayList}, {@link LinkedList}, {@link HashSet}, etc.).
+	 *  
+	 * @return The new {@link Collection} instance
+	 */
+	abstract protected Collection<E> createNewMutableInstance();
 }
 
