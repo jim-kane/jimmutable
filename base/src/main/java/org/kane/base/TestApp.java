@@ -23,7 +23,9 @@ public class TestApp
 	{
 		if ( gen instanceof ToXmlGenerator )
 		{
-			((ToXmlGenerator) gen).setNextName(new QName("object"));
+			ToXmlGenerator xgen = (ToXmlGenerator)gen;
+			xgen.writeRaw("<?xml version='1.0' encoding='UTF-8'?>");
+			xgen.setNextName(new QName("object"));
 		}
 		
 		gen.writeStartObject();
@@ -36,29 +38,19 @@ public class TestApp
 		gen.close();
 	}
 	
-	public void openObjectInArray() throws IOException
-	{
-		gen.writeStartObject();
-	}
-	
-	public void openObjectInArray(String explicit_type) throws IOException
-	{
-		gen.writeStartObject();
-		
-		gen.writeFieldName("TYPE");
-		gen.writeString(explicit_type);
-	}
-	
-	
-	public void openObject(String field_name) throws IOException
+	public void writeFieldName(String field_name) throws IOException
 	{
 		gen.writeFieldName(field_name);
+	}
+	
+	
+	public void openObject() throws IOException
+	{
 		gen.writeStartObject();
 	}
 	
-	public void openObject(String field_name, String explicit_type) throws IOException
+	public void openObject(String explicit_type) throws IOException
 	{
-		gen.writeFieldName(field_name);
 		gen.writeStartObject();
 		
 		gen.writeFieldName("TYPE");
@@ -70,21 +62,40 @@ public class TestApp
 		gen.writeEndObject();
 	}
 	
-	public void writeString(String field_name, String str) throws IOException
+	public void writeString(String str) throws IOException
 	{
-		gen.writeStringField(field_name, str);
+		gen.writeString(str);
 	}
 	
-	public void writeExplicitlyTypedString(String field_name, String str) throws IOException
+	public void writeExplicitlyTypedString(String str) throws IOException
 	{
-		openObject(field_name, "string");
-		gen.writeStringField("VALUE", str);
+		openObject("string");
+		writeFieldName("VALUE");
+		writeString(str);
 		closeObject();
 	}
 	
-	public void openArray(String field_name) throws IOException
+	public void writeFieldString(String field_name, String str) throws IOException
 	{
-		gen.writeArrayFieldStart(field_name);
+		writeFieldName(field_name);
+		writeString(str);
+	}
+	
+	public void writeFieldExplicitlyTypedString(String field_name, String str) throws IOException
+	{
+		writeFieldName(field_name);
+		writeExplicitlyTypedString(str);
+	}
+	
+	public void openArray() throws IOException
+	{
+		gen.writeStartArray();
+	}
+	
+	public void openFieldArray(String field_name) throws IOException
+	{
+		gen.writeFieldName(field_name);
+		gen.writeStartArray();
 	}
 	
 	public void closeArray() throws IOException
@@ -106,23 +117,25 @@ public class TestApp
 		
 		writer.beginDocument("person");
 		
-		writer.writeExplicitlyTypedString("first_name", "Jim");
-		writer.writeString("last_name", "Kane");
+		writer.writeFieldExplicitlyTypedString("first_name", "Jim");
+		writer.writeFieldString("last_name", "Kane");
 		
-		writer.openArray("cars_owned");
+		
+		
+		writer.openFieldArray("cars_owned");
 		{
-			writer.openObjectInArray("car");
+			writer.openObject("car");
 			{
-				writer.writeString("make", "BMW");
-				writer.writeString("year", "2006");
+				writer.writeFieldString("make", "BMW");
+				writer.writeFieldString("year", "2006");
 			
 				writer.closeObject();
 			}
 			
-			writer.openObjectInArray("car");
+			writer.openObject("car");
 			{
-				writer.writeString("make", "SUBARU");
-				writer.writeString("year", "2015");
+				writer.writeFieldString("make", "SUBARU");
+				writer.writeFieldString("year", "2015");
 			
 				writer.closeObject();
 			}
