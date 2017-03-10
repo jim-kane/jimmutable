@@ -7,8 +7,14 @@ import java.util.Set;
 import org.reflections.Reflections;
 
 import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.converters.MarshallingContext;
+import com.thoughtworks.xstream.converters.UnmarshallingContext;
+import com.thoughtworks.xstream.io.ExtendedHierarchicalStreamWriterHelper;
+import com.thoughtworks.xstream.io.HierarchicalStreamReader;
+import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JettisonMappedXmlDriver;
 import com.thoughtworks.xstream.io.xml.StaxDriver;
+import com.thoughtworks.xstream.mapper.Mapper;
 
 /**
  * A singleton used to standardized the creation of XStream objects and
@@ -32,6 +38,7 @@ public class XStreamSingleton
 	
 	static private XStream xml_stream = null;
 	static private XStream json_stream = null;
+	static private Mapper mapper = null;
 	
 	/**
 	 * Scan and process the annotations contained in the specified package
@@ -79,9 +86,18 @@ public class XStreamSingleton
 	{
 		if ( json_stream != null ) return json_stream;
 	
-		json_stream = new XStream(new JettisonMappedXmlDriver()); 
+		json_stream = new XStream(new JettisonMappedXmlDriver());
+		
 		processAnnotations(json_stream);
 		return json_stream;
+	}
+	
+	static synchronized public Mapper getMapper()
+	{
+		if ( mapper != null ) return mapper;
+		
+		mapper = getXMLStream().getMapper();
+		return mapper;
 	}
 	
 	static private void processAnnotations(XStream xstream)
@@ -107,5 +123,43 @@ public class XStreamSingleton
 		ret.add("org.kane");
 		
 		return Collections.unmodifiableSet(ret);
+	}
+	
+	static public void writeObject(Object object, MarshallingContext context, HierarchicalStreamWriter writer)
+	{
+		if ( object == null )
+		{
+			String name = getMapper().serializedClass(null);
+			writer.startNode(name);
+			writer.endNode();
+			return;
+		}
+		
+		Class object_class = object.getClass();
+		
+		String name = getMapper().serializedClass(object_class);
+		ExtendedHierarchicalStreamWriterHelper.startNode(writer, name, object_class);
+		context.convertAnother(object);
+		writer.endNode();
+	}
+	
+	static public Object readObject(HierarchicalStreamReader reader, UnmarshallingContext context, Object current)
+	{
+		Mapper mapper = getMapper();
+		
+		String classAttribute = reader.getAttribute(mapper.aliasForAttribute("class"));
+		
+		 Class type;
+	      
+		 if (classAttribute == null) 
+		 {
+	          type = mapper.realClass(reader.getNodeName());
+	     } 
+		 else 
+		 {
+	          type = mapper.realClass(classAttribute);
+	     }
+		 
+	     return context.convertAnother(current, type);
 	}
 }

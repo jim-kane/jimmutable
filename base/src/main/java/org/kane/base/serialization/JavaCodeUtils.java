@@ -118,7 +118,7 @@ public class JavaCodeUtils
 			ret.append(toJavaStringLiteralSingleLine(line));
 		}
 		
-		ret.append("\n);");
+		ret.append("\n)");
 		
 		return ret.toString();
 	}

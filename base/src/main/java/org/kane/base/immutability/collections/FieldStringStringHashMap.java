@@ -71,6 +71,7 @@ final public class FieldStringStringHashMap extends FieldMap<String,String>
 	 * @author Jim Kane
 	 */
 
+	
 	static public class MyConverter implements Converter
 	{
 		@SuppressWarnings("rawtypes")
@@ -82,6 +83,7 @@ final public class FieldStringStringHashMap extends FieldMap<String,String>
 		public void marshal(Object source_raw, HierarchicalStreamWriter writer, MarshallingContext context)
 		{
 			FieldStringStringHashMap source = (FieldStringStringHashMap)source_raw;
+			
 			
 			for ( Map.Entry<String, String> e : source.entrySet() )
 			{

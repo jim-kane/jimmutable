@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import com.thoughtworks.xstream.annotations.XStreamImplicit;
+
 
 /**
  * An implementation of a {@link Collection} that begins life as mutable but can,
@@ -33,6 +35,7 @@ abstract public class FieldMap<K,V> implements Map<K,V>, Field
 	 * Use getContents so that SubList (and future) inheritance works
 	 * correctly.
 	 */
+	
 	private Map<K,V> contents = createNewMutableInstance();
 	
 	/**

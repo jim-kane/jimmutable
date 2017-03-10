@@ -1,9 +1,18 @@
 package org.kane.base.immutability.collections;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import org.kane.base.serialization.XStreamSingleton;
+
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamConverter;
+import com.thoughtworks.xstream.converters.Converter;
+import com.thoughtworks.xstream.converters.MarshallingContext;
+import com.thoughtworks.xstream.converters.UnmarshallingContext;
+import com.thoughtworks.xstream.io.HierarchicalStreamReader;
+import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 
 
 /**
@@ -28,6 +37,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
  * @see FieldArrayList
  */
 @XStreamAlias("field-copy-on-write-array-list")
+@XStreamConverter(FieldCopyOnWriteArrayList.MyConverter.class)
 final public class FieldCopyOnWriteArrayList<E> extends FieldList<E>
 {
 	/**
@@ -55,6 +65,13 @@ final public class FieldCopyOnWriteArrayList<E> extends FieldList<E>
 	protected List<E> createNewMutableInstance() 
 	{
 		return new CopyOnWriteArrayList<>();
+	}
+	
+	
+	static public class MyConverter extends FieldCollectionConverter
+	{
+		Class getFieldClass() { return FieldCopyOnWriteArrayList.class; }
+		Collection createNewMutableInstance() { return new FieldCopyOnWriteArrayList(); }
 	}
 }
 

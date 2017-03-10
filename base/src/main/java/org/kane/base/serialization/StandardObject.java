@@ -173,9 +173,35 @@ abstract public class StandardObject<T extends StandardObject<T>> implements Com
 	 */
 	public String toJavaCode(String variable_name)
 	{
-		return String.format("String %s_as_xml_string = %s\n\n%s %s = (%s)StandardObject.fromXML(%s_as_xml_string);"
+		return String.format("String %s_as_xml_string = %s;\n\n%s %s = (%s)StandardObject.fromXML(%s_as_xml_string);"
 				, variable_name
 				, JavaCodeUtils.toJavaStringLiteral(toPrettyPrintXML("unable to pretty print XML!"))
+				, getClass().getSimpleName()
+				, variable_name
+				, getClass().getSimpleName()
+				, variable_name
+			);
+	}
+	
+	
+	/**
+	 * Create Java source code that will construct an identical copy of this object.
+	 * 
+	 * <p>This is done by taking the pretty printed XML and properly escaping it (using
+	 * {@link JavaCodeUtils#toJavaStringLiteral(String) JavaCodeUtils}) so as to make
+	 * clean, easy to read Java source code that will construct the object. (Effectively
+	 * serializing the object to Java source code!)
+	 * 
+	 * <p>This is super useful when creating unit tests of serialization... Just
+	 * saying...
+	 * 
+	 * @return Java statements that will construct a copy of this object from JSON
+	 */
+	public String toJavaCodeUsingJSON(String variable_name)
+	{
+		return String.format("String %s_as_json_string = %s;\n\n%s %s = (%s)StandardObject.fromJSON(%s_as_json_string);"
+				, variable_name
+				, JavaCodeUtils.toJavaStringLiteral(toJSON())
 				, getClass().getSimpleName()
 				, variable_name
 				, getClass().getSimpleName()
