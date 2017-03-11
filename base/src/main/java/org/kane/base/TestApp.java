@@ -18,12 +18,11 @@ public class TestApp
 	{
 		Person p = new Person("Jim", "Kane");
 		
-		String xml = ObjectWriterUtils.writeObject(Format.XML_PRETTY_PRINT, p, null);
+		String xml = ObjectWriterUtils.writeObject(Format.XML_PRETTY_PRINT, null, null);
 		
 		System.out.println(xml);
 		
 		JsonFactory jfactory = new JsonFactory();
-		
 		
 		ReadTree tree = Parser.parse(new StringReader(xml), null);
 		

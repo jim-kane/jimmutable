@@ -2,6 +2,7 @@ package org.kane.base.serialization.reader;
 
 import java.io.BufferedReader;
 import java.io.Reader;
+import java.io.StringReader;
 import java.util.Stack;
 
 import org.kane.base.serialization.FieldName;
@@ -224,5 +225,11 @@ public class Parser
 			e.printStackTrace();
 			return default_value;
 		}
+	}
+	
+	static public ReadTree parse(String str, ReadTree default_value)
+	{
+		StringReader r = new StringReader(str);
+		return parse(r,default_value);
 	}
 }

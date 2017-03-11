@@ -10,7 +10,15 @@ public class ObjectWriterUtils
 	{
 		try
 		{
-			Validator.notNull(obj);
+			if ( obj == null )
+			{
+				obj = NullPrimative.NULL_PRIMATIVE;
+			}
+			
+			if ( obj instanceof String )
+			{
+				obj = new StringPrimative((String)obj);
+			}
 			
 			StringWriter writer = new StringWriter();
 			LowLevelWriter low_level_writer = new LowLevelWriter(format,writer);
