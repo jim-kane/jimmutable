@@ -2,14 +2,13 @@ package org.kane.base.serialization;
 
 import org.kane.base.immutability.StandardImmutableObject;
 
-final public class FieldName extends StandardImmutableObject
+public class TypeName extends StandardImmutableObject
 {
-	static public FieldName FIELD_NAME_TYPE_HINT = new FieldName("type_hint");
-	static public FieldName FIELD_NAME_PRIMATIVE_VALUE = new FieldName("primative_value");
+	static public TypeName TYPE_NAME_OBJECT = new TypeName("object");
 	
 	private String name; // required, always interned
 	
-	public FieldName(String name)
+	public TypeName(String name)
 	{ 
 		if ( name == null ) name = "";
 		this.name = name.intern();
@@ -21,9 +20,9 @@ final public class FieldName extends StandardImmutableObject
 
 	public int compareTo(Object o)  
 	{
-		if ( !(o instanceof FieldName) ) return -1;
+		if ( !(o instanceof TypeName) ) return -1;
 		
-		FieldName other = (FieldName)o;
+		TypeName other = (TypeName)o;
 		
 		return getSimpleName().compareTo(other.getSimpleName());
 	}
@@ -41,7 +40,7 @@ final public class FieldName extends StandardImmutableObject
 		char chars[] = name.toCharArray(); 
 		
 		if ( chars.length == 0 )
-			throw new ValidationException("Field names must contain at least one letter");
+			throw new ValidationException("Type names must contain at least one letter");
 	
 		for ( int i = 0; i < chars.length; i++ )
 		{
@@ -50,7 +49,7 @@ final public class FieldName extends StandardImmutableObject
 			if ( i == 0 )
 			{
 				if ( ch >= 'a' && ch <= 'z') continue;
-				throw new ValidationException("Field names must start with a lower case letter");
+				throw new ValidationException("Type names must start with a lower case letter");
 			}
 			else
 			{
@@ -58,7 +57,7 @@ final public class FieldName extends StandardImmutableObject
 				if ( ch >= '0' && ch <= '9') continue;
 				if ( ch == '_' ) continue;
 				
-				throw new ValidationException(String.format("Illegal character '%c' in field name \"%s\"", ch, name));
+				throw new ValidationException(String.format("Illegal character '%c' in type name \"%s\"", ch, name));
 			}
 		}
 	}
@@ -73,9 +72,9 @@ final public class FieldName extends StandardImmutableObject
 	
 	public boolean equals(Object o) 
 	{
-		if ( !(o instanceof FieldName) ) return false;
+		if ( !(o instanceof TypeName) ) return false;
 		
-		FieldName other = (FieldName)o;
+		TypeName other = (TypeName)o;
 		return getSimpleName() == other.getSimpleName();
 	}
 }

@@ -4,7 +4,7 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-public class FieldNameTest extends TestCase
+public class TypeNameTest extends TestCase
 {
 
 	/**
@@ -12,7 +12,7 @@ public class FieldNameTest extends TestCase
 	 *
 	 * @param testName name of the test case
 	 */
-	public FieldNameTest( String testName )
+	public TypeNameTest( String testName )
 	{
 		super( testName );
 	}
@@ -22,16 +22,16 @@ public class FieldNameTest extends TestCase
 	 */
 	public static Test suite()
 	{
-		return new TestSuite( FieldNameTest.class );
+		return new TestSuite( TypeNameTest.class );
 	}
 	
 	
-	public void assertValid(String field_name_str)
+	public void assertValid(String type_name_str)
 	{
 		try
 		{
-			FieldName field_name = new FieldName(field_name_str);
-			assertEquals(field_name.getSimpleName(),field_name_str);
+			TypeName type_name = new TypeName(type_name_str);
+			assertEquals(type_name.getSimpleName(),type_name_str);
 		}
 		catch(Exception e)
 		{
@@ -40,11 +40,11 @@ public class FieldNameTest extends TestCase
 		}
 	}
 	
-	public void assertInvalid(String field_name_str)
+	public void assertInvalid(String type_name_str)
 	{
 		try
 		{
-			FieldName field_name = new FieldName(field_name_str);
+			TypeName type_name = new TypeName(type_name_str);
 			assert(false);
 		}
 		catch(Exception e)
@@ -54,7 +54,7 @@ public class FieldNameTest extends TestCase
 		}
 	}
 
-	public void testFieldNames()
+	public void testTypeNames()
 	{
 		assertValid("foo");
 		assertValid("foo_bar");
