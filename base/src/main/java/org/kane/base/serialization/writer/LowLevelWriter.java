@@ -202,7 +202,7 @@ public class LowLevelWriter
 		writeExplitlyTypedNumber(TypeName.TYPE_NAME_SHORT, value);
 	}
 	
-	public void writeInt(short value) 
+	public void writeInt(int value) 
 	{ 
 		writeLong((long)value); 
 	}
@@ -256,7 +256,7 @@ public class LowLevelWriter
 		}
 	}
 	
-	private void writeExplitlyTypedFloat(float value)
+	public void writeExplitlyTypedFloat(float value)
 	{
 		try
 		{
@@ -283,7 +283,7 @@ public class LowLevelWriter
 		}
 	}
 	
-	private void writeExplitlyTypedDouble(float value)
+	public void writeExplitlyTypedDouble(double value)
 	{
 		try
 		{

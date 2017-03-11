@@ -16,45 +16,123 @@ public class ObjectWriter
 	
 	public void writeString(FieldName field_name, String value)
 	{
-		Validator.notNull(field_name);
-		
 		writer.writeFieldName(field_name);
 		writer.writeString(value);
 	}
 	
+	public void writeChar(FieldName field_name, char value) 
+	{
+		writer.writeFieldName(field_name);
+		writer.writeChar(value);
+	}
+	
+	public void writeByte(FieldName field_name, byte value) 
+	{
+		writer.writeFieldName(field_name);
+		writer.writeByte(value);
+	}
+	
+	public void writeShort(FieldName field_name, short value) 
+	{
+		writer.writeFieldName(field_name);
+		writer.writeShort(value);
+	}
+	
+	public void writeInt(FieldName field_name, int value) 
+	{
+		writer.writeFieldName(field_name);
+		writer.writeInt(value);
+	}
+	
+	public void writeLong(FieldName field_name, long value) 
+	{
+		writer.writeFieldName(field_name);
+		writer.writeLong(value);
+	}
+	
+	public void writeFloat(FieldName field_name, float value) 
+	{
+		writer.writeFieldName(field_name);
+		writer.writeFloat(value);
+	}
+	
+	public void writeDouble(FieldName field_name, double value) 
+	{
+		writer.writeFieldName(field_name);
+		writer.writeDouble(value);
+	}
+	
+	
 	public void writeExplicitlyTypedString(FieldName field_name, String value)
 	{
-		Validator.notNull(field_name);
-		
 		writer.writeFieldName(field_name);
 		writer.writeExplicitlyTypedString(value);
 	}
 	
-	
-	static public String writeObject(Format format, StandardWritable obj, String default_value)
+	public void writeExplicitlyTypedByte(FieldName field_name, byte value) 
 	{
-		try
+		writer.writeFieldName(field_name);
+		writer.writeExplicitlyTypedByte(value);
+	}
+	
+	public void writeExplicitlyTypedShort(FieldName field_name, short value) 
+	{
+		writer.writeFieldName(field_name);
+		writer.writeExplicitlyTypedShort(value);
+	}
+	
+	public void writeExplicitlyTypedInt(FieldName field_name, int value) 
+	{
+		writer.writeFieldName(field_name);
+		writer.writeExplicitlyTypedInt(value);
+	}
+	
+	public void writeExplicitlyTypedLong(FieldName field_name, long value) 
+	{
+		writer.writeFieldName(field_name);
+		writer.writeExplicitlyTypedLong(value);
+	}
+	
+	public void writeExplicitlyTypedFloat(FieldName field_name, float value) 
+	{
+		writer.writeFieldName(field_name);
+		writer.writeExplitlyTypedFloat(value);
+	}
+	
+	public void writeExplicitlyTypedDouble(FieldName field_name, double value) 
+	{
+		writer.writeFieldName(field_name);
+		writer.writeExplitlyTypedDouble(value);
+	}
+	
+	public void writeObject(FieldName field_name, StandardWritable obj)
+	{
+		writer.writeFieldName(field_name);
+		
+		writer.openObject();
 		{
-			Validator.notNull(obj);
-			
-			StringWriter writer = new StringWriter();
-			LowLevelWriter low_level_writer = new LowLevelWriter(format,writer);
-			
-			low_level_writer.beginDocument(obj.getTypeName());
-			{
-				obj.write(new ObjectWriter(low_level_writer));
-			
-				low_level_writer.endDocument();
-			}
-			writer.close();
-			
-			return writer.toString();
+			obj.write(this);
+			writer.closeObject();
 		}
-		catch(Exception e)
+	}
+	
+	public void writeExplictlyTypedObject(FieldName field_name, StandardWritable obj)
+	{
+		writer.writeFieldName(field_name);
+		
+		writer.openObject(obj.getTypeName());
 		{
-			e.printStackTrace();
-			return default_value;
+			obj.write(this);
+			writer.closeObject();
 		}
+	}
+	
+	public ArrayWriter writeOpenArray(FieldName field_name)
+	{
+		writer.writeFieldName(field_name);
+		writer.openArray();
+		
+		return new ArrayWriter(writer);
 	}
 	
 	public Format getSimpleFormat() { return writer.getSimpleFormat(); }

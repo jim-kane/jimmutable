@@ -3,7 +3,7 @@ package org.kane.base;
 import org.kane.base.examples.book.Person;
 import org.kane.base.serialization.JavaCodeUtils;
 import org.kane.base.serialization.writer.Format;
-import org.kane.base.serialization.writer.ObjectWriter;
+import org.kane.base.serialization.writer.ObjectWriterUtils;
 
 public class TestApp 
 {
@@ -11,7 +11,7 @@ public class TestApp
 	{
 		Person p = new Person("Jim", "Kane");
 		
-		String xml = ObjectWriter.writeObject(Format.XML, p, null);
+		String xml = ObjectWriterUtils.writeObject(Format.XML, p, null);
 		
 		System.out.println(JavaCodeUtils.prettyPrintXML(xml, null));
 	}
