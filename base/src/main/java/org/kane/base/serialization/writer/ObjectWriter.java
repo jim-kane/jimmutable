@@ -14,6 +14,12 @@ public class ObjectWriter
 		this.writer = writer;
 	}
 	
+	public void writeNull(FieldName field_name)
+	{
+		writer.writeFieldName(field_name);
+		writer.writeNull();
+	}
+	
 	public void writeString(FieldName field_name, String value)
 	{
 		writer.writeFieldName(field_name);
@@ -63,76 +69,16 @@ public class ObjectWriter
 	}
 	
 	
-	public void writeExplicitlyTypedString(FieldName field_name, String value)
+	public void writeObject(FieldName field_name, Object obj)
 	{
 		writer.writeFieldName(field_name);
-		writer.writeExplicitlyTypedString(value);
+		writer.writeObject(obj);
 	}
 	
-	public void writeExplicitlyTypedByte(FieldName field_name, byte value) 
+	public ArrayWriter openArray(FieldName field_name)
 	{
 		writer.writeFieldName(field_name);
-		writer.writeExplicitlyTypedByte(value);
-	}
-	
-	public void writeExplicitlyTypedShort(FieldName field_name, short value) 
-	{
-		writer.writeFieldName(field_name);
-		writer.writeExplicitlyTypedShort(value);
-	}
-	
-	public void writeExplicitlyTypedInt(FieldName field_name, int value) 
-	{
-		writer.writeFieldName(field_name);
-		writer.writeExplicitlyTypedInt(value);
-	}
-	
-	public void writeExplicitlyTypedLong(FieldName field_name, long value) 
-	{
-		writer.writeFieldName(field_name);
-		writer.writeExplicitlyTypedLong(value);
-	}
-	
-	public void writeExplicitlyTypedFloat(FieldName field_name, float value) 
-	{
-		writer.writeFieldName(field_name);
-		writer.writeExplitlyTypedFloat(value);
-	}
-	
-	public void writeExplicitlyTypedDouble(FieldName field_name, double value) 
-	{
-		writer.writeFieldName(field_name);
-		writer.writeExplitlyTypedDouble(value);
-	}
-	
-	public void writeObject(FieldName field_name, StandardWritable obj)
-	{
-		writer.writeFieldName(field_name);
-		
-		writer.openObject();
-		{
-			obj.write(this);
-			writer.closeObject();
-		}
-	}
-	
-	public void writeExplictlyTypedObject(FieldName field_name, StandardWritable obj)
-	{
-		writer.writeFieldName(field_name);
-		
-		writer.openObject(obj.getTypeName());
-		{
-			obj.write(this);
-			writer.closeObject();
-		}
-	}
-	
-	public ArrayWriter writeOpenArray(FieldName field_name)
-	{
-		writer.writeFieldName(field_name);
-		writer.openArray();
-		
-		return new ArrayWriter(writer);
+		return writer.openArray();
 	}
 	
 	public Format getSimpleFormat() { return writer.getSimpleFormat(); }

@@ -15,6 +15,8 @@ public class TypeName extends StandardImmutableObject
 	static public TypeName TYPE_NAME_FLOAT = new TypeName("float");
 	static public TypeName TYPE_NAME_DOUBLE = new TypeName("double");
 	
+	static public TypeName TYPE_NAME_NULL = new TypeName("null");
+	
 	private String name; // required, always interned
 	
 	public TypeName(String name)
@@ -91,3 +93,4 @@ public class TypeName extends StandardImmutableObject
 		return getSimpleName() == other.getSimpleName();
 	}
 }
+

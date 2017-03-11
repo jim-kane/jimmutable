@@ -14,6 +14,12 @@ public class ArrayWriter
 		this.closed = false;
 	}
 	
+	public void writeNull()
+	{
+		if ( closed ) throw new SerializeException("Attempt to write to a closed array");
+		writer.writeNull();
+	}
+	
 	public void writeString(String value)
 	{
 		if ( closed ) throw new SerializeException("Attempt to write to a closed array");
@@ -62,77 +68,18 @@ public class ArrayWriter
 		writer.writeDouble(value);
 	}
 	
-	
-	public void writeExplicitlyTypedString(String value)
+	public void writeObject(Object obj)
 	{
 		if ( closed ) throw new SerializeException("Attempt to write to a closed array");
-		writer.writeExplicitlyTypedString(value);
+		writer.writeObject(obj);
 	}
 	
-	public void writeExplicitlyTypedByte(byte value) 
+	public ArrayWriter openArray()
 	{
-		if ( closed ) throw new SerializeException("Attempt to write to a closed array");
-		writer.writeExplicitlyTypedByte(value);
+		return writer.openArray();
 	}
 	
-	public void writeExplicitlyTypedShort(short value) 
-	{
-		if ( closed ) throw new SerializeException("Attempt to write to a closed array");
-		writer.writeExplicitlyTypedShort(value);
-	}
-	
-	public void writeExplicitlyTypedInt(int value) 
-	{
-		if ( closed ) throw new SerializeException("Attempt to write to a closed array");
-		writer.writeExplicitlyTypedInt(value);
-	}
-	
-	public void writeExplicitlyTypedLong(long value) 
-	{
-		if ( closed ) throw new SerializeException("Attempt to write to a closed array");
-		writer.writeExplicitlyTypedLong(value);
-	}
-	
-	public void writeExplicitlyTypedFloat(float value) 
-	{
-		if ( closed ) throw new SerializeException("Attempt to write to a closed array");
-		writer.writeExplitlyTypedFloat(value);
-	}
-	
-	public void writeExplicitlyTypedDouble(double value) 
-	{
-		if ( closed ) throw new SerializeException("Attempt to write to a closed array");
-		writer.writeExplitlyTypedDouble(value);
-	}
-	
-	public void writeObject(StandardWritable obj)
-	{
-		if ( closed ) throw new SerializeException("Attempt to write to a closed array");
-		writer.openObject();
-		{
-			obj.write(new ObjectWriter(writer));
-			writer.closeObject();
-		}
-	}
-	
-	public void writeExplictlyTypedObject(StandardWritable obj)
-	{
-		if ( closed ) throw new SerializeException("Attempt to write to a closed array");
-		writer.openObject(obj.getTypeName());
-		{
-			obj.write(new ObjectWriter(writer));
-			writer.closeObject();
-		}
-	} 
-	
-	public ArrayWriter writeOpenArray()
-	{
-		writer.openArray();
-		
-		return new ArrayWriter(writer);
-	}
-	
-	public void writeCloseArray()
+	public void closeArray()
 	{
 		if ( closed ) return;
 		writer.closeArray();

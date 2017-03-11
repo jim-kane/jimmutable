@@ -6,7 +6,7 @@ import org.kane.base.serialization.Validator;
 
 public class ObjectWriterUtils 
 {
-	static public String writeObject(Format format, StandardWritable obj, String default_value)
+	static public String writeObject(Format format, Object obj, String default_value)
 	{
 		try
 		{
@@ -15,12 +15,9 @@ public class ObjectWriterUtils
 			StringWriter writer = new StringWriter();
 			LowLevelWriter low_level_writer = new LowLevelWriter(format,writer);
 			
-			low_level_writer.beginDocument(obj.getTypeName());
-			{
-				obj.write(new ObjectWriter(low_level_writer));
+			low_level_writer.writeObject(obj);
+			low_level_writer.close();
 			
-				low_level_writer.endDocument();
-			}
 			writer.close();
 			
 			return writer.toString();

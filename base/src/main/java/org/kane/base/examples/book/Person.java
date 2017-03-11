@@ -31,14 +31,14 @@ public class Person implements StandardWritable
 	public void write(ObjectWriter writer) 
 	{
 		writer.writeString(FIELD_FIRST_NAME, first_name);
-		writer.writeExplicitlyTypedString(FIELD_LAST_NAME, last_name);
+		writer.writeObject(FIELD_LAST_NAME, last_name);
 		
-		ArrayWriter array_writer = writer.writeOpenArray(new FieldName("cars_owned"));
+		ArrayWriter array_writer = writer.openArray(new FieldName("cars_owned"));
 		
 		array_writer.writeObject(new Car("BMW",2006));
 		array_writer.writeObject(new Car("SUBARU",2015));
 	
-		array_writer.writeCloseArray();
+		array_writer.closeArray();
 	}
 	
 	
