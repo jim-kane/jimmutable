@@ -11,8 +11,8 @@ public class TestApp
 	{
 		Person p = new Person("Jim", "Kane");
 		
-		String xml = ObjectWriterUtils.writeObject(Format.XML, p, null);
+		String xml = ObjectWriterUtils.writeObject(Format.JSON_PRETTY_PRINT, p, null);
 		
-		System.out.println(JavaCodeUtils.prettyPrintXML(xml, null));
+		System.out.println(xml);
 	}
 }

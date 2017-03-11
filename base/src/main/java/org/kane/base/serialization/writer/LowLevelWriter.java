@@ -31,15 +31,21 @@ public class LowLevelWriter
 		
 		try
 		{
-			if ( format == Format.JSON )
+			if ( format == Format.JSON || format == Format.JSON_PRETTY_PRINT )
 			{
 				JsonFactory jfactory = new JsonFactory();
 				gen = jfactory.createGenerator(writer);
+				
+				if ( format == Format.JSON_PRETTY_PRINT )
+					gen.useDefaultPrettyPrinter();
 			}
 			else
 			{
 				XmlFactory xfactory = new XmlFactory();
 				ToXmlGenerator xgen = xfactory.createGenerator(writer);
+				
+				if ( format == Format.XML_PRETTY_PRINT )
+					xgen.useDefaultPrettyPrinter();
 				
 				xgen.writeRaw("<?xml version='1.0' encoding='UTF-8'?>");
 				xgen.setNextName(new QName("object"));
@@ -325,7 +331,7 @@ public class LowLevelWriter
 	
 	
 	public Format getSimpleFormat() { return format; }
-	public boolean isJSON() { return getSimpleFormat() == Format.JSON; }
-	public boolean isXML() { return getSimpleFormat() == Format.XML; }
+	public boolean isJSON() {  return getSimpleFormat() == Format.JSON || getSimpleFormat() == Format.JSON_PRETTY_PRINT; }
+	public boolean isXML() { return getSimpleFormat() == Format.XML || getSimpleFormat() == Format.XML_PRETTY_PRINT; }
 	
 }

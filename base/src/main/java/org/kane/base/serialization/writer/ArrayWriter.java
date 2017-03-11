@@ -140,6 +140,6 @@ public class ArrayWriter
 	}
 	
 	public Format getSimpleFormat() { return writer.getSimpleFormat(); }
-	public boolean isJSON() { return getSimpleFormat() == Format.JSON; }
-	public boolean isXML() { return getSimpleFormat() == Format.XML; }
+	public boolean isJSON() { return writer.isJSON(); }
+	public boolean isXML() { return writer.isXML(); }
 }
