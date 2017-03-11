@@ -58,13 +58,17 @@ public class TypeName extends StandardImmutableObject
 			if ( i == 0 )
 			{
 				if ( ch >= 'a' && ch <= 'z') continue;
-				throw new ValidationException("Type names must start with a lower case letter");
+				if ( ch >= 'A' && ch <= 'Z') continue;
+				throw new ValidationException("Type names must start with a letter");
 			}
 			else
 			{
 				if ( ch >= 'a' && ch <= 'z') continue;
+				if ( ch >= 'A' && ch <= 'Z') continue;
 				if ( ch >= '0' && ch <= '9') continue;
 				if ( ch == '_' ) continue;
+				if ( ch == '.' ) continue;
+				if ( ch == '$' ) continue;
 				
 				throw new ValidationException(String.format("Illegal character '%c' in type name \"%s\"", ch, name));
 			}

@@ -35,7 +35,7 @@ public class TypeNameTest extends TestCase
 		}
 		catch(Exception e)
 		{
-			//e.printStackTrace();
+			e.printStackTrace();
 			assert(false);
 		}
 	}
@@ -60,6 +60,9 @@ public class TypeNameTest extends TestCase
 		assertValid("foo_bar");
 		assertValid("foo_bar22");
 		assertValid("f");
+		assertValid("org.kane.base.TypeNameTest");
+		assertValid("FOO");
+		assertValid("com.Foo$Bar");
 		
 		assertInvalid(null);
 		assertInvalid("");
@@ -69,7 +72,6 @@ public class TypeNameTest extends TestCase
 		assertInvalid("jim-bob");
 		assertInvalid("f&p");
 		assertInvalid("!f");
-		assertInvalid("FOO");
-		assertInvalid("fOO");
+		
 	}
 }
