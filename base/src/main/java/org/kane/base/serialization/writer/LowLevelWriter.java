@@ -108,6 +108,18 @@ public class LowLevelWriter
 		}
 	}
 	
+	public void writeBoolean(boolean value)
+	{
+		try
+		{
+			gen.writeBoolean(value);
+		}
+		catch(Exception e)
+		{
+			throw new SerializeException("Serialization error", e);
+		}
+	}
+	
 	public void writeChar(char value) 
 	{ 
 		writeString(String.format("%c", value)); 
@@ -174,11 +186,7 @@ public class LowLevelWriter
 				return;
 			}
 			
-			if ( obj instanceof String )
-			{
-				writeString((String)obj);
-				return;
-			}
+			
 			
 			gen.writeStartObject();
 			{
@@ -190,6 +198,29 @@ public class LowLevelWriter
 					writeString(std.getTypeName().getSimpleName());
 					
 					std.write(new ObjectWriter(this));
+				}
+				
+				else if ( obj instanceof String )
+				{
+					String value = (String)obj;
+					writeFieldName(FieldName.FIELD_NAME_TYPE_HINT);
+					writeString(TypeName.TYPE_NAME_STRING.getSimpleName());
+					
+					writeFieldName(FieldName.FIELD_NAME_PRIMATIVE_VALUE);
+					writeString(value);
+					
+					return;
+				}
+				
+				else if ( obj instanceof Boolean )
+				{
+					Boolean value = (Boolean)obj;
+					
+					writeFieldName(FieldName.FIELD_NAME_TYPE_HINT);
+					writeString(TypeName.TYPE_NAME_BOOLEAN.getSimpleName());
+					
+					writeFieldName(FieldName.FIELD_NAME_PRIMATIVE_VALUE);
+					writeBoolean(value.booleanValue());
 				}
 				
 				else if ( obj instanceof Character )

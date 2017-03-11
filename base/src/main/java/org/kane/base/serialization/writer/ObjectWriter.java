@@ -26,6 +26,12 @@ public class ObjectWriter
 		writer.writeString(value);
 	}
 	
+	public void writeBoolean(FieldName field_name, boolean value) 
+	{
+		writer.writeFieldName(field_name);
+		writer.writeBoolean(value);
+	}
+	
 	public void writeChar(FieldName field_name, char value) 
 	{
 		writer.writeFieldName(field_name);

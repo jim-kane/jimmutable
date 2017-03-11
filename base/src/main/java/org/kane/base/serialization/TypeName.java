@@ -7,6 +7,7 @@ public class TypeName extends StandardImmutableObject
 	static public TypeName TYPE_NAME_OBJECT = new TypeName("object");
 	static public TypeName TYPE_NAME_STRING = new TypeName("string");
 	
+	static public TypeName TYPE_NAME_BOOLEAN = new TypeName("boolean");
 	static public TypeName TYPE_NAME_CHAR = new TypeName("char");
 	static public TypeName TYPE_NAME_BYTE = new TypeName("byte");
 	static public TypeName TYPE_NAME_SHORT = new TypeName("short");

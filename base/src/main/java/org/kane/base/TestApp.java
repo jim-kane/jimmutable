@@ -1,9 +1,16 @@
 package org.kane.base;
 
+import java.io.StringReader;
+
 import org.kane.base.examples.book.Person;
-import org.kane.base.serialization.JavaCodeUtils;
+import org.kane.base.serialization.reader.Parser;
+import org.kane.base.serialization.reader.ReadTree;
 import org.kane.base.serialization.writer.Format;
 import org.kane.base.serialization.writer.ObjectWriterUtils;
+
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonToken;
 
 public class TestApp 
 {
@@ -11,8 +18,15 @@ public class TestApp
 	{
 		Person p = new Person("Jim", "Kane");
 		
-		String xml = ObjectWriterUtils.writeObject(Format.JSON_PRETTY_PRINT, p, null);
+		String xml = ObjectWriterUtils.writeObject(Format.XML_PRETTY_PRINT, p, null);
 		
 		System.out.println(xml);
+		
+		JsonFactory jfactory = new JsonFactory();
+		
+		
+		ReadTree tree = Parser.parse(new StringReader(xml), null);
+		
+		System.out.println(tree);
 	}
 }

@@ -1,6 +1,5 @@
 package org.kane.base.serialization.writer;
 
-import org.kane.base.serialization.FieldName;
 import org.kane.base.serialization.SerializeException;
 
 public class ArrayWriter 
@@ -24,6 +23,12 @@ public class ArrayWriter
 	{
 		if ( closed ) throw new SerializeException("Attempt to write to a closed array");
 		writer.writeString(value);
+	}
+	
+	public void writeBoolean(boolean value) 
+	{
+		if ( closed ) throw new SerializeException("Attempt to write to a closed array");
+		writer.writeBoolean(value);
 	}
 	
 	public void writeChar(char value) 
@@ -72,11 +77,6 @@ public class ArrayWriter
 	{
 		if ( closed ) throw new SerializeException("Attempt to write to a closed array");
 		writer.writeObject(obj);
-	}
-	
-	public ArrayWriter openArray()
-	{
-		return writer.openArray();
 	}
 	
 	public void closeArray()

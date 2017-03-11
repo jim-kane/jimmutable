@@ -6,6 +6,7 @@ final public class FieldName extends StandardImmutableObject
 {
 	static public FieldName FIELD_NAME_TYPE_HINT = new FieldName("type_hint");
 	static public FieldName FIELD_NAME_PRIMATIVE_VALUE = new FieldName("primative_value");
+	static public FieldName FIELD_DOCUMENT_ROOT = new FieldName("parsed_document_root_element");
 	
 	private String name; // required, always interned
 	
