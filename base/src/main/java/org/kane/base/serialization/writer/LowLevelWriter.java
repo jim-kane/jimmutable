@@ -81,7 +81,25 @@ public class LowLevelWriter
 	{
 		try
 		{
-			gen.writeNull();
+			if ( isXML() )
+			{
+				// in XML, we should basically never get there (as nulls are simply "omitted" from the output).  
+				// But, if some weird way, we wind up here, we need to explictly write the null object out...
+				
+				gen.writeStartObject();
+				
+				writeFieldName(FieldName.FIELD_NAME_TYPE_HINT);
+				gen.writeString(TypeName.TYPE_NAME_NULL.getSimpleName());
+				
+				writeFieldName(FieldName.FIELD_NAME_PRIMATIVE_VALUE);
+				gen.writeNull();
+				
+				gen.writeEndObject();
+			}
+			else
+			{
+				gen.writeNull();
+			}
 		}
 		catch(Exception e)
 		{
@@ -94,13 +112,50 @@ public class LowLevelWriter
 	{
 		if ( str == null )
 		{
-			writeNull();
+			if ( isXML() )
+			{
+				writeStringObject(str);
+			}
+			else
+			{
+				writeNull();
+			}
+			return;
+		}
+		
+		if ( isXML() && str.length() == 0 )
+		{
+			writeStringObject(str);
 			return;
 		}
 		
 		try
 		{
 			gen.writeString(str);
+		}
+		catch(Exception e)
+		{
+			throw new SerializeException("Serialization error", e);
+		}
+	}
+	
+	private void writeStringObject(String str)
+	{
+		try
+		{
+			gen.writeStartObject();
+			
+			writeFieldName(FieldName.FIELD_NAME_TYPE_HINT);
+			gen.writeString(TypeName.TYPE_NAME_STRING.getSimpleName());
+			
+			writeFieldName(FieldName.FIELD_NAME_PRIMATIVE_VALUE);
+			
+			if ( str == null ) 
+				gen.writeNull();
+			else
+				gen.writeString(str);
+			
+			gen.writeEndObject();
 		}
 		catch(Exception e)
 		{

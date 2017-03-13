@@ -6,12 +6,14 @@ import java.util.LinkedList;
 
 import org.kane.base.serialization.FieldName;
 import org.kane.base.serialization.Optional;
+import org.kane.base.serialization.TypeName;
 import org.kane.base.serialization.Validator;
 
 public class ReadTree implements Iterable<ReadTree>
 {
 	private FieldName field_name; // required
 	private String value; // optional
+	private TypeName type_hint; // optional
 	private LinkedList<ReadTree> children; // optional
 	
 	public ReadTree(FieldName field_name)
@@ -24,6 +26,12 @@ public class ReadTree implements Iterable<ReadTree>
 	public void setValue(String value)
 	{
 		this.value = value;
+		
+		// We always intern the type hint, for faster comparison later on
+		if ( field_name.equals(FieldName.FIELD_NAME_TYPE_HINT) )
+		{
+			this.type_hint = new TypeName(value);
+		}
 	}
 	
 	public FieldName getSimpleFieldName() { return field_name; }
@@ -56,6 +64,40 @@ public class ReadTree implements Iterable<ReadTree>
 		
 		return default_value;
 	}
+	
+	public TypeName getOptionalTypeHint(TypeName default_value)
+	{
+		if ( type_hint != null ) return type_hint;
+		
+		ReadTree t = find(FieldName.FIELD_NAME_TYPE_HINT,null);
+		
+		if ( t == null || t.type_hint == null ) return default_value;
+		
+		type_hint = t.type_hint;
+		return type_hint;
+	}
+	
+	public boolean hasTypeHint() 
+	{
+		return getOptionalTypeHint(null) != null;
+	}
+	
+	public boolean isPrimative()
+	{
+		TypeName tn = getOptionalTypeHint(null);
+		if ( tn == null ) return false;
+		return tn.isPrimative();
+	}
+	
+	public boolean isTypeHint(TypeName name_to_test)
+	{
+		Validator.notNull(name_to_test);
+		
+		TypeName tn = getOptionalTypeHint(null);
+		if ( tn == null ) return false;
+		return tn.equals(name_to_test);
+	}
+	
 	
 	private boolean remove(ReadTree t)
 	{
@@ -94,12 +136,33 @@ public class ReadTree implements Iterable<ReadTree>
 		
 		// Last option: if this is a primative (i.e. t has a child with a primative_value field, then we can read that as a string)
 		
-		ReadTree primative_value = t.find(FieldName.FIELD_NAME_PRIMATIVE_VALUE, null);
+		ReadTree primative_type = t.find(FieldName.FIELD_NAME_TYPE_HINT, null);
 		
-		if ( primative_value != null && primative_value.hasValue() )
+		if ( isPrimative() )
 		{
-			remove(t);
-			return primative_value.getOptionalValue(default_value);
+			if ( isTypeHint(TypeName.TYPE_NAME_NULL) )
+			{
+				remove(t);
+				return default_value;
+			}
+			
+			ReadTree primative_value = t.find(FieldName.FIELD_NAME_PRIMATIVE_VALUE, null);
+			
+			if ( primative_value != null && primative_value.hasValue() )
+			{
+				remove(t);
+				return primative_value.getOptionalValue(default_value);
+			}
+			
+			if ( isTypeHint(TypeName.TYPE_NAME_STRING) )
+			{
+				// in XML, an explicitly written primative value for a string will have a null value.  This is taken to mean the blank string (not null, wich would be written explicitly, and not as a string)
+				if ( !primative_value.hasValue() )
+				{
+					remove(t);
+					return "";
+				}
+			}
 		}
 		
 		return default_value; // could not read as a string
@@ -124,7 +187,7 @@ public class ReadTree implements Iterable<ReadTree>
 		
 		if ( hasValue() )
 		{
-			builder.append(String.format(": %s", getOptionalValue(null)));
+			builder.append(String.format(": [%s]", getOptionalValue(null)));
 		}
 		
 		builder.append("\n");

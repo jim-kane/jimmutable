@@ -18,7 +18,7 @@ public class TestApp
 	{
 		Person p = new Person("Jim", "Kane");
 		
-		String xml = ObjectWriterUtils.writeObject(Format.XML_PRETTY_PRINT, null, null);
+		String xml = ObjectWriterUtils.writeObject(Format.XML_PRETTY_PRINT, "", null);
 		
 		System.out.println(xml);
 		

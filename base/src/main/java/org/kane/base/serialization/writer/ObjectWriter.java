@@ -16,12 +16,16 @@ public class ObjectWriter
 	
 	public void writeNull(FieldName field_name)
 	{
+		if ( writer.isXML() ) return;  // in xml, a null is written by simply "not writing" the field...
+		
 		writer.writeFieldName(field_name);
 		writer.writeNull();
 	}
 	
 	public void writeString(FieldName field_name, String value)
 	{
+		if ( writer.isXML() && value == null ) return; // in xml, a null is written by simply "not writing" the field...
+		
 		writer.writeFieldName(field_name);
 		writer.writeString(value);
 	}
@@ -75,10 +79,12 @@ public class ObjectWriter
 	}
 	
 	
-	public void writeObject(FieldName field_name, Object obj)
+	public void writeObject(FieldName field_name, Object value)
 	{
+		if ( writer.isXML() && value == null ) return; // in xml, a null is written by simply "not writing" the field...
+		
 		writer.writeFieldName(field_name);
-		writer.writeObject(obj);
+		writer.writeObject(value);
 	}
 	
 	public ArrayWriter openArray(FieldName field_name)

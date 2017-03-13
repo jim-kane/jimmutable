@@ -93,5 +93,22 @@ public class TypeName extends StandardImmutableObject
 		TypeName other = (TypeName)o;
 		return getSimpleName() == other.getSimpleName();
 	}
+	
+	public boolean isPrimative()
+	{
+		if ( equals(TYPE_NAME_STRING) ) return true;
+		if ( equals(TYPE_NAME_NULL) ) return true;
+		
+		if ( equals(TYPE_NAME_BOOLEAN) ) return true;
+		if ( equals(TYPE_NAME_CHAR) ) return true;
+		if ( equals(TYPE_NAME_BYTE) ) return true;
+		if ( equals(TYPE_NAME_SHORT) ) return true;
+		if ( equals(TYPE_NAME_INT) ) return true;
+		if ( equals(TYPE_NAME_LONG) ) return true;
+		if ( equals(TYPE_NAME_FLOAT) ) return true;
+		if ( equals(TYPE_NAME_DOUBLE) ) return true;
+		
+		return false;
+	}
 }
 
