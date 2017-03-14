@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.util.Base64;
 
 import javax.xml.namespace.QName;
 
@@ -48,7 +49,7 @@ public class LowLevelWriter
 			{
 				XmlFactory xfactory = new XmlFactory();
 				ToXmlGenerator xgen = xfactory.createGenerator(writer);
-				
+
 				if ( format == Format.XML_PRETTY_PRINT )
 					xgen.useDefaultPrettyPrinter();
 				
@@ -112,14 +113,7 @@ public class LowLevelWriter
 	{
 		if ( str == null )
 		{
-			if ( isXML() )
-			{
-				writeStringObject(str);
-			}
-			else
-			{
-				writeNull();
-			}
+			writeNull();
 			return;
 		}
 		
@@ -139,7 +133,34 @@ public class LowLevelWriter
 		}
 	}
 	
-	private void writeStringObject(String str)
+	public boolean isBase64Required(String src)
+	{
+		if ( src == null ) return false;
+		
+		char chars[] = src.toCharArray();
+		
+		boolean needs_strip = false;
+		
+		for ( char ch : chars )
+		{
+			if ( ch >= 32 && ch <= 10_000 ) continue;
+			if ( ch == 9 ) continue; // tab
+			if ( ch == 10 ) continue; // newline
+			if ( ch == 13 ) continue; // carriage return;
+			
+			
+			return true;
+		}
+		
+		return false;
+	}
+	
+	public String base64EncodeString(String str)
+	{
+		return Base64.getEncoder().encodeToString(str.getBytes());
+	}
+	
+	public void writeStringObject(String str)
 	{
 		try
 		{
@@ -148,12 +169,20 @@ public class LowLevelWriter
 			writeFieldName(FieldName.FIELD_NAME_TYPE_HINT);
 			gen.writeString(TypeName.TYPE_NAME_STRING.getSimpleName());
 			
-			writeFieldName(FieldName.FIELD_NAME_PRIMATIVE_VALUE);
-			
-			if ( str == null ) 
-				gen.writeNull();
+			if ( str != null && isBase64Required(str) )
+			{
+				writeFieldName(FieldName.FIELD_NAME_PRIMATIVE_VALUE_BASE64);
+				gen.writeString(this.base64EncodeString(str));
+			}
 			else
-				gen.writeString(str);
+			{
+				writeFieldName(FieldName.FIELD_NAME_PRIMATIVE_VALUE);
+				
+				if ( str == null ) 
+					gen.writeNull();
+				else
+					gen.writeString(str);
+			}
 			
 			gen.writeEndObject();
 		}

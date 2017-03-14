@@ -15,15 +15,18 @@ public class ObjectWriterUtils
 				obj = NullPrimative.NULL_PRIMATIVE;
 			}
 			
-			if ( obj instanceof String )
-			{
-				obj = new StringPrimative((String)obj);
-			}
-			
 			StringWriter writer = new StringWriter();
 			LowLevelWriter low_level_writer = new LowLevelWriter(format,writer);
 			
-			low_level_writer.writeObject(obj);
+			if ( obj instanceof String )
+			{
+				low_level_writer.writeStringObject((String)obj);
+			}
+			else
+			{
+				low_level_writer.writeObject(obj);
+			}
+			
 			low_level_writer.close();
 			
 			writer.close();

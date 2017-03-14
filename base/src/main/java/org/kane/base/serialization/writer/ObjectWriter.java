@@ -27,7 +27,15 @@ public class ObjectWriter
 		if ( writer.isXML() && value == null ) return; // in xml, a null is written by simply "not writing" the field...
 		
 		writer.writeFieldName(field_name);
-		writer.writeString(value);
+		
+		if ( writer.isBase64Required(value) )
+		{
+			writer.writeStringObject(value);
+		}
+		else
+		{
+			writer.writeString(value);
+		}
 	}
 	
 	public void writeBoolean(FieldName field_name, boolean value) 

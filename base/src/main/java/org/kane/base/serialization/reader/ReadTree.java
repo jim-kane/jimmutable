@@ -1,5 +1,6 @@
 package org.kane.base.serialization.reader;
 
+import java.util.Base64;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -32,12 +33,131 @@ public class ReadTree implements Iterable<ReadTree>
 		{
 			this.type_hint = new TypeName(value);
 		}
+		
+		// The base 64 primative values are handled quite gently...
+		if ( field_name.equals(FieldName.FIELD_NAME_PRIMATIVE_VALUE_BASE64) )
+		{
+			field_name = FieldName.FIELD_NAME_PRIMATIVE_VALUE;
+			this.value = new String(Base64.getDecoder().decode(value));
+		}
 	}
 	
 	public FieldName getSimpleFieldName() { return field_name; }
 	
 	public boolean hasValue() { return value != null; }
-	public String getOptionalValue(String default_value) { return Optional.getOptional(value, null, default_value); }
+	
+	public String getOptionalValueAsString(String default_value) 
+	{ 
+		if ( !hasValue() ) return default_value;
+		return value;
+	}
+	
+	public Character getOptionalValueAsCharacter(Character default_value)
+	{
+		if ( !hasValue() ) return default_value;
+		if ( value.length() > 1 ) return default_value;
+		
+		return value.charAt(0);
+	}
+	
+	public Boolean getOptionalValueAsBoolean(Boolean default_value)
+	{
+		if ( !hasValue() ) return default_value;
+		
+		if ( value.equalsIgnoreCase("true") ) return true;
+		if ( value.equalsIgnoreCase("t") ) return true;
+		if ( value.equals("1") ) return true;
+		
+		if ( value.equalsIgnoreCase("false") ) return false;
+		if ( value.equalsIgnoreCase("f") ) return false;
+		if ( value.equals("0") ) return false;
+		
+		return default_value;
+	}
+	
+	public Byte getOptionalValueAsByte(Byte default_value)
+	{
+		if ( !hasValue() ) return default_value;
+		
+		try
+		{
+			return new Byte(value);
+		}
+		catch(Exception e)
+		{
+			return default_value;
+		}
+	}
+	
+	public Short getOptionalValueAsShort(Short default_value)
+	{
+		if ( !hasValue() ) return default_value;
+		
+		try
+		{
+			return new Short(value);
+		}
+		catch(Exception e)
+		{
+			return default_value;
+		}
+	}
+	
+	public Integer getOptionalValueAsInteger(Integer default_value)
+	{
+		if ( !hasValue() ) return default_value;
+		
+		try
+		{
+			return new Integer(value);
+		}
+		catch(Exception e)
+		{
+			return default_value;
+		}
+	}
+	
+	public Long getOptionalValueAsLong(Long default_value)
+	{
+		if ( !hasValue() ) return default_value;
+		
+		try
+		{
+			return new Long(value);
+		}
+		catch(Exception e)
+		{
+			return default_value;
+		}
+	}
+	
+	public Float getOptionalValueAsFloat(Float default_value)
+	{
+		if ( !hasValue() ) return default_value;
+		
+		try
+		{
+			return new Float(value);
+		}
+		catch(Exception e)
+		{
+			return default_value;
+		}
+	}
+	
+	public Double getOptionalValueAsDouble(Double default_value)
+	{
+		if ( !hasValue() ) return default_value;
+		
+		try
+		{
+			return new Double(value);
+		}
+		catch(Exception e)
+		{
+			return default_value;
+		}
+	}
 	
 	public Iterator<ReadTree> iterator() 
 	{
@@ -52,7 +172,7 @@ public class ReadTree implements Iterable<ReadTree>
 		children.add(child);
 	}
 	
-	private ReadTree find(FieldName field_name, ReadTree default_value)
+	public ReadTree find(FieldName field_name, ReadTree default_value)
 	{
 		for ( ReadTree child : this )
 		{
@@ -82,7 +202,7 @@ public class ReadTree implements Iterable<ReadTree>
 		return getOptionalTypeHint(null) != null;
 	}
 	
-	public boolean isPrimative()
+	public boolean isPrimativeObject()
 	{
 		TypeName tn = getOptionalTypeHint(null);
 		if ( tn == null ) return false;
@@ -99,7 +219,7 @@ public class ReadTree implements Iterable<ReadTree>
 	}
 	
 	
-	private boolean remove(ReadTree t)
+	public boolean remove(ReadTree t)
 	{
 		Iterator<ReadTree> itr = iterator();
 		
@@ -122,6 +242,10 @@ public class ReadTree implements Iterable<ReadTree>
 		children.removeLast();
 	}
 	
+	
+	
+	
+	/*
 	public String readString(FieldName field_name, String default_value)
 	{
 		ReadTree t = find(field_name, null);
@@ -133,9 +257,7 @@ public class ReadTree implements Iterable<ReadTree>
 			remove(t);
 			return t.getOptionalValue(default_value);
 		}
-		
-		// Last option: if this is a primative (i.e. t has a child with a primative_value field, then we can read that as a string)
-		
+			
 		ReadTree primative_type = t.find(FieldName.FIELD_NAME_TYPE_HINT, null);
 		
 		if ( isPrimative() )
@@ -166,7 +288,7 @@ public class ReadTree implements Iterable<ReadTree>
 		}
 		
 		return default_value; // could not read as a string
-	}
+	}*/
 	
 	public String toString()
 	{
@@ -187,7 +309,7 @@ public class ReadTree implements Iterable<ReadTree>
 		
 		if ( hasValue() )
 		{
-			builder.append(String.format(": [%s]", getOptionalValue(null)));
+			builder.append(String.format(": [%s]", getOptionalValueAsString(null)));
 		}
 		
 		builder.append("\n");

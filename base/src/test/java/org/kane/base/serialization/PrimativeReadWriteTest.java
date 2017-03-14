@@ -1,8 +1,10 @@
 package org.kane.base.serialization;
 
+import org.kane.base.serialization.reader.ObjectReader;
 import org.kane.base.serialization.reader.Parser;
 import org.kane.base.serialization.reader.ReadTree;
 import org.kane.base.serialization.writer.Format;
+import org.kane.base.serialization.writer.LowLevelWriter;
 import org.kane.base.serialization.writer.ObjectWriterUtils;
 
 import junit.framework.Test;
@@ -29,32 +31,88 @@ public class PrimativeReadWriteTest extends TestCase
         return new TestSuite( PrimativeReadWriteTest.class );
     }
 
-    public void testStrings()
+    public void testByte()
     {
-    	//testStings(Format.JSON);
-    	testStings(Format.XML);
+    	testObject(Byte.MAX_VALUE);
+    	testObject(Byte.MIN_VALUE);
+    	testObject(new Byte((byte)1));
+    	testObject(new Byte((byte)0));
     }
     
-    public void testStings(Format format)
+    public void testShort()
     {
-    	testString(format, "Hello World");
-    	testString(format, "");
+    	testObject(Short.MAX_VALUE);
+    	testObject(Short.MIN_VALUE);
+    	testObject(new Short((short)1));
+    	testObject(new Short((short)0));
+    }
+    
+    public void testInt()
+    {
+    	testObject(Integer.MAX_VALUE);
+    	testObject(Integer.MIN_VALUE);
+    	testObject(new Integer(1));
+    	testObject(new Integer(0));
+    }
+    
+    public void testLong()
+    {
+    	testObject(Long.MAX_VALUE);
+    	testObject(Long.MIN_VALUE);
+    	testObject(new Long(1));
+    	testObject(new Long(0));
+    	testObject(new Long(System.currentTimeMillis()));
+    }
+    
+    public void testFloat()
+    {
+    	testObject(Float.MAX_VALUE);
+    	testObject(Float.MIN_VALUE);
+    	testObject(Float.NaN);
+    	testObject(Float.NEGATIVE_INFINITY);
+    	testObject(Float.POSITIVE_INFINITY);
     	
-    	/*testString(format, "Fisher & Paykel");
+    	testObject(new Float(1));
+    	testObject(new Float(0));
+    	testObject(new Float(2.8/2.1));
+    }
+    
+    public void testDouble()
+    {
+    	testObject(Double.MAX_VALUE);
+    	testObject(Double.MIN_VALUE);
+    	testObject(Double.NaN);
+    	testObject(Double.NEGATIVE_INFINITY);
+    	testObject(Double.POSITIVE_INFINITY);
     	
-    	testString(format, "{ foo : \"bar\" }");
+    	testObject(new Double(1));
+    	testObject(new Double(0));
+    	testObject(new Double(2.8/2.1));
+    }
+    
+    public void testStings()
+    {
+    	testObject("Hello World");
+    	testObject( "");
     	
-    	testString(format, "<html></html>");
+    	testObject("Fisher & Paykel");
     	
-    	testString(format, "Hello There \u00a9");
+    	testObject("{ foo : \"bar\" }");
+    	
+    	testObject("<html></html>");
+    	
+    	testObject("Hello There \u00a9");
     	
     	// The acid string...
-    	testString(format, createAcidString());*/
+    	testObject(createNonBase64AcidString());
+    	testObject(createAcidString());
     }
     
     private String createAcidString()
     {
     	StringBuilder ret = new StringBuilder();
+    	
+    	ret.append("\n");
     	
     	for ( int i = 0; i < 10_000; i++ )
     	{
@@ -64,19 +122,48 @@ public class PrimativeReadWriteTest extends TestCase
     	return ret.toString();
     }
     
-    private void testString(Format format, String str)
+    private String createNonBase64AcidString()
     {
-    	System.out.println(str);
-    	String serialized_data = ObjectWriterUtils.writeObject(format, str, null);
+    	StringBuilder ret = new StringBuilder();
+    	
+    	ret.append("\n");
+    	
+    	for ( int i = 0; i < 10_000; i++ )
+    	{
+    		char ch = (char)i;
+    		if ( i > 32 ) { ret.append(ch); }
+    		if ( ch == '\t' ) { ret.append(ch); }
+    		if ( ch == '\n' ) { ret.append(ch); }
+    		if ( ch == '\r' ) { ret.append(ch); }
+    	}
+    	
+    	return ret.toString();
+    }
+    
+    private void testObject(Object obj)
+    {
+    	testObject(Format.XML,obj);
+    	testObject(Format.XML_PRETTY_PRINT,obj);
+    	testObject(Format.JSON,obj);
+    	testObject(Format.JSON_PRETTY_PRINT,obj);;
+    }
+    
+    private void testObject(Format format, Object obj)
+    {
+    	/*if ( obj instanceof Long )
+    	{
+    		System.out.println(String.format("%s: %d", format, obj));
+    	}*/
+    	String serialized_data = ObjectWriterUtils.writeObject(format, obj, null);
     	assert(serialized_data != null);
     	
-    	System.out.println(serialized_data);
+    	/*if ( obj instanceof Long )
+    	{
+    		System.out.println(serialized_data);
+    	}*/
     	
-    	ReadTree t = Parser.parse(serialized_data, null);
+    	Object from_reader = ObjectReader.readDocument(serialized_data, null);
     	
-    	assert(t != null);
-    	
-    	assertEquals(t.readString(FieldName.FIELD_NAME_TYPE_HINT, null), TypeName.TYPE_NAME_STRING.getSimpleName());
-    	assertEquals(str, t.readString(FieldName.FIELD_NAME_PRIMATIVE_VALUE, null));
+    	assertEquals(obj,from_reader);
     }
 }

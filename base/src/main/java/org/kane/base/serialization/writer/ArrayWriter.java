@@ -22,7 +22,15 @@ public class ArrayWriter
 	public void writeString(String value)
 	{
 		if ( closed ) throw new SerializeException("Attempt to write to a closed array");
-		writer.writeString(value);
+		
+		if ( writer.isBase64Required(value) )
+		{
+			writer.writeStringObject(value);
+		}
+		else
+		{
+			writer.writeString(value);
+		}
 	}
 	
 	public void writeBoolean(boolean value) 
