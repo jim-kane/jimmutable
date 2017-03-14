@@ -23,6 +23,21 @@ public class Validator
 	}
 	
 	/**
+	 * Guarantee that all objectgs in objs are not null (i.e. thrown a
+	 * ValidationException if any object is null)
+	 * 
+	 * @param objs
+	 *            The objects to test
+	 */
+	static public void notNull(Object... objs) 
+	{
+		for ( Object obj : objs )
+		{
+			if ( obj == null ) throw new ValidationException("Required field is null");
+		}
+	}
+	
+	/**
 	 * Guarantee that an object is equal to or greater than minimum_valid_value
 	 * 
 	 * @param value
