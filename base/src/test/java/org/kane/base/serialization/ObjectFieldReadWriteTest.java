@@ -30,6 +30,8 @@ public class ObjectFieldReadWriteTest extends TestCase
 		{
 			my_string = r.readString(FIELD_STRING_MY_STRING,null);
 			assertEquals(null,r.readString(FIELD_STRING_MY_STRING, null)); // make sure the read also removed the object...
+			
+			
 		}
 
 		
