@@ -8,9 +8,7 @@ import org.kane.base.immutability.collections.FieldMap;
 import org.kane.base.immutability.decks.StandardImmutableMapDeck;
 import org.kane.base.serialization.Validator;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 
-@XStreamAlias("book-map")
 final public class BookDeckMap extends StandardImmutableMapDeck<BookDeckMap, String, Book>
 {
 	private FieldHashMap<String,Book> books = new FieldHashMap<>();

@@ -3,12 +3,10 @@ package org.kane.base.examples.card;
 import java.util.Objects;
 
 import org.kane.base.immutability.StandardImmutableObject;
+import org.kane.base.serialization.Comparison;
 import org.kane.base.serialization.Validator;
 
-import com.google.common.collect.ComparisonChain;
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 
-@XStreamAlias("card")
 final public class Card extends StandardImmutableObject<Card>
 {
     private Suit suit; // Required
@@ -38,10 +36,12 @@ final public class Card extends StandardImmutableObject<Card>
     @Override
     public int compareTo(Card other)
     {
-        return ComparisonChain.start()
-                .compare(getSimpleSuit(), other.getSimpleSuit())
-                .compare(getSimpleValue(), other.getSimpleValue())
-                .result();
+    	int ret = Comparison.startCompare();
+    	
+    	ret = Comparison.continueCompare(ret, getSimpleSuit(), other.getSimpleSuit());
+    	ret = Comparison.continueCompare(ret, getSimpleValue(), other.getSimpleValue());
+    	
+       return ret;
     }
 
     @Override

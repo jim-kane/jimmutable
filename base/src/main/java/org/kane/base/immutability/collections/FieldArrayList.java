@@ -3,9 +3,6 @@ package org.kane.base.immutability.collections;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-
-
 /**
  * An implementation of a {@link ArrayList} that begins life as mutable but can,
  * at any time, be "{@link #freeze() frozen}" (made immutable). In other
@@ -26,7 +23,6 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
  * @see FieldList
  * @see FieldCopyOnWriteArrayList
  */
-@XStreamAlias("field-array-list")
 final public class FieldArrayList<E> extends FieldList<E>
 {
 	/**

@@ -1,7 +1,6 @@
 package org.kane.base.serialization;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Objects;
 
 import org.kane.base.serialization.reader.ObjectReader;
 import org.kane.base.serialization.reader.ReadTree;
@@ -9,8 +8,6 @@ import org.kane.base.serialization.writer.Format;
 import org.kane.base.serialization.writer.ObjectWriter;
 import org.kane.base.serialization.writer.ObjectWriterUtils;
 import org.kane.base.serialization.writer.StandardWritable;
-
-import com.google.common.base.Objects;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -74,50 +71,13 @@ public class ObjectFieldReadWriteTest extends TestCase
 			
 			StringFieldBoundaryTest other = (StringFieldBoundaryTest)obj;
 			
-			if ( !Objects.equal(my_string, other.my_string) ) return false;
+			if ( !Objects.equals(my_string, other.my_string) ) return false;
 			
 			return true;
 		}
 	}
 	
-	static public class StringListFieldBoundaryTest implements StandardWritable
-	{
-		static public TypeName TYPE_NAME = new TypeName("serialization_tests.StringFieldBoundaryTest");
-		
-		static private FieldName FIELD_STRING_MY_STRING = new FieldName("my_string");
-		static private FieldName FIELD_STRING_MY_STRING_EXPLICIT = new FieldName("my_string_explicit");
-		
-		public List<String> my_list = new ArrayList();
-		
-		public StringListFieldBoundaryTest() 
-		{
-		}
-		
-		public StringListFieldBoundaryTest(ReadTree t) 
-		{
-			
-		}
 
-		
-		public TypeName getTypeName() { return TYPE_NAME; }
-
-		public void write(ObjectWriter writer) 
-		{
-			writer.writeString(FIELD_STRING_MY_STRING, my_string);
-			writer.writeObject(FIELD_STRING_MY_STRING_EXPLICIT, my_string);
-		}
-		
-		public boolean equals(Object obj) 
-		{
-			if (!(obj instanceof StringFieldBoundaryTest)) return false;
-			
-			StringFieldBoundaryTest other = (StringFieldBoundaryTest)obj;
-			
-			if ( !Objects.equal(my_string, other.my_string) ) return false;
-			
-			return true;
-		}
-	}
 
     public void testStringField()
     {

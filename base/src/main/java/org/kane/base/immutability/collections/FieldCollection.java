@@ -6,14 +6,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-import org.kane.base.serialization.XStreamSingleton;
 
-import com.thoughtworks.xstream.annotations.XStreamImplicit;
-import com.thoughtworks.xstream.converters.Converter;
-import com.thoughtworks.xstream.converters.MarshallingContext;
-import com.thoughtworks.xstream.converters.UnmarshallingContext;
-import com.thoughtworks.xstream.io.HierarchicalStreamReader;
-import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 
 /**
  * An implementation of a {@link Collection} that begins life as mutable but can,
@@ -238,45 +231,5 @@ abstract public class FieldCollection<E> implements Field, Collection<E>
 	 * @return The new {@link Collection} instance
 	 */
 	abstract protected Collection<E> createNewMutableInstance();
-	
-	static abstract public class FieldCollectionConverter implements Converter
-	{
-		abstract Class getFieldClass();
-		abstract Collection createNewMutableInstance();
-		
-		@SuppressWarnings("rawtypes")
-		public boolean canConvert(Class type)
-		{
-			return type.equals(getFieldClass());
-		}
-		
-		public void marshal(Object source_raw, HierarchicalStreamWriter writer, MarshallingContext context)
-		{
-			Collection source = (Collection)source_raw;
-			
-			for ( Object entry : source )
-			{
-				XStreamSingleton.writeObject(entry, context, writer);
-			}
-		}
-		
-		public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context)
-		{
-			Collection ret = (Collection)createNewMutableInstance();
-			
-			while(reader.hasMoreChildren())
-			{
-				reader.moveDown();
-				
-				Object object = XStreamSingleton.readObject(reader, context, ret);
-				ret.add(object);
-				
-				reader.moveUp();
-			}
-			
-			return ret;
-		}
-		
-	}
 }
 

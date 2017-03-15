@@ -9,7 +9,6 @@ import org.kane.base.immutability.StandardImmutableObject;
 import org.kane.base.serialization.JavaCodeUtils;
 import org.kane.base.serialization.StandardObject;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -17,7 +16,6 @@ import junit.framework.TestSuite;
 
 public class StandardImmutableFieldHashSetTest extends TestCase
 {
-	@XStreamAlias("DummyObject-set")
 	static private class DummyObject extends StandardImmutableObject
 	{
 		private FieldHashSet<String> set;
@@ -237,7 +235,7 @@ public class StandardImmutableFieldHashSetTest extends TestCase
     		     , "</DummyObject-set>"
     		);
 
-    	DummyObject obj = (DummyObject)StandardObject.fromXML(obj_as_xml_string);
+    	DummyObject obj = (DummyObject)StandardObject.deserialize(obj_as_xml_string, null);
     	
     	assertEquals(obj.set.size(),1);
     	assert(obj.set.contains("foo"));

@@ -7,13 +7,10 @@ import java.util.Objects;
 import org.kane.base.immutability.collections.FieldHashSet;
 import org.kane.base.immutability.collections.FieldSet;
 import org.kane.base.immutability.decks.StandardImmutableSetDeck;
+import org.kane.base.serialization.Comparison;
 import org.kane.base.serialization.Normalizer;
 import org.kane.base.serialization.Validator;
 
-import com.google.common.collect.ComparisonChain;
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-
-@XStreamAlias("card-hand")
 final public class Hand extends StandardImmutableSetDeck<Hand, Card>
 {
     private String name; // Optional, free form
@@ -89,12 +86,13 @@ final public class Hand extends StandardImmutableSetDeck<Hand, Card>
     @Override
     public int compareTo(Hand other)
     {
-        int result = ComparisonChain.start()
-                        .compare(max_size, other.max_size)
-                        .compare(name, other.name)
-                        .result();
+    	int ret = Comparison.startCompare();
+    	
+    	ret = Comparison.continueCompare(ret, max_size, other.max_size);
+    	ret = Comparison.continueCompare(ret, name, other.name);
+    	
         
-        if (0 != result) return result;
+        if (0 != ret) return ret;
         
         return super.compareTo(other);
     }

@@ -123,7 +123,7 @@ public class StandardImmutableDeckHashMapTest extends TestCase
     		     , "</book-map>"
     		);
     	
-    		BookDeckMap obj = StandardObject.fromXML(obj_as_xml_string);
+    		BookDeckMap obj = (BookDeckMap)StandardObject.deserialize(obj_as_xml_string,null);
     	
     	assertEquals(obj.getSimpleContents().size(),3); 
     	assert(obj.getSimpleContents().containsKey("jim_first_book"));

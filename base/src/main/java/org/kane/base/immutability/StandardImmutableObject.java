@@ -2,7 +2,8 @@ package org.kane.base.immutability;
 
 import org.kane.base.immutability.collections.Field;
 import org.kane.base.serialization.StandardObject;
-import org.kane.base.serialization.XStreamSingleton;
+import org.kane.base.serialization.reader.ObjectReader;
+import org.kane.base.serialization.writer.Format;
 
 /**
  * An abstract base class for {@link StandardObject standard} objects
@@ -84,6 +85,6 @@ abstract public class StandardImmutableObject<T extends StandardImmutableObject<
 	 */
 	protected T deepMutableCloneForBuilder()
 	{
-		return fromSerializedData(toXML(), XStreamSingleton.getXMLStream(), false);
+		return (T)ObjectReader.readDocument(serialize(Format.XML,null), null, false);
 	}
 }

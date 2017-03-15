@@ -7,13 +7,11 @@ import java.util.Objects;
 
 import org.kane.base.immutability.StandardImmutableObject;
 import org.kane.base.immutability.collections.FieldArrayList;
+import org.kane.base.serialization.Comparison;
 import org.kane.base.serialization.Normalizer;
 import org.kane.base.serialization.Validator;
 
-import com.google.common.collect.ComparisonChain;
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 
-@XStreamAlias("book")
 final public class Book extends StandardImmutableObject<Book>
 {
 	private String title; // required, upper-case
@@ -107,12 +105,15 @@ final public class Book extends StandardImmutableObject<Book>
 
 	public int compareTo(Book other) 
 	{
-		return ComparisonChain.start()
-				.compare(getSimpleTitle(), other.getSimpleTitle())
-				.compare(getSimplePageCount(), other.getSimplePageCount())
-				.compare(getSimpleBinding(), other.getSimpleBinding())
-				.compare(getOptionalISBN(""), other.getOptionalISBN(""))
-				.compare(getSimpleAuthors().size(),other.getSimpleAuthors().size()).result();
+		int ret = Comparison.startCompare();
+		
+		Comparison.continueCompare(ret, getSimpleTitle(), other.getSimpleTitle());
+		Comparison.continueCompare(ret, getSimplePageCount(), other.getSimplePageCount());
+		Comparison.continueCompare(ret, getSimpleBinding(), other.getSimpleBinding());
+		Comparison.continueCompare(ret, getOptionalISBN(null), other.getOptionalISBN(null));
+		Comparison.continueCompare(ret, getSimpleAuthors().size(), other.getSimpleAuthors().size());
+		
+		return ret;
 	}
 
 	public int hashCode() 

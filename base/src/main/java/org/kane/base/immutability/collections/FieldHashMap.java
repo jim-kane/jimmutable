@@ -3,9 +3,6 @@ package org.kane.base.immutability.collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-
-
 /**
  * An implementation of a {@link HashMap} that begins life as mutable but can,
  * at any time, be "{@link #freeze() frozen}" (made immutable). In other
@@ -27,7 +24,6 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
  * @see FieldMap
  * @see FieldConcurrentHashMap
  */
-@XStreamAlias("field-hash-map")
 final public class FieldHashMap<K,V> extends FieldMap<K,V>
 {
 	/**

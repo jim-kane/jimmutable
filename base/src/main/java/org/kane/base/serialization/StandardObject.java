@@ -5,9 +5,10 @@ import java.io.StringReader;
 import java.io.Writer;
 
 import org.kane.base.immutability.StandardImmutableObject;
-
-import com.thoughtworks.xstream.XStream;
-
+import org.kane.base.serialization.reader.ObjectReader;
+import org.kane.base.serialization.writer.Format;
+import org.kane.base.serialization.writer.ObjectWriter;
+import org.kane.base.serialization.writer.ObjectWriterUtils;
 
 /**
  * The root for all "standard" objects. All data in the framework,
@@ -69,6 +70,10 @@ abstract public class StandardObject<T extends StandardObject<T>> implements Com
 	@Override
 	abstract public boolean equals(Object obj);
 	
+	
+	abstract public TypeName getTypeName();
+	abstract public void write(ObjectWriter writer);
+	
 	/**
 	 * Declare that an object is ready to use. The practical effect is that
 	 * {@link #normalize() normalization} and {@link #validate() validation}
@@ -102,7 +107,7 @@ abstract public class StandardObject<T extends StandardObject<T>> implements Com
 	 */
 	public T deepClone()
 	{
-		return fromXML(toXML());
+		return (T)ObjectReader.readDocument(serialize(Format.XML,null), null, true);
 	}
 	
 	/**
@@ -112,7 +117,17 @@ abstract public class StandardObject<T extends StandardObject<T>> implements Com
 	@Override
 	public String toString()
 	{
-		return toJSON();
+		return toJSON(true,"");
+	}
+	
+	public String serialize(Format format, String default_value)
+	{
+		return ObjectWriterUtils.writeObject(format, this, default_value);
+	}
+	
+	static public StandardObject deserialize(String serialized_data, Object default_value)
+	{
+		return (StandardObject)ObjectReader.readDocument(serialized_data, default_value);
 	}
 
 	/**
@@ -120,9 +135,9 @@ abstract public class StandardObject<T extends StandardObject<T>> implements Com
 	 * 
 	 * @return The JSON serialized version of this object
 	 */
-	public String toJSON()
+	public String toJSON(boolean pretty_print, String default_value)
 	{
-		return XStreamSingleton.getJSONStream().toXML(this);
+		return serialize(pretty_print ? Format.JSON_PRETTY_PRINT : Format.JSON, default_value);
 	}
 	
 	/**
@@ -130,33 +145,10 @@ abstract public class StandardObject<T extends StandardObject<T>> implements Com
 	 * 
 	 * @return The XML serialized version of this object
 	 */
-	public String toXML()
+	public String toXML(boolean pretty_print, String default_value)
 	{
-		return XStreamSingleton.getXMLStream().toXML(this);
+		return serialize(pretty_print ? Format.XML_PRETTY_PRINT : Format.XML, default_value);
 	} 
-	
-	/**
-	 * Serialize this object to XML
-	 * 
-	 * @param writer The {@link Writer} to send the XML representation to
-	 */
-	public void toXML(Writer writer)
-	{
-		XStreamSingleton.getXMLStream().toXML(this, writer);
-	} 
-	
-	/**
-	 * Pretty print the XML of this object
-	 * 
-	 * @param default_value The value to return if unable to pretty-print the XML
-	 * 						(e.g. an error occurs)
-	 * 
-	 * @return A pretty printed XML representation of this object
-	 */
-	public String toPrettyPrintXML(String default_value)
-	{
-		return JavaCodeUtils.prettyPrintXML(toXML(), default_value);
-	}
 	
 	/**
 	 * Create Java source code that will construct an identical copy of this object.
@@ -175,7 +167,7 @@ abstract public class StandardObject<T extends StandardObject<T>> implements Com
 	{
 		return String.format("String %s_as_xml_string = %s;\n\n%s %s = (%s)StandardObject.fromXML(%s_as_xml_string);"
 				, variable_name
-				, JavaCodeUtils.toJavaStringLiteral(toPrettyPrintXML("unable to pretty print XML!"))
+				, JavaCodeUtils.toJavaStringLiteral(toXML(true, "could not serialize!"))
 				, getClass().getSimpleName()
 				, variable_name
 				, getClass().getSimpleName()
@@ -201,225 +193,11 @@ abstract public class StandardObject<T extends StandardObject<T>> implements Com
 	{
 		return String.format("String %s_as_json_string = %s;\n\n%s %s = (%s)StandardObject.fromJSON(%s_as_json_string);"
 				, variable_name
-				, JavaCodeUtils.toJavaStringLiteral(toJSON())
+				, JavaCodeUtils.toJavaStringLiteral(toJSON(true, "could not serialize"))
 				, getClass().getSimpleName()
 				, variable_name
 				, getClass().getSimpleName()
 				, variable_name
 			);
-	}
-	
-	/**
-	 * Low-level method for de-serializing an {@link StandardObject object} using {@link XStream}.
-	 * 
-	 * <p>Nice implementations for common serialization formats (e.g. {@link #fromXML(Reader) XML}
-	 * and {@link #fromJSON(Reader) JSON}) are preferred. This implementation is exposed in the
-	 * case that a custom or unusual de-serialization format is needed.
-	 * 
-	 * @param data The data to de-serialize from
-	 * @param deserializer The {@link XStream} object to use to convert {@code data} into object(s)
-	 * @param complete Whether or not to call {@link #complete()} on the de-serialized object
-	 * 
-	 * @return The object de-serialized from data
-	 * 
-	 * @throws ValidationException
-	 *             The only exception that can be thrown from this method is a
-	 *             {@code ValidationException}. If another exception is generated
-	 *             (e.g., {@code data} is invalid), a chained {@code ValidationException}
-	 *             will be thrown.
-	 * 
-	 * @param <T> The type of object created
-	 */
-	static public <T extends StandardObject<T>> T fromSerializedData(String data, XStream deserializer, boolean complete) throws ValidationException
-	{
-		return fromSerializedData(new StringReader(data),deserializer, complete);
-	}
-	
-	/**
-	 * Low-level method for de-serializing an {@link StandardObject object} using {@link XStream}.
-	 * 
-	 * <p>Nice implementations for common serialization formats (e.g. {@link #fromXML(Reader) XML}
-	 * and {@link #fromJSON(Reader) JSON}) are preferred. This implementation is exposed in the
-	 * case that a custom or unusual de-serialization format is needed.
-	 * 
-	 * @param data The data to de-serialize from
-	 * @param deserializer The {@link XStream} object to use to convert {@code data} into object(s)
-	 * @param complete Whether or not to call {@link #complete()} on the de-serialized object
-	 * 
-	 * @return The object de-serialized from data
-	 * 
-	 * @throws ValidationException
-	 *             The only exception that can be thrown from this method is a
-	 *             {@code ValidationException}. If another exception is generated
-	 *             (e.g., {@code data} is invalid), a chained {@code ValidationException}
-	 *             will be thrown.
-	 * 
-	 * @param <T> The type of object created
-	 */
-	static public <T extends StandardObject<T>> T fromSerializedData(Reader data, XStream deserializer, boolean complete) throws ValidationException
-	{
-		Validator.notNull(data);
-		Validator.notNull(deserializer);
-		
-		try
-		{
-			@SuppressWarnings("unchecked")
-            T ret = (T) deserializer.fromXML(data);
-            if (complete) ret.complete();
-			return ret;
-		}
-		catch(ValidationException validation_exception)
-		{
-			throw validation_exception;
-		}
-		catch(Exception other_exception)
-		{
-			if ( deserializer == XStreamSingleton.getXMLStream() )
-				throw new ValidationException("Error constructing StandardObject from XML",other_exception);
-			else if ( deserializer == XStreamSingleton.getJSONStream() )
-				throw new ValidationException("Error constructing StandardObject from JSON",other_exception);
-			else
-				throw new ValidationException("Error constructing StandardObject from serialized data",other_exception);
-		}
-	}
-	
-	/**
-	 * Create a standard object from XML. Objects created from XML are still
-	 * subject to {@link #complete() completion}.
-	 * 
-	 * @param xml The XML to create the object from. If you pass a {@code null}
-	 * 		      value in here, you will generate a {@link ValidationException}.
-	 * 
-	 * @return A {@link StandardObject} created from the given XML
-	 * 
-	 * @throws ValidationException
-	 *             The only exception that can be thrown from this method is a
-	 *             {@code ValidationException}. If another exception is generated
-	 *             (e.g., the XML is invalid), a chained {@code ValidationException}
-	 *             will be thrown.
-	 * 
-	 * @param <T> The type of object created
-	 */
-	static public <T extends StandardObject<T>> T fromXML(String xml) throws ValidationException
-	{
-		return fromSerializedData(xml, XStreamSingleton.getXMLStream(), true);
-	}
-	
-	/**
-	 * Create a standard object from XML. Objects created from XML are still
-	 * subject to {@link #complete() completion}.
-	 * 
-	 * @param xml The {@link Reader} that will provide the XML content to create
-	 * 			  the object from. If you pass a {@code null} value in here, you
-	 * 			  will generate a {@link ValidationException}.
-	 * 
-	 * @return A {@link StandardObject} created from the given XML
-	 * 
-	 * @throws ValidationException
-	 *             The only exception that can be thrown from this method is a
-	 *             {@code ValidationException}. If another exception is generated
-	 *             (e.g., the XML is invalid), a chained {@code ValidationException}
-	 *             will be thrown.
-	 * 
-	 * @param <T> The type of object created
-	 */
-	static public <T extends StandardObject<T>> T fromXML(Reader xml) throws ValidationException
-	{
-		return fromSerializedData(xml, XStreamSingleton.getXMLStream(), true);
-	}
-	
-	/**
-	 * Utility function that "quietly" creates an object from XML. If any error
-	 * occurs (i.e. any exception is thrown) then the exception is swallowed
-	 * and the {@code default_value} is returned.
-	 * 
-	 * @param xml The XML data to de-serialize the object from
-	 * @param default_value The value to return if there is an error
-	 * 
-	 * @return The {@link StandardObject standard object} de-serialized from the
-	 * 		   XML data or {@code default_value} if there is any error
-	 * 
-	 * @see #fromXML(String)
-	 */
-	static public <T extends StandardObject<T>> T quietFromXML(String xml, T default_value)
-	{
-		try
-		{
-			return fromXML(xml);
-		}
-		catch(Exception e)
-		{
-			return default_value;
-		}
-	}
-
-	/**
-	 * Create a {@link StandardObject standard object} from JSON. Objects created
-	 * from JSON are still subject to {@link #complete() completion.
-	 * 
-	 * @param json The JSON to create the object from. If you pass a {@code null}
-	 * 		       value in here, you will generate a {@link ValidationException}.
-	 * 
-	 * @return A {@link StandardObject} created from the given JSON
-	 * 
-	 * @throws ValidationException
-	 *             The only exception that can be thrown from this method is a
-	 *             {@code ValidationException}. If another exception is generated
-	 *             (e.g., the JSON is invalid), a chained {@code ValidationException}
-	 *             will be thrown.
-	 * 
-	 * @param <T> The type of object created
-	 */
-	static public <T extends StandardObject<T>> T fromJSON(String json) throws ValidationException
-	{
-		return fromSerializedData(json, XStreamSingleton.getJSONStream(), true);
-	}
-	
-	/**
-	 * Create a {@link StandardObject standard object} from JSON. Objects created
-	 * from JSON are still subject to {@link #complete() completion.
-	 * 
-	 * @param json The {@link Reader} that will provide the JSON content to create
-	 * 			   the object from. If you pass a {@code null} value in here, you
-	 * 			   will generate a {@link ValidationException}.
-	 * 
-	 * @return A {@link StandardObject} created from the given JSON
-	 * 
-	 * @throws ValidationException
-	 *             The only exception that can be thrown from this method is a
-	 *             {@code ValidationException}. If another exception is generated
-	 *             (e.g., the JSON is invalid), a chained {@code ValidationException}
-	 *             will be thrown.
-	 * 
-	 * @param <T> The type of object created
-	 */
-	static public <T extends StandardObject<T>> T fromJSON(Reader json) throws ValidationException
-	{
-		return fromSerializedData(json, XStreamSingleton.getJSONStream(), true);
-	}
-	
-	/**
-	 * Utility function that "quietly" creates an object from JSON. If any error
-	 * occurs (i.e. any exception is thrown) then the exception is swallowed
-	 * and the {@code default_value} is returned.
-	 * 
-	 * @param json The JSON data to de-serialize the object from
-	 * @param default_value The value to return if there is an error
-	 * 
-	 * @return The {@link StandardObject standard object} de-serialized from the
-	 * 		   JSON data or {@code default_value} if there is any error
-	 * 
-	 * @see #fromJSON(String)
-	 */
-	static public <T extends StandardObject<T>> T quietFromJSON(String json, T default_value)
-	{
-		try
-		{
-			return fromJSON(json);
-		}
-		catch(Exception e)
-		{
-			return default_value;
-		}
 	}
 }

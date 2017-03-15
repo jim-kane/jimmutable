@@ -12,7 +12,6 @@ import org.kane.base.immutability.collections.FieldHashMap;
 import org.kane.base.serialization.JavaCodeUtils;
 import org.kane.base.serialization.StandardObject;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -20,7 +19,6 @@ import junit.framework.TestSuite;
 
 public class StandardImmutableFieldHashMapTest extends TestCase
 {
-	@XStreamAlias("DummyObject-map")
 	static private class DummyObject extends StandardImmutableObject
 	{
 		private FieldHashMap<String,Integer> map;
@@ -232,7 +230,7 @@ public class StandardImmutableFieldHashMapTest extends TestCase
     		     , "</DummyObject-map>"
     		);
 
-    	DummyObject obj = (DummyObject)StandardObject.fromXML(obj_as_xml_string);
+    	DummyObject obj = (DummyObject)StandardObject.deserialize(obj_as_xml_string, null);
     	
     	assertEquals(obj.map.size(),1);
     	assert(obj.map.containsKey("foo"));

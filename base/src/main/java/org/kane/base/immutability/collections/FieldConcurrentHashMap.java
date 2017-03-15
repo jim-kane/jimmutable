@@ -3,8 +3,6 @@ package org.kane.base.immutability.collections;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-
 
 /**
  * An implementation of a {@link FieldConcurrentHashMap} that begins life as mutable
@@ -28,7 +26,6 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
  * @see FieldMap
  * @see FieldHashMap
  */
-@XStreamAlias("field-concurrent-hash-map")
 final public class FieldConcurrentHashMap <K,V> extends FieldMap<K,V>
 {
 	/**

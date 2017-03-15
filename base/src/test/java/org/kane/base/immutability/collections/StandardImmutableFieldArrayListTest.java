@@ -9,15 +9,12 @@ import org.kane.base.immutability.StandardImmutableObject;
 import org.kane.base.serialization.JavaCodeUtils;
 import org.kane.base.serialization.StandardObject;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 public class StandardImmutableFieldArrayListTest extends TestCase
 {
-	@XStreamAlias("DummyObject-list")
 	static private class DummyObject extends StandardImmutableObject
 	{
 		private FieldArrayList<String> list;
@@ -247,7 +244,7 @@ public class StandardImmutableFieldArrayListTest extends TestCase
     		     , "</DummyObject-list>"
     		);
 
-    	DummyObject obj = (DummyObject)StandardObject.fromXML(obj_as_xml_string);
+    	DummyObject obj = (DummyObject)StandardObject.deserialize(obj_as_xml_string, null);
     	
     	assertEquals(obj.list.size(),1);
     	assertEquals(obj.list.get(0),"foo");

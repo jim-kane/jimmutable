@@ -4,12 +4,6 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
 
-import org.kane.base.immutability.collections.FieldCollection.FieldCollectionConverter;
-
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamConverter;
-
-
 /**
  * An implementation of a {@link ConcurrentSkipListSet} that begins life as mutable
  * but can, at any time, be "{@link #freeze() frozen}" (made immutable). In other
@@ -31,8 +25,7 @@ import com.thoughtworks.xstream.annotations.XStreamConverter;
  * @see FieldList
  * @see FieldTreeSet
  */
-@XStreamAlias("field-concurrent-skip-list-set")
-@XStreamConverter(FieldConcurrentSkipListSet.MyConverter.class)
+
 final public class FieldConcurrentSkipListSet<E> extends FieldSet<E>
 {
 	/**
@@ -59,11 +52,5 @@ final public class FieldConcurrentSkipListSet<E> extends FieldSet<E>
 	protected Set<E> createNewMutableInstance()
 	{
 		return new ConcurrentSkipListSet<>();
-	}
-	
-	static public class MyConverter extends FieldCollectionConverter
-	{
-		Class getFieldClass() { return FieldConcurrentSkipListSet.class; }
-		Collection createNewMutableInstance() { return new FieldConcurrentSkipListSet(); }
 	}
 }

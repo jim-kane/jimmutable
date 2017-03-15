@@ -8,9 +8,7 @@ import org.kane.base.immutability.collections.FieldList;
 import org.kane.base.immutability.decks.StandardImmutableListDeck;
 import org.kane.base.serialization.Validator;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 
-@XStreamAlias("card-deck")
 final public class Deck extends StandardImmutableListDeck<Deck, Card>
 {
     private FieldList<Card> cards = new FieldArrayList<>();

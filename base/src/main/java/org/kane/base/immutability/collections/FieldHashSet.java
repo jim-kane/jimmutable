@@ -3,9 +3,6 @@ package org.kane.base.immutability.collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-
-
 /**
  * An implementation of a {@link HashSet} that begins life as mutable but can,
  * at any time, be "{@link #freeze() frozen}" (made immutable). In other
@@ -26,7 +23,6 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
  * @see FieldSet
  * @see FieldConcurrentHashSet
  */
-@XStreamAlias("field-hash-set")
 final public class FieldHashSet<E> extends FieldSet<E>
 {
 	/**

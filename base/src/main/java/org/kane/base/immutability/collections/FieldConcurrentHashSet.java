@@ -5,11 +5,6 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.kane.base.immutability.collections.FieldCollection.FieldCollectionConverter;
-
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamConverter;
-
 
 /**
  * An implementation of a {@link Set} wrapper around {@link ConcurrentHashMap}
@@ -34,8 +29,6 @@ import com.thoughtworks.xstream.annotations.XStreamConverter;
  * @see FieldSet
  * @see FieldHashSet
  */
-@XStreamAlias("field-concurrent-hash-set")
-@XStreamConverter(FieldConcurrentHashSet.MyConverter.class)
 final public class FieldConcurrentHashSet<E> extends FieldSet<E>
 {
 	/**
@@ -64,9 +57,5 @@ final public class FieldConcurrentHashSet<E> extends FieldSet<E>
 		return Collections.newSetFromMap(new ConcurrentHashMap<>());
 	}
 	
-	static public class MyConverter extends FieldCollectionConverter
-	{
-		Class getFieldClass() { return FieldConcurrentHashSet.class; }
-		Collection createNewMutableInstance() { return new FieldConcurrentHashSet(); }
-	}
+	
 }

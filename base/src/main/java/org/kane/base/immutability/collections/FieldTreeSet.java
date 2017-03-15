@@ -3,8 +3,6 @@ package org.kane.base.immutability.collections;
 import java.util.Set;
 import java.util.TreeSet;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-
 
 /**
  * An implementation of a {@link TreeSet} that begins life as mutable but can,
@@ -26,7 +24,6 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
  * @see FieldSet
  * @see FieldConcurrentSkipListSet
  */
-@XStreamAlias("field-tree-set")
 final public class FieldTreeSet<E> extends FieldSet<E>
 {
 	/**

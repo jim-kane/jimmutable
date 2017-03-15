@@ -8,9 +8,7 @@ import org.kane.base.immutability.collections.FieldSet;
 import org.kane.base.immutability.decks.StandardImmutableSetDeck;
 import org.kane.base.serialization.Validator;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 
-@XStreamAlias("book-set")
 final public class BookDeckSet extends StandardImmutableSetDeck<BookDeckSet, Book>
 {
 	private FieldHashSet<Book> books = new FieldHashSet<>();

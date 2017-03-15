@@ -9,7 +9,6 @@ import org.kane.base.immutability.ImmutableException;
 import org.kane.base.immutability.StandardImmutableObject;
 import org.kane.base.serialization.StandardObject;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -17,7 +16,6 @@ import junit.framework.TestSuite;
 
 public class StandardImmutableOtherFieldsTest extends TestCase
 {
-	@XStreamAlias("DummyObject-other-fields")
 	static private class DummyObject extends StandardImmutableObject
 	{
 		private FieldConcurrentHashMap<String,Integer> concurrent_hash_map;
@@ -161,7 +159,7 @@ public class StandardImmutableOtherFieldsTest extends TestCase
     	
     	System.out.println();
     	
-    	System.out.println(obj.toJSON());
+    	System.out.println(obj.toJSON(true,""));
     }
     
     public void testSerialization()
@@ -216,7 +214,7 @@ public class StandardImmutableOtherFieldsTest extends TestCase
     		);
 
 
-    	DummyObject obj = (DummyObject)StandardObject.fromXML(obj_as_xml_string);
+    	DummyObject obj = (DummyObject)StandardObject.deserialize(obj_as_xml_string, null);
     	
     	assertEquals(5, obj.copy_on_write_array_list.size());
     	
@@ -231,7 +229,7 @@ public class StandardImmutableOtherFieldsTest extends TestCase
     { 
     	String obj_as_json_string = "{\"DummyObject-other-fields\":{\"concurrent_hash_map\":[{\"contents\":[{\"@class\":\"concurrent-hash-map\",\"entry\":[{\"string\":\"bar\",\"int\":23},{\"string\":\"foo\",\"int\":17},{\"string\":\"baz\",\"int\":31}]}]}],\"concurrent_hash_set\":[{\"string\":[\"jefferson\",\"lincoln\",\"washington\"]}],\"concurrent_skip_list_set\":[{\"string\":[\"argon\",\"helium\",\"hydrogen\"]}],\"copy_on_write_array_list\":[{\"string\":[\"Alabama\",\"Alaska\",\"Arkansas\"],\"int\":27,\"long\":99}],\"string_string_hashmap\":[{\"entry\":[{\"key\":\"The Point Of No Return\",\"value\":\"Michael Reed\"},{\"key\":\"Magical Lasso\",\"value\":\"Charles Hart, Michael Reed\"}]}]}}";
 
-    	DummyObject obj = (DummyObject)StandardObject.fromJSON(obj_as_json_string);
+    	DummyObject obj = (DummyObject)StandardObject.deserialize(obj_as_json_string, null);
 
     	
     	assertEquals(5, obj.copy_on_write_array_list.size());

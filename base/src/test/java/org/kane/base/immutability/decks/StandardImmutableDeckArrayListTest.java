@@ -125,7 +125,7 @@ public class StandardImmutableDeckArrayListTest extends TestCase
     		     , "</book-list>"
     		);
 
-    		BookDeckList obj = StandardObject.fromXML(obj_as_xml_string);
+    		BookDeckList obj = (BookDeckList)StandardObject.deserialize(obj_as_xml_string, null);
     		
     		assertEquals(obj.getSimpleContents().size(),3);
     		

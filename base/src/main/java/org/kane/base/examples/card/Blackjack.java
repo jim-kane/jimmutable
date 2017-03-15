@@ -10,8 +10,6 @@ import java.util.Set;
 import org.kane.base.immutability.collections.FieldConcurrentHashMap;
 import org.kane.base.immutability.collections.FieldMap;
 
-import com.google.common.base.Joiner;
-
 /**
  * Mutable!
  * 
@@ -126,7 +124,8 @@ public class Blackjack
     
     private void saveHands(String suffix)
     {
-        try
+        /* TODO: Reimplement
+         * try
         {
             File dir = new File(System.getProperty("java.io.tmpdir") + "/blackjack");
             dir.mkdirs();
@@ -148,12 +147,14 @@ public class Blackjack
         catch (IOException e)
         {
             e.printStackTrace();
-        }
+        }*/
     }
     
     private void loadHands(String suffix)
     {
-        try
+       /* TODO: Reimplement
+        * 
+        *  try
         {
             File dir = new File(System.getProperty("java.io.tmpdir") + "/blackjack");
             dir.mkdirs();
@@ -189,12 +190,13 @@ public class Blackjack
         catch (IOException e)
         {
             e.printStackTrace();
-        }
+        }*/
     }
     
     private void printHands(String label)
     {
-        Joiner joiner = Joiner.on("\n\t").skipNulls();
+    	// TODO: Refactor to avoid Google Guava
+       /* Joiner joiner = Joiner.on("\n\t").skipNulls();
         
         if (null != label)
         {
@@ -211,7 +213,7 @@ public class Blackjack
             System.out.format("\tValue: %,d (%s)\n", AI.getValue(hand), AI.isBusted(hand) ? "Busted" : (AI.shouldHit(hand) ? "Hit" : "Stay"));
         }
         
-        System.out.println();
+        System.out.println();*/
     }
     
     synchronized private Hand dealOneCard(Hand hand)
