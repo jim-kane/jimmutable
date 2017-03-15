@@ -20,7 +20,7 @@ public class TestApp
 		
 		char ch = 0;
 		
-		String xml = ObjectWriterUtils.writeObject(Format.XML_PRETTY_PRINT, "Hello "+ch+"World", null);
+		String xml = ObjectWriterUtils.writeObject(Format.XML_PRETTY_PRINT, "", null);
 		
 		System.out.println(xml);
 		
@@ -30,5 +30,9 @@ public class TestApp
 		ReadTree tree = Parser.parse(new StringReader(xml), null);
 		
 		System.out.println(tree);
+		
+		String str = (String)tree.asObject(null);
+		
+		System.out.println("Str = "+str);
 	}
 }

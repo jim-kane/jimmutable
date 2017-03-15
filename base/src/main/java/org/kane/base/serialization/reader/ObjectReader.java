@@ -23,23 +23,12 @@ public class ObjectReader
 	static public Object readDocument(String document, Object default_value)
 	{
 		ReadTree t = Parser.parse(document, null);
+		
 		if ( t == null ) return default_value;
 		
-		ObjectReader r = new ObjectReader(t);
-		
-		return ObjectReaderUtils.asObject(t, default_value);
+		return t.asObject(default_value);
 	}
-	
-	public String readString(FieldName field_name, String default_value)
-	{
-		ReadTree child = t.find(field_name, null);
-		if ( child == null ) return default_value;
-		
-		t.remove(child);
-		
-		return ObjectReaderUtils.asString(child, default_value);
-	}
-	
+
 	static public void registerType(TypeName type, Class c)
 	{
 		Validator.notNull(type, c);

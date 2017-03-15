@@ -93,7 +93,7 @@ public class PrimativeReadWriteTest extends TestCase
     public void testStings()
     {
     	testObject("Hello World");
-    	testObject( "");
+    	testObject("");
     	
     	testObject("Fisher & Paykel");
     	
@@ -108,7 +108,7 @@ public class PrimativeReadWriteTest extends TestCase
     	testObject(createAcidString());
     }
     
-    private String createAcidString()
+    static public String createAcidString()
     {
     	StringBuilder ret = new StringBuilder();
     	
@@ -122,7 +122,7 @@ public class PrimativeReadWriteTest extends TestCase
     	return ret.toString();
     }
     
-    private String createNonBase64AcidString()
+    static public String createNonBase64AcidString()
     {
     	StringBuilder ret = new StringBuilder();
     	
@@ -157,10 +157,10 @@ public class PrimativeReadWriteTest extends TestCase
     	String serialized_data = ObjectWriterUtils.writeObject(format, obj, null);
     	assert(serialized_data != null);
     	
-    	/*if ( obj instanceof Long )
+    	if ( obj.equals("") )
     	{
     		System.out.println(serialized_data);
-    	}*/
+    	}
     	
     	Object from_reader = ObjectReader.readDocument(serialized_data, null);
     	

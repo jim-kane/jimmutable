@@ -272,7 +272,8 @@ public class LowLevelWriter
 			
 			if ( obj instanceof String )
 			{
-				writeString((String)obj);
+				String value = (String)obj;
+				writeStringObject(value);
 				return;
 			}
 			
