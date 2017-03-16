@@ -14,12 +14,11 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-public class StandardImmutableFieldHashSetTest // extends TestCase
+public class StandardImmutableFieldHashSetTest  extends TestCase
 {
-	/*
-	static private class DummyObject extends StandardImmutableObject
+	static abstract private class SetTestObject extends StandardImmutableObject
 	{
-		private FieldHashSet<String> set;
+		private FieldSet<String> set;
 		transient private Iterator old_iterator;
 		
 		public int compareTo(Object o) { return 0; }
@@ -28,11 +27,11 @@ public class StandardImmutableFieldHashSetTest // extends TestCase
 		public void freeze() { set.freeze(); }
 		public int hashCode() { return set.hashCode(); }
 
-		public FieldHashSet getSimpleArrayList() { return set; } 
+		public FieldSet getSimpleSet() { return set; } 
 		
-		public DummyObject()
+		public SetTestObject()
 		{
-			set = new FieldHashSet();
+			set = createEmptySet();
 			old_iterator = set.iterator();
 			
 			verifyMutable();
@@ -45,18 +44,20 @@ public class StandardImmutableFieldHashSetTest // extends TestCase
 			verifyOldIteratorImmutable();
 		}
 		
-		public DummyObject(Builder b)
+		abstract public FieldSet createEmptySet();
+		
+		public SetTestObject(Builder b)
 		{
 			set = new FieldHashSet();
 		}
 	
 		public boolean equals(Object obj) 
 		{
-			if (!(obj instanceof DummyObject) ) return false;
+			if (!(obj instanceof SetTestObject) ) return false;
 			
-			DummyObject other = (DummyObject)obj;
+			SetTestObject other = (SetTestObject)obj;
 			
-			if ( !getSimpleArrayList().equals(other.getSimpleArrayList()) ) return false;
+			if ( !getSimpleSet().equals(other.getSimpleSet()) ) return false;
 			
 			return true;
 		}
@@ -236,7 +237,7 @@ public class StandardImmutableFieldHashSetTest // extends TestCase
     	
     	obj.verifyImmutable();
     }
-	*/
+	
    
    
 }
