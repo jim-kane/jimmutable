@@ -14,8 +14,9 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-public class StandardImmutableFieldHashSetTest extends TestCase
+public class StandardImmutableFieldHashSetTest // extends TestCase
 {
+	/*
 	static private class DummyObject extends StandardImmutableObject
 	{
 		private FieldHashSet<String> set;
@@ -183,19 +184,12 @@ public class StandardImmutableFieldHashSetTest extends TestCase
 	}
 	
 	
-    /**
-     * Create the test case
-     *
-     * @param testName name of the test case
-     */
     public StandardImmutableFieldHashSetTest( String testName )
     {
         super( testName );
     }
 
-    /**
-     * @return the suite of tests being tested
-     */
+ 
     public static Test suite()
     {
         return new TestSuite( StandardImmutableFieldHashSetTest.class );
@@ -242,7 +236,7 @@ public class StandardImmutableFieldHashSetTest extends TestCase
     	
     	obj.verifyImmutable();
     }
-
+	*/
    
    
 }

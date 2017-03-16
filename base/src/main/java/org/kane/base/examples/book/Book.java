@@ -7,13 +7,27 @@ import java.util.Objects;
 
 import org.kane.base.immutability.StandardImmutableObject;
 import org.kane.base.immutability.collections.FieldArrayList;
+import org.kane.base.immutability.collections.FieldList;
 import org.kane.base.serialization.Comparison;
+import org.kane.base.serialization.FieldName;
 import org.kane.base.serialization.Normalizer;
+import org.kane.base.serialization.TypeName;
 import org.kane.base.serialization.Validator;
+import org.kane.base.serialization.reader.ReadAs;
+import org.kane.base.serialization.reader.ReadTree;
+import org.kane.base.serialization.writer.ObjectWriter;
 
 
 final public class Book extends StandardImmutableObject<Book>
 {
+	static private final TypeName TYPE_NAME = new TypeName("jimmutable.examples.Book");
+	
+	static private final FieldName FIELD_TITLE = new FieldName("title");
+	static private final FieldName FIELD_PAGE_COUNT = new FieldName("page_count");
+	static private final FieldName FIELD_ISBN = new FieldName("isbn");
+	static private final FieldName FIELD_BINDING = new FieldName("binding");
+	static private final FieldName FIELD_AUTHORS = new FieldName("authors");
+	
 	private String title; // required, upper-case
 	private int page_count; // required, must be 0 or greater
 	
@@ -21,7 +35,7 @@ final public class Book extends StandardImmutableObject<Book>
 	
 	private BindingType binding; // required
 
-	private FieldArrayList<String> authors;
+	private FieldList<String> authors;
 	
 	// builder constructor...
 	private Book(Builder builder)
@@ -30,6 +44,26 @@ final public class Book extends StandardImmutableObject<Book>
 		
 		// building constructor.  Builder will call complete...
 		this.authors = new FieldArrayList<>();
+	}
+	
+	public Book(ReadTree t)
+	{
+		title = t.getString(FIELD_TITLE, null);
+		page_count = t.getInt(FIELD_PAGE_COUNT, -1);
+		isbn = t.getString(FIELD_ISBN, null);
+		binding = BindingType.fromCode(t.getString(FIELD_BINDING, null),null);
+		
+		authors = t.getCollectionOfObjects(FIELD_AUTHORS, new FieldArrayList(), ReadAs.READ_AS_STRING, ReadTree.OnError.SKIP);
+	}
+	
+	@Override
+	public void write(ObjectWriter writer) 
+	{
+		writer.writeString(FIELD_TITLE, getSimpleTitle());
+		writer.writeInt(FIELD_PAGE_COUNT, getSimplePageCount());
+		writer.writeString(FIELD_ISBN, getOptionalISBN(null));
+		writer.writeString(FIELD_BINDING, getSimpleBinding().toString());
+		writer.writeObject(FIELD_AUTHORS, getSimpleAuthors());
 	}
 	
 	// copy constructor...
@@ -54,6 +88,13 @@ final public class Book extends StandardImmutableObject<Book>
 		this(title,page_count,isbn,binding,toCollection(author));
 	} 
 	
+	public TypeName getTypeName() 
+	{
+		return TYPE_NAME;
+	}
+
+	
+
 	static private Collection<String> toCollection(String author)
 	{
 		List<String> ret = new ArrayList<>();

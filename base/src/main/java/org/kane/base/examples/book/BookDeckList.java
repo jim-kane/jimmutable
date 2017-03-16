@@ -6,33 +6,54 @@ import java.util.Collections;
 import org.kane.base.immutability.collections.FieldArrayList;
 import org.kane.base.immutability.collections.FieldList;
 import org.kane.base.immutability.decks.StandardImmutableListDeck;
+import org.kane.base.serialization.FieldName;
+import org.kane.base.serialization.TypeName;
 import org.kane.base.serialization.Validator;
+import org.kane.base.serialization.reader.ReadTree;
+import org.kane.base.serialization.writer.ObjectWriter;
+import org.kane.base.serialization.writer.WriteAs;
 
 
 final public class BookDeckList extends StandardImmutableListDeck<BookDeckList, Book>
 {
-	private FieldList<Book> books = new FieldArrayList<>();
+	static private final TypeName TYPE_NAME = new TypeName("jimmutable.examples.BookDeckList");
+	static private final FieldName FIELD_BOOKS = new FieldName("books");
 	
-	
-	private BookDeckList(Builder builder)
-	{
-	}
+	private FieldList<Book> books;
 	
 	public BookDeckList()
 	{
-		this(Collections.emptyList());
+		this(Collections.EMPTY_LIST);
 	}
 	
 	public BookDeckList(Collection<Book> books)
 	{
 		super();
 		
-		if ( books != null )
-		{
-			this.books.addAll(books);
-		}
+		this.books = new FieldArrayList();
+		this.books.addAll(books);
 		
 		complete();
+	}
+	
+	private BookDeckList(Builder builder)
+	{
+		books = new FieldArrayList();
+	}
+	
+	public BookDeckList(ReadTree t)
+	{
+		books = t.getCollectionOfObjects(FIELD_BOOKS, new FieldArrayList(), ReadTree.OnError.SKIP);
+	}
+	
+	public TypeName getTypeName() 
+	{
+		return TYPE_NAME;
+	}
+
+	public void write(ObjectWriter writer) 
+	{
+		writer.writeCollection(FIELD_BOOKS, books, WriteAs.OBJECTS);
 	}
 
 	@Override

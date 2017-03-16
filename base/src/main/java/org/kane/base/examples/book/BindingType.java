@@ -1,7 +1,9 @@
 package org.kane.base.examples.book;
 
+import org.kane.base.serialization.FieldName;
 import org.kane.base.serialization.Normalizer;
 import org.kane.base.serialization.Validator;
+import org.kane.base.serialization.reader.ObjectReader;
 
 /**
  * A class used to represent the "binding" of a book (i.e. paperback, hard

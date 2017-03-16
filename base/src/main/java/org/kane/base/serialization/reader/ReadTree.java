@@ -2,12 +2,13 @@ package org.kane.base.serialization.reader;
 
 import java.lang.reflect.Constructor;
 import java.util.Base64;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Map;
 
 import org.kane.base.serialization.FieldName;
-import org.kane.base.serialization.Optional;
 import org.kane.base.serialization.SerializeException;
 import org.kane.base.serialization.TypeName;
 import org.kane.base.serialization.Validator;
@@ -417,10 +418,145 @@ public class ReadTree implements Iterable<ReadTree>
 		return child.asString(default_value);
 	}
 	
+	public Boolean getBoolean(FieldName field_name, Boolean default_value)
+	{
+		ReadTree child = find(field_name, null);
+		if ( child == null ) return default_value;
+		return child.asBoolean(default_value);
+	}
+	
+	public Character getCharacter(FieldName field_name, Character default_value)
+	{
+		ReadTree child = find(field_name, null);
+		if ( child == null ) return default_value;
+		return child.asCharacter(default_value);
+	}
+	
+	public Byte getByte(FieldName field_name, Byte default_value)
+	{
+		ReadTree child = find(field_name, null);
+		if ( child == null ) return default_value;
+		return child.asByte(default_value);
+	}
+	
+	public Short getShort(FieldName field_name, Short default_value)
+	{
+		ReadTree child = find(field_name, null);
+		if ( child == null ) return default_value;
+		return child.asShort(default_value);
+	}
+	
+	public Integer getInt(FieldName field_name, Integer default_value)
+	{
+		ReadTree child = find(field_name, null);
+		if ( child == null ) return default_value;
+		return child.asInteger(default_value);
+	}
+	
+	public Long getInt(FieldName field_name, Long default_value)
+	{
+		ReadTree child = find(field_name, null);
+		if ( child == null ) return default_value;
+		return child.asLong(default_value);
+	}
+	
+	public Float getFloat(FieldName field_name, Float default_value)
+	{
+		ReadTree child = find(field_name, null);
+		if ( child == null ) return default_value;
+		return child.asFloat(default_value);
+	}
+	
+	public Double getDouble(FieldName field_name, Double default_value)
+	{
+		ReadTree child = find(field_name, null);
+		if ( child == null ) return default_value;
+		return child.asDouble(default_value);
+	}
+	
 	public Object readObject(FieldName field_name, Object default_value)
 	{
 		ReadTree child = find(field_name, null);
 		if ( child == null ) return default_value;
 		return child.asObject(default_value);
 	}
+	
+	static public enum OnError
+	{
+		SKIP,
+		THROW_EXCEPTION;
+	}
+	
+	public <C extends Collection> C getCollectionOfObjects(FieldName field_name, C empty_collection, Object object_to_insert_on_error)
+	{
+		return getCollectionOfObjects(field_name, empty_collection, ReadAs.READ_AS_TYPE_HINT, object_to_insert_on_error);
+	}
+	
+	public <C extends Collection> C getCollectionOfObjects(FieldName field_name, C empty_collection, ReadAs type_converter, Object object_to_insert_on_error)
+	{
+		Validator.notNull(field_name);
+		Validator.notNull(empty_collection);
+		Validator.notNull(type_converter);
+		
+		C ret = empty_collection;
+		
+		for ( ReadTree child : children )
+		{
+			if ( child.getSimpleFieldName().equals(field_name) ) 
+			{
+				Object obj = type_converter.readAs(child);
+				
+				if ( obj == null ) 
+				{
+					if ( object_to_insert_on_error == OnError.SKIP ) continue;
+					if ( object_to_insert_on_error == OnError.THROW_EXCEPTION ) throw new SerializeException("Could not read object in collection");
+					obj = object_to_insert_on_error;
+				}
+				
+				ret.add(obj);
+			}
+		}
+		
+		return ret;
+	}
+	
+	public <M extends Map> M getMapOfObjects(FieldName field_name, M empty_map, ReadAs key_converter, ReadAs value_converter, OnError on_error)
+	{
+		Validator.notNull(field_name);
+		Validator.notNull(empty_map);
+		Validator.notNull(key_converter);
+		Validator.notNull(value_converter);
+		Validator.notNull(on_error);
+		
+		M ret = empty_map;
+		
+		for ( ReadTree entry : children )
+		{
+			if ( entry.getSimpleFieldName().equals(field_name) ) 
+			{
+				ReadTree key_tree = entry.find(FieldName.FIELD_KEY, null);
+				ReadTree value_tree = entry.find(FieldName.FIELD_VALUE, null);
+				
+				if ( key_tree == null || value_tree == null ) 
+				{
+					if ( on_error == OnError.SKIP ) continue;
+					if ( on_error == OnError.THROW_EXCEPTION ) throw new SerializeException("Could not read key/value pair");
+				}
+				
+				Object key = key_converter.readAs(key_tree);
+				Object value = value_converter.readAs(value_tree);
+				
+				if ( key == null || value == null ) 
+				{
+					if ( on_error == OnError.SKIP ) continue;
+					if ( on_error == OnError.THROW_EXCEPTION ) throw new SerializeException("Could not read key/value pair");
+				}
+				
+				ret.put(key, value);
+			}
+		}
+		
+		return ret;
+	}
 }
+

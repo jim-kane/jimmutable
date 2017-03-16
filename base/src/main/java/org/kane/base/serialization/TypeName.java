@@ -1,9 +1,14 @@
 package org.kane.base.serialization;
 
 import org.kane.base.immutability.StandardImmutableObject;
+import org.kane.base.serialization.reader.ReadTree;
+import org.kane.base.serialization.writer.ObjectWriter;
 
 public class TypeName extends StandardImmutableObject
 {
+	static private final TypeName TYPE_NAME = new TypeName("jimmutable.TypeName");
+	static private final FieldName FIELD_NAME = new FieldName("name");
+	
 	static public TypeName TYPE_NAME_OBJECT = new TypeName("object");
 	static public TypeName TYPE_NAME_STRING = new TypeName("string");
 	
@@ -18,16 +23,30 @@ public class TypeName extends StandardImmutableObject
 	
 	static public TypeName TYPE_NAME_NULL = new TypeName("null");
 	
-	private String name; // required, always interned
+	static public TypeName TYPE_NAME_MAP_ENTRY = new TypeName("MapEntry");
+	
+	private String name; 
 	
 	public TypeName(String name)
 	{ 
 		if ( name == null ) name = "";
-		this.name = name.intern();
+		this.name = name;
 		
 		complete();
 	}
 	
+	public TypeName(ReadTree t)
+	{
+		name = t.getString(FIELD_NAME, null);
+	}
+	
+	public TypeName getTypeName() { return TYPE_NAME; }
+
+	public void write(ObjectWriter writer) 
+	{
+		writer.writeString(FIELD_NAME, getSimpleName());
+	}
+
 	public String getSimpleName() { return name; }
 
 	public int compareTo(Object o)  
@@ -91,7 +110,7 @@ public class TypeName extends StandardImmutableObject
 		if ( !(o instanceof TypeName) ) return false;
 		
 		TypeName other = (TypeName)o;
-		return getSimpleName() == other.getSimpleName();
+		return name.equals(other.name);
 	}
 	
 	public boolean isPrimative()

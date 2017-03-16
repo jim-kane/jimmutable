@@ -3,34 +3,58 @@ package org.kane.base.examples.book;
 import java.util.Collection;
 import java.util.Collections;
 
+import org.kane.base.immutability.collections.FieldArrayList;
 import org.kane.base.immutability.collections.FieldHashSet;
 import org.kane.base.immutability.collections.FieldSet;
 import org.kane.base.immutability.decks.StandardImmutableSetDeck;
+import org.kane.base.serialization.FieldName;
+import org.kane.base.serialization.TypeName;
 import org.kane.base.serialization.Validator;
+import org.kane.base.serialization.reader.ReadTree;
+import org.kane.base.serialization.writer.ObjectWriter;
+import org.kane.base.serialization.writer.WriteAs;
 
 
 final public class BookDeckSet extends StandardImmutableSetDeck<BookDeckSet, Book>
 {
-	private FieldHashSet<Book> books = new FieldHashSet<>();
+	static private final TypeName TYPE_NAME = new TypeName("jimmutable.examples.BookDeckSet");
+	static private final FieldName FIELD_BOOKS = new FieldName("books");
 	
-	
-	private BookDeckSet(Builder builder)
-	{
-	}
+	private FieldSet<Book> books;
 	
 	public BookDeckSet()
 	{
-		this(Collections.emptySet());
+		this(Collections.EMPTY_LIST);
 	}
 	
 	public BookDeckSet(Collection<Book> books)
 	{
-		if ( books != null )
-		{
-			this.books.addAll(books);
-		}
+		super();
+		
+		this.books = new FieldHashSet();
+		this.books.addAll(books);
 		
 		complete();
+	}
+
+	private BookDeckSet(Builder builder)
+	{
+		books = new FieldHashSet<>();
+	}
+	
+	public BookDeckSet(ReadTree t)
+	{
+		books = t.getCollectionOfObjects(FIELD_BOOKS, new FieldHashSet(), ReadTree.OnError.SKIP);
+	}
+	
+	public TypeName getTypeName() 
+	{
+		return TYPE_NAME;
+	}
+
+	public void write(ObjectWriter writer) 
+	{
+		writer.writeCollection(FIELD_BOOKS, books, WriteAs.OBJECTS);
 	}
 	
 	public void normalize() 

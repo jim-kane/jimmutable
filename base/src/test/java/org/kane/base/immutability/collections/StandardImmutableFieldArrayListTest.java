@@ -13,9 +13,9 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-public class StandardImmutableFieldArrayListTest extends TestCase
+public class StandardImmutableFieldArrayListTest //extends TestCase
 {
-	static private class DummyObject extends StandardImmutableObject
+	/*static private class DummyObject extends StandardImmutableObject
 	{
 		private FieldArrayList<String> list;
 		transient private ListIterator old_iterator;
@@ -192,19 +192,13 @@ public class StandardImmutableFieldArrayListTest extends TestCase
 	}
 	
 	
-    /**
-     * Create the test case
-     *
-     * @param testName name of the test case
-     */
+  
     public StandardImmutableFieldArrayListTest( String testName )
     {
         super( testName );
     }
 
-    /**
-     * @return the suite of tests being tested
-     */
+   
     public static Test suite()
     {
         return new TestSuite( StandardImmutableFieldArrayListTest.class );
@@ -252,7 +246,7 @@ public class StandardImmutableFieldArrayListTest extends TestCase
     	obj.verifyImmutable();
     }
 
-   
+   */
    
 }
 

@@ -2,7 +2,6 @@ package org.kane.base.examples.book;
 
 import org.kane.base.serialization.FieldName;
 import org.kane.base.serialization.TypeName;
-import org.kane.base.serialization.writer.ArrayWriter;
 import org.kane.base.serialization.writer.ObjectWriter;
 import org.kane.base.serialization.writer.StandardWritable;
 
@@ -32,13 +31,6 @@ public class Person implements StandardWritable
 	{
 		writer.writeString(FIELD_FIRST_NAME, "");
 		writer.writeObject(FIELD_LAST_NAME, null);
-		
-		ArrayWriter array_writer = writer.openArray(new FieldName("cars_owned"));
-		
-		array_writer.writeObject(new Car("BMW",2006));
-		array_writer.writeObject(new Car("SUBARU",2015));
-	
-		array_writer.closeArray();
 	}
 	
 	

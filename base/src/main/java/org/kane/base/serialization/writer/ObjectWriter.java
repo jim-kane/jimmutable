@@ -1,8 +1,11 @@
 package org.kane.base.serialization.writer;
 
-import java.io.StringWriter;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
 
 import org.kane.base.serialization.FieldName;
+import org.kane.base.serialization.TypeName;
 import org.kane.base.serialization.Validator;
 
 public class ObjectWriter 
@@ -86,7 +89,6 @@ public class ObjectWriter
 		writer.writeDouble(value);
 	}
 	
-	
 	public void writeObject(FieldName field_name, Object value)
 	{
 		if ( writer.isXML() && value == null ) return; // in xml, a null is written by simply "not writing" the field...
@@ -95,10 +97,43 @@ public class ObjectWriter
 		writer.writeObject(value);
 	}
 	
-	public ArrayWriter openArray(FieldName field_name)
+	public void startObject(FieldName field_name, TypeName type_name)
 	{
+		Validator.notNull(field_name, type_name);
+		
 		writer.writeFieldName(field_name);
-		return writer.openArray();
+		
+		writer.openObject();
+		writer.writeFieldName(FieldName.FIELD_NAME_TYPE_HINT);
+		writer.writeString(type_name.getSimpleName());
+	}
+	
+	public void endObject()
+	{
+		writer.closeObject();
+	}
+	
+	public void writeCollection(FieldName field_name, Collection c, WriteAs write_as)
+	{
+		Validator.notNull(field_name, c, write_as);
+
+		
+		writer.writeFieldName(field_name);
+		writer.openArray();
+		
+		for ( Object obj : c )
+		{
+			write_as.writeObject(this, FieldName.FIELD_ARRAY_ELEMENT, obj);
+		}
+		
+		writer.closeArray();
+	}
+	
+	public void writeMap(FieldName field_name, Map m, WriteAs write_keys_as, WriteAs write_values_as)
+	{
+		Validator.notNull(field_name, m, write_keys_as, write_values_as);
+		
+		writeCollection(field_name, m.entrySet(), new WriteAs.MapWriteAs(write_keys_as, write_values_as));
 	}
 	
 	public Format getSimpleFormat() { return writer.getSimpleFormat(); }

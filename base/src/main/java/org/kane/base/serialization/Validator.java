@@ -23,7 +23,7 @@ public class Validator
 	}
 	
 	/**
-	 * Guarantee that all objectgs in objs are not null (i.e. thrown a
+	 * Guarantee that all objects in objs are not null (i.e. thrown a
 	 * ValidationException if any object is null)
 	 * 
 	 * @param objs
@@ -34,6 +34,32 @@ public class Validator
 		for ( Object obj : objs )
 		{
 			if ( obj == null ) throw new ValidationException("Required field is null");
+		}
+	}
+	
+	/**
+	 * Guarantee that a given expression evaluates to true
+	 * 
+	 * @param value The result of the expression (must be true, or a ValidationException is thrown)
+	 */
+	static public void isTrue(boolean value)
+	{
+		if ( value == false )
+		{
+			throw new ValidationException("Expression must evaluate to true");
+		}
+	}
+	
+	/**
+	 * Guarantee that a given expression evaluates to false
+	 * 
+	 * @param value The result of the expression (must be false, or a ValidationException is thrown)
+	 */
+	static public void isFalse(boolean value)
+	{
+		if ( value == false )
+		{
+			throw new ValidationException("Expression must evaluate to false");
 		}
 	}
 	

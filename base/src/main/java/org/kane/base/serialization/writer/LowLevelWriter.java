@@ -5,6 +5,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.Base64;
+import java.util.Map;
 
 import javax.xml.namespace.QName;
 
@@ -70,6 +71,10 @@ public class LowLevelWriter
 		try
 		{
 			Validator.notNull(field_name);
+			
+			if ( field_name.equals(FieldName.FIELD_ARRAY_ELEMENT) ) 
+				return; // This is an array element, do not write the field name
+			
 			gen.writeFieldName(field_name.getSimpleName());
 		}
 		catch(Exception e)
@@ -160,37 +165,7 @@ public class LowLevelWriter
 		return Base64.getEncoder().encodeToString(str.getBytes());
 	}
 	
-	public void writeStringObject(String str)
-	{
-		try
-		{
-			gen.writeStartObject();
-			
-			writeFieldName(FieldName.FIELD_NAME_TYPE_HINT);
-			gen.writeString(TypeName.TYPE_NAME_STRING.getSimpleName());
-			
-			if ( str != null && isBase64Required(str) )
-			{
-				writeFieldName(FieldName.FIELD_NAME_PRIMATIVE_VALUE_BASE64);
-				gen.writeString(this.base64EncodeString(str));
-			}
-			else
-			{
-				writeFieldName(FieldName.FIELD_NAME_PRIMATIVE_VALUE);
-				
-				if ( str == null ) 
-					gen.writeNull();
-				else
-					gen.writeString(str);
-			}
-			
-			gen.writeEndObject();
-		}
-		catch(Exception e)
-		{
-			throw new SerializeException("Serialization error", e);
-		}
-	}
+	
 	
 	public void writeBoolean(boolean value)
 	{
@@ -260,6 +235,62 @@ public class LowLevelWriter
 		}
 	}
 	
+	public void openObject()
+	{
+		try
+		{
+			gen.writeStartObject();
+		}
+		catch(Exception e)
+		{
+			throw new SerializeException("Serialization error", e);
+		}
+	}
+	
+	public void closeObject()
+	{ 
+		try
+		{
+			gen.writeEndObject();
+		}
+		catch(Exception e)
+		{
+			throw new SerializeException("Serialization error", e);
+		}
+	}
+	
+	public void writeStringObject(String str)
+	{
+		try
+		{
+			gen.writeStartObject();
+			
+			writeFieldName(FieldName.FIELD_NAME_TYPE_HINT);
+			gen.writeString(TypeName.TYPE_NAME_STRING.getSimpleName());
+			
+			if ( str != null && isBase64Required(str) )
+			{
+				writeFieldName(FieldName.FIELD_NAME_PRIMATIVE_VALUE_BASE64);
+				gen.writeString(this.base64EncodeString(str));
+			}
+			else
+			{
+				writeFieldName(FieldName.FIELD_NAME_PRIMATIVE_VALUE);
+				
+				if ( str == null ) 
+					gen.writeNull();
+				else
+					gen.writeString(str);
+			}
+			
+			gen.writeEndObject();
+		}
+		catch(Exception e)
+		{
+			throw new SerializeException("Serialization error", e);
+		}
+	}
+	
 	public void writeObject(Object obj)
 	{
 		try
@@ -276,7 +307,6 @@ public class LowLevelWriter
 				writeStringObject(value);
 				return;
 			}
-			
 			
 			gen.writeStartObject();
 			{
@@ -420,13 +450,11 @@ public class LowLevelWriter
 		gen.close();
 	}
 	
-	
-	public ArrayWriter openArray()
+	public void openArray()
 	{
 		try
 		{
 			gen.writeStartArray();
-			return new ArrayWriter(this);
 		}
 		catch(Exception e)
 		{

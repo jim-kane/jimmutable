@@ -4,6 +4,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.kane.base.immutability.StandardImmutableObject;
+import org.kane.base.serialization.FieldName;
+import org.kane.base.serialization.TypeName;
+import org.kane.base.serialization.reader.ReadAs;
+import org.kane.base.serialization.reader.ReadTree;
+import org.kane.base.serialization.writer.ObjectWriter;
+import org.kane.base.serialization.writer.WriteAs;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -13,16 +19,30 @@ public class FieldStringStringHashMapTest extends TestCase
 {
 	static private class MyTestObj extends StandardImmutableObject
 	{
-		private FieldStringStringHashMap my_map = new FieldStringStringHashMap();
+		static private final TypeName TYPE_NAME = new TypeName("jimmutable.FieldStringStringHashMapTest.MyTestObj"); public TypeName getTypeName() { return TYPE_NAME; }
+		static private final FieldName FIELD_MY_MAP = new FieldName("my_map");
+		
+		
+		private FieldMap<String,String> my_map;
 		
 		public MyTestObj(Map<String,String> initial_values)
 		{
+			my_map = new FieldHashMap();
 			my_map.putAll(initial_values);
 			
 			complete();
 		}
-
 		
+		public MyTestObj(ReadTree t)
+		{
+			my_map = t.getMapOfObjects(FIELD_MY_MAP, new FieldHashMap(), ReadAs.READ_AS_STRING, ReadAs.READ_AS_STRING, ReadTree.OnError.SKIP);
+		}
+
+		public void write(ObjectWriter writer) 
+		{
+			writer.writeMap(FIELD_MY_MAP, my_map, WriteAs.NATURAL_PRIMATIVES, WriteAs.NATURAL_PRIMATIVES);	
+		}
+
 		public int compareTo(Object o) { return 0; }
 
 		

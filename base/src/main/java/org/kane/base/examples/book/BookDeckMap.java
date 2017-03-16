@@ -4,17 +4,28 @@ import java.util.Collections;
 import java.util.Map;
 
 import org.kane.base.immutability.collections.FieldHashMap;
+import org.kane.base.immutability.collections.FieldHashSet;
 import org.kane.base.immutability.collections.FieldMap;
 import org.kane.base.immutability.decks.StandardImmutableMapDeck;
+import org.kane.base.serialization.FieldName;
+import org.kane.base.serialization.TypeName;
 import org.kane.base.serialization.Validator;
+import org.kane.base.serialization.reader.ReadAs;
+import org.kane.base.serialization.reader.ReadTree;
+import org.kane.base.serialization.writer.ObjectWriter;
+import org.kane.base.serialization.writer.WriteAs;
 
 
 final public class BookDeckMap extends StandardImmutableMapDeck<BookDeckMap, String, Book>
 {
-	private FieldHashMap<String,Book> books = new FieldHashMap<>();
+	static private final TypeName TYPE_NAME = new TypeName("jimmutable.examples.BookDeckMap");
+	static private final FieldName FIELD_BOOKS = new FieldName("books");
+	
+	private FieldMap<String,Book> books;
 	
 	private BookDeckMap(Builder builder)
 	{
+		books = new FieldHashMap<>();
 	}
 	
 	public BookDeckMap()
@@ -24,6 +35,10 @@ final public class BookDeckMap extends StandardImmutableMapDeck<BookDeckMap, Str
 	
 	public BookDeckMap(Map<String,Book> initial_contents)
 	{
+		super();
+		
+		books = new FieldHashMap<>();
+		
 		if ( initial_contents != null )
 		{
 			this.books.putAll(initial_contents);
@@ -31,6 +46,22 @@ final public class BookDeckMap extends StandardImmutableMapDeck<BookDeckMap, Str
 		
 		complete();
 	}
+	
+	public BookDeckMap(ReadTree t)
+	{
+		books = t.getMapOfObjects(FIELD_BOOKS, new FieldHashMap(), ReadAs.READ_AS_STRING, ReadAs.READ_AS_TYPE_HINT, ReadTree.OnError.SKIP);
+	}
+	
+	public TypeName getTypeName() 
+	{
+		return TYPE_NAME;
+	}
+
+	public void write(ObjectWriter writer) 
+	{
+		writer.writeMap(FIELD_BOOKS, books, WriteAs.NATURAL_PRIMATIVES, WriteAs.OBJECTS);
+	}
+	
 
 	public FieldMap<String,Book> getSimpleContents() { return books; }
 
