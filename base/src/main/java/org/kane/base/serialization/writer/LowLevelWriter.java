@@ -19,16 +19,43 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.dataformat.xml.XmlFactory;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 
+/**
+ * LowLevelWriter is a low level wrapper around Jackson's JsonGenerator.
+ * 
+ * Absent something *truly unusual*, you should *never* have any need of
+ * LowLevelWriter in your code.
+ * 
+ * Use ObjectWriter instead.
+ * 
+ * Default error handling behavior for all low level IO function is trap all
+ * exceptions (including IOExceptions) and then throw them on as chained
+ * SerializeException(s)
+ * 
+ * @author jim.kane
+ *
+ */
 public class LowLevelWriter 
 {
 	private Format format;  // required, the format being written,
 	private JsonGenerator gen; // required, the JSON geneator
 	
+	/**
+	 * Construct a low level writer
+	 * 
+	 * @param format The format to write data in
+	 * @param out The output stream to write the data to
+	 */
 	public LowLevelWriter(Format format, OutputStream out)
 	{
 		this(format, new OutputStreamWriter(out));
 	}
 	
+	/**
+	 * Construct a low level writer
+	 * 
+	 * @param format The format to write data in
+	 * @param writer The writer to write the data to
+	 */
 	public LowLevelWriter(Format format, Writer writer)
 	{
 		Validator.notNull(format);
@@ -65,6 +92,14 @@ public class LowLevelWriter
 		}
 	}
 	
+	/**
+	 * Write a field name
+	 * 
+	 * If field_name is FieldName.FIELD_ARRAY_ELEMENT, nothing is written
+	 * 
+	 * @param field_name
+	 *            The field name to write
+	 */
 	public void writeFieldName(FieldName field_name)
 	{
 		try
@@ -82,6 +117,9 @@ public class LowLevelWriter
 		}
 	}
 	
+	/**
+	 * Write a null
+	 */
 	public void writeNull() 
 	{
 		try
@@ -112,7 +150,15 @@ public class LowLevelWriter
 		}
 	}
 	
-	
+	/**
+	 * Write a String.
+	 *
+	 * This function has been "battle tested" and str can be anything, include
+	 * null and containing any character
+	 * 
+	 * @param str
+	 *            The string to write
+	 */
 	public void writeString(String str) 
 	{
 		if ( str == null )
@@ -137,7 +183,14 @@ public class LowLevelWriter
 		}
 	}
 	
-	public boolean isBase64Required(String src)
+	/**
+	 * Test to see if the string can be written without base64 encoding
+	 * 
+	 * @param src
+	 *            The string to test
+	 * @return true if the string requires base64 encoding, false otherwise
+	 */
+	static public boolean isBase64Required(String src)
 	{
 		if ( src == null ) return false;
 		
@@ -159,11 +212,22 @@ public class LowLevelWriter
 		return false;
 	}
 	
-	public String base64EncodeString(String str)
+	/**
+	 * base64 encode a String
+	 * @param str The string to encode
+	 * @return The base64 encoded string
+	 */
+	static public String base64EncodeString(String str)
 	{
+		Validator.notNull(str);
 		return Base64.getEncoder().encodeToString(str.getBytes());
 	}
 	
+	/**
+	 * Write a boolean
+	 * 
+	 * @param value The boolean to write
+	 */
 	public void writeBoolean(boolean value)
 	{
 		try
@@ -176,26 +240,49 @@ public class LowLevelWriter
 		}
 	}
 	
+	/**
+	 * Write a character 
+	 * 
+	 * @param value
+	 */
 	public void writeChar(char value) 
 	{ 
 		writeString(String.format("%c", value)); 
 	}
 	
+	/**
+	 * Write a byte
+	 * @param value
+	 */
 	public void writeByte(byte value) 
 	{
 		writeLong(value);
 	}
 
+	/**
+	 * Write a short
+	 * @param value
+	 */
 	public void writeShort(short value) 
 	{ 
 		writeLong(value); 
 	}
 	
+	
+	/**
+	 * Write an integer
+	 * @param value
+	 */
 	public void writeInt(int value) 
 	{ 
 		writeLong((long)value); 
 	}
 	
+	
+	/**
+	 * Write a long
+	 * @param value
+	 */
 	public void writeLong(long value)
 	{
 		try
@@ -208,6 +295,10 @@ public class LowLevelWriter
 		}
 	}
 	
+	/**
+	 * Write a float
+	 * @param value
+	 */
 	public void writeFloat(float value)
 	{
 		try
@@ -220,6 +311,10 @@ public class LowLevelWriter
 		}
 	}
 	
+	/**
+	 * Write a double
+	 * @param value
+	 */
 	public void writeDouble(double value)
 	{
 		try
@@ -232,6 +327,9 @@ public class LowLevelWriter
 		}
 	}
 	
+	/**
+	 * Start an object (must be matched with a cal lto closeObject())
+	 */
 	public void openObject()
 	{
 		try
@@ -244,6 +342,9 @@ public class LowLevelWriter
 		}
 	}
 	
+	/**
+	 * Close an object
+	 */
 	public void closeObject()
 	{ 
 		try
@@ -256,6 +357,14 @@ public class LowLevelWriter
 		}
 	}
 	
+	/**
+	 * Write a string in its complete object encoding (i.e. not as a JavaScript
+	 * Primitive, but as a full object, with type_hint, etc.)
+	 * 
+	 * @param str
+	 *            The string to write. Can be null, the empty string, or can
+	 *            contain any character
+	 */
 	public void writeStringObject(String str)
 	{
 		try
@@ -288,6 +397,15 @@ public class LowLevelWriter
 		}
 	}
 	
+	/**
+	 * Write an object.
+	 * 
+	 * Primitives (Strings, Integer, Double, etc.) will be written in complete
+	 * object encoding (i.e. not as a JavaScript Primitive, but as a full
+	 * object, with type_hint, etc.)
+	 * 
+	 * @param obj The object to write.  Can be null.
+	 */
 	public void writeObject(Object obj)
 	{
 		try
@@ -434,6 +552,9 @@ public class LowLevelWriter
 		}
 	}
 	
+	/**
+	 * Begin an array (must be matched with a call to closeArray())
+	 */
 	public void openArray()
 	{
 		try
@@ -446,6 +567,9 @@ public class LowLevelWriter
 		}
 	}
 	
+	/**
+	 * Close a previously opened array
+	 */
 	public void closeArray() 
 	{
 		try
@@ -458,6 +582,9 @@ public class LowLevelWriter
 		}
 	}
 	
+	/**
+	 * Flush 
+	 */
 	public void flush()
 	{
 		try
@@ -470,6 +597,9 @@ public class LowLevelWriter
 		}
 	}
 	
+	/**
+	 * Close (prevents any further writing)
+	 */
 	public void close()
 	{
 		try
@@ -482,8 +612,30 @@ public class LowLevelWriter
 		}
 	}
 	
-	public Format getSimpleFormat() { return format; }
+	/**
+	 * Get the data format being written
+	 * 
+	 * @return The data format being written
+	 */
+	public Format getSimpleFormat() 
+	{ 
+		return format; 
+	}
+	
+	/**
+	 * Test to see if the format being written is a JSON format
+	 * 
+	 * @return True if the output is JSON (either pretty printed or regular),
+	 *         false otherwise
+	 */
 	public boolean isJSON() {  return getSimpleFormat() == Format.JSON || getSimpleFormat() == Format.JSON_PRETTY_PRINT; }
+	
+	/**
+	 * Test to see if the format being written is XML
+	 * 
+	 * @return True if the output is XML (either pretty printed or regular),
+	 *         false otherwise
+	 */
 	public boolean isXML() { return getSimpleFormat() == Format.XML || getSimpleFormat() == Format.XML_PRETTY_PRINT; }
 	
 }
