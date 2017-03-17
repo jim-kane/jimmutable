@@ -2,8 +2,16 @@ package org.kane.base.serialization.reader;
 
 abstract public class ReadAs 
 {
-	static public ReadAs READ_AS_TYPE_HINT = new ReadAsTypeHint();
-	static public ReadAs READ_AS_STRING = new ReadAsString();
+	static public ReadAs OBJECT = new ReadAsObject();
+	static public ReadAs STRING = new ReadAsString();
+	static public ReadAs BOOELAN = new ReadAsBoolean();
+	static public ReadAs CHARACTER = new ReadAsCharacter();
+	static public ReadAs BYTE = new ReadAsByte();
+	static public ReadAs SHORT = new ReadAsShort();
+	static public ReadAs INTEGER = new ReadAsInt();
+	static public ReadAs LONG = new ReadAsLong();
+	static public ReadAs FLOAT = new ReadAsFloat();
+	static public ReadAs DOUBLE = new ReadAsDouble();
 	
 	/**
 	 * Read a read tree (t) and convert into a given type
@@ -16,7 +24,7 @@ abstract public class ReadAs
 	abstract Object readAs(ReadTree t);
 	
 	
-	static private class ReadAsTypeHint extends ReadAs
+	static private class ReadAsObject extends ReadAs
 	{
 		Object readAs(ReadTree t) 
 		{
@@ -30,6 +38,70 @@ abstract public class ReadAs
 		public Object readAs(ReadTree t) 
 		{
 			return t.asString(null);
+		}
+	}
+	
+	static private class ReadAsBoolean extends ReadAs
+	{
+		public Object readAs(ReadTree t) 
+		{
+			return t.asBoolean(null);
+		}
+	}
+	
+	static private class ReadAsCharacter extends ReadAs
+	{
+		public Object readAs(ReadTree t) 
+		{
+			return t.asCharacter(null);
+		}
+	}
+	
+	static private class ReadAsByte extends ReadAs
+	{
+		public Object readAs(ReadTree t) 
+		{
+			return t.asByte(null);
+		}
+	}
+	
+	static private class ReadAsShort extends ReadAs
+	{
+		public Object readAs(ReadTree t) 
+		{
+			return t.asShort(null);
+		}
+	}
+	
+	static private class ReadAsInt extends ReadAs
+	{
+		public Object readAs(ReadTree t) 
+		{
+			return t.asInteger(null);
+		}
+	}
+	
+	static private class ReadAsLong extends ReadAs
+	{
+		public Object readAs(ReadTree t) 
+		{
+			return t.asLong(null);
+		}
+	}
+	
+	static private class ReadAsFloat extends ReadAs
+	{
+		public Object readAs(ReadTree t) 
+		{
+			return t.asFloat(null);
+		}
+	}
+	
+	static private class ReadAsDouble extends ReadAs
+	{
+		public Object readAs(ReadTree t) 
+		{
+			return t.asDouble(null);
 		}
 	}
 }

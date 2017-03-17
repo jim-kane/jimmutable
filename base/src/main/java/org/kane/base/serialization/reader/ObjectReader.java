@@ -19,12 +19,12 @@ public class ObjectReader
 		this.t = t;
 	}
 	
-	static public Object readDocument(String document) throws SerializeException
+	static public Object deserialize(String document) throws SerializeException
 	{
-		return readDocument(document, true);
+		return deserialize(document, true);
 	}
 	
-	static public Object readDocument(String document, boolean complete) throws SerializeException
+	static public Object deserialize(String document, boolean complete_standard_object) throws SerializeException
 	{
 		ReadTree t = Parser.parse(document);
 		
@@ -33,7 +33,7 @@ public class ObjectReader
 		if ( ret == null ) 
 			throw new SerializeException("Unable to read document!");
 		
-		if ( complete && ret instanceof StandardObject ) 
+		if ( complete_standard_object && ret instanceof StandardObject ) 
 		{
 			StandardObject immutable_object = (StandardObject)ret;
 			immutable_object.complete();

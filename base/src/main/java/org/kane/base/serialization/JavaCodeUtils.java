@@ -12,6 +12,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.kane.base.serialization.writer.Format;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 
@@ -136,8 +137,8 @@ public class JavaCodeUtils
 	{
 		Validator.notNull(obj);
 		
-		String xml = obj.toXML(true);
-		if ( xml == null ) throw new ValidationException("Obj did not serialize to valid XML");
+		String xml = obj.serialize(Format.XML_PRETTY_PRINT);
+		if ( xml == null ) throw new ValidationException("Object did not serialize to valid XML");
 		
 		return toJavaStringLiteral(xml);
 	}

@@ -53,7 +53,7 @@ final public class Book extends StandardImmutableObject<Book>
 		isbn = t.getString(FIELD_ISBN, null);
 		binding = BindingType.fromCode(t.getString(FIELD_BINDING, null),null);
 		
-		authors = t.getCollectionOfObjects(FIELD_AUTHORS, new FieldArrayList(), ReadAs.READ_AS_STRING, ReadTree.OnError.SKIP);
+		authors = t.getCollection(FIELD_AUTHORS, new FieldArrayList(), ReadAs.STRING, ReadTree.OnError.SKIP);
 	}
 	
 	@Override

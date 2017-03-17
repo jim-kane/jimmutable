@@ -385,7 +385,7 @@ public class ReadTree implements Iterable<ReadTree>
 		TypeName type_name = getOptionalTypeHint(null);
 		
 		if ( type_name == null )
-			throw new SerializeException("Attempt to read object, but not a primative and not type hint present");
+			throw new SerializeException("Attempt to read object, but not a primitive and no type hint present");
 		
 		Class c = ObjectReader.standard_object_types.get(type_name); 
 		
@@ -495,16 +495,11 @@ public class ReadTree implements Iterable<ReadTree>
 		THROW_EXCEPTION;
 	}
 	
-	public <C extends Collection> C getCollectionOfObjects(FieldName field_name, C empty_collection, Object object_to_insert_on_error)
-	{
-		return getCollectionOfObjects(field_name, empty_collection, ReadAs.READ_AS_TYPE_HINT, object_to_insert_on_error);
-	}
-	
-	public <C extends Collection> C getCollectionOfObjects(FieldName field_name, C empty_collection, ReadAs type_converter, Object object_to_insert_on_error)
+	public <C extends Collection> C getCollection(FieldName field_name, C empty_collection, ReadAs type, OnError on_error)
 	{
 		Validator.notNull(field_name);
 		Validator.notNull(empty_collection);
-		Validator.notNull(type_converter);
+		Validator.notNull(type);
 		
 		C ret = empty_collection;
 		
@@ -512,13 +507,12 @@ public class ReadTree implements Iterable<ReadTree>
 		{
 			if ( child.getSimpleFieldName().equals(field_name) ) 
 			{
-				Object obj = type_converter.readAs(child);
+				Object obj = type.readAs(child);
 				
 				if ( obj == null ) 
 				{
-					if ( object_to_insert_on_error == OnError.SKIP ) continue;
-					if ( object_to_insert_on_error == OnError.THROW_EXCEPTION ) throw new SerializeException("Could not read object in collection");
-					obj = object_to_insert_on_error;
+					if ( on_error == OnError.SKIP ) continue;
+					else throw new SerializeException("Could not read object in collection");
 				}
 				
 				ret.add(obj);
@@ -528,12 +522,12 @@ public class ReadTree implements Iterable<ReadTree>
 		return ret;
 	}
 	
-	public <M extends Map> M getMapOfObjects(FieldName field_name, M empty_map, ReadAs key_converter, ReadAs value_converter, OnError on_error)
+	public <M extends Map> M getMap(FieldName field_name, M empty_map, ReadAs key_type, ReadAs value_type, OnError on_error)
 	{
 		Validator.notNull(field_name);
 		Validator.notNull(empty_map);
-		Validator.notNull(key_converter);
-		Validator.notNull(value_converter);
+		Validator.notNull(key_type);
+		Validator.notNull(value_type);
 		Validator.notNull(on_error);
 		
 		M ret = empty_map;
@@ -551,8 +545,8 @@ public class ReadTree implements Iterable<ReadTree>
 					if ( on_error == OnError.THROW_EXCEPTION ) throw new SerializeException("Could not read key/value pair");
 				}
 				
-				Object key = key_converter.readAs(key_tree);
-				Object value = value_converter.readAs(value_tree);
+				Object key = key_type.readAs(key_tree);
+				Object value = value_type.readAs(value_tree);
 				
 				if ( key == null || value == null ) 
 				{

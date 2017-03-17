@@ -9,6 +9,7 @@ import org.kane.base.immutability.decks.StandardImmutableListDeck;
 import org.kane.base.serialization.FieldName;
 import org.kane.base.serialization.TypeName;
 import org.kane.base.serialization.Validator;
+import org.kane.base.serialization.reader.ReadAs;
 import org.kane.base.serialization.reader.ReadTree;
 import org.kane.base.serialization.writer.ObjectWriter;
 import org.kane.base.serialization.writer.WriteAs;
@@ -43,7 +44,7 @@ final public class BookDeckList extends StandardImmutableListDeck<BookDeckList, 
 	
 	public BookDeckList(ReadTree t)
 	{
-		books = t.getCollectionOfObjects(FIELD_BOOKS, new FieldArrayList(), ReadTree.OnError.SKIP);
+		books = t.getCollection(FIELD_BOOKS, new FieldArrayList(), ReadAs.OBJECT, ReadTree.OnError.SKIP);
 	}
 	
 	public TypeName getTypeName() 
@@ -53,7 +54,7 @@ final public class BookDeckList extends StandardImmutableListDeck<BookDeckList, 
 
 	public void write(ObjectWriter writer) 
 	{
-		writer.writeCollection(FIELD_BOOKS, books, WriteAs.OBJECTS);
+		writer.writeCollection(FIELD_BOOKS, books, WriteAs.OBJECT);
 	}
 
 	@Override

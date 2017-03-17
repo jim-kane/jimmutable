@@ -99,7 +99,7 @@ abstract public class StandardObject<T extends StandardObject<T>> implements Com
 	 */
 	public T deepClone()
 	{
-		return (T)ObjectReader.readDocument(serialize(Format.XML), true);
+		return (T)ObjectReader.deserialize(serialize(Format.XML), true);
 	}
 	
 	/**
@@ -109,7 +109,7 @@ abstract public class StandardObject<T extends StandardObject<T>> implements Com
 	@Override
 	public String toString()
 	{
-		return toJSON(true);
+		return serialize(Format.JSON_PRETTY_PRINT);
 	}
 	
 	public String serialize(Format format)
@@ -119,28 +119,8 @@ abstract public class StandardObject<T extends StandardObject<T>> implements Com
 	
 	static public StandardObject deserialize(String serialized_data)
 	{
-		return (StandardObject)ObjectReader.readDocument(serialized_data);
+		return (StandardObject)ObjectReader.deserialize(serialized_data);
 	}
-
-	/**
-	 * Serialize this object to JSON
-	 * 
-	 * @return The JSON serialized version of this object
-	 */
-	public String toJSON(boolean pretty_print) throws SerializeException
-	{
-		return serialize(pretty_print ? Format.JSON_PRETTY_PRINT : Format.JSON);
-	}
-	
-	/**
-	 * Serialize this object to XML
-	 * 
-	 * @return The XML serialized version of this object
-	 */
-	public String toXML(boolean pretty_print) throws SerializeException
-	{
-		return serialize(pretty_print ? Format.XML_PRETTY_PRINT : Format.XML);
-	} 
 	
 	/**
 	 * Create Java source code that will construct an identical copy of this object.
@@ -157,7 +137,7 @@ abstract public class StandardObject<T extends StandardObject<T>> implements Com
 	 */
 	public String toJavaCode(Format format, String variable_name)
 	{
-		return String.format("String %s_as_xml_string = %s;\n\n%s %s = (%s)StandardObject.fromXML(%s_as_xml_string);"
+		return String.format("String %s_string = %s;\n\n%s %s = (%s)StandardObject.deserialize(%s_string);"
 				, variable_name
 				, JavaCodeUtils.toJavaStringLiteral(serialize(format))
 				, getClass().getSimpleName()

@@ -136,7 +136,7 @@ public class ObjectFieldReadWriteTest extends TestCase
     		System.out.println(serialized_data);
     	}
     	
-    	Object from_reader = ObjectReader.readDocument(serialized_data);
+    	Object from_reader = ObjectReader.deserialize(serialized_data);
     	
     	assertEquals(obj,from_reader);
     }

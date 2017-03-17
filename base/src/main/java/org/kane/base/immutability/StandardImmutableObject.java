@@ -85,6 +85,6 @@ abstract public class StandardImmutableObject<T extends StandardImmutableObject<
 	 */
 	protected T deepMutableCloneForBuilder()
 	{
-		return (T)ObjectReader.readDocument(serialize(Format.XML), false);
+		return (T)ObjectReader.deserialize(serialize(Format.XML), false);
 	}
 }

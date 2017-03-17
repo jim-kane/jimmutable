@@ -49,7 +49,7 @@ final public class BookDeckMap extends StandardImmutableMapDeck<BookDeckMap, Str
 	
 	public BookDeckMap(ReadTree t)
 	{
-		books = t.getMapOfObjects(FIELD_BOOKS, new FieldHashMap(), ReadAs.READ_AS_STRING, ReadAs.READ_AS_TYPE_HINT, ReadTree.OnError.SKIP);
+		books = t.getMap(FIELD_BOOKS, new FieldHashMap(), ReadAs.STRING, ReadAs.OBJECT, ReadTree.OnError.SKIP);
 	}
 	
 	public TypeName getTypeName() 
@@ -59,7 +59,7 @@ final public class BookDeckMap extends StandardImmutableMapDeck<BookDeckMap, Str
 
 	public void write(ObjectWriter writer) 
 	{
-		writer.writeMap(FIELD_BOOKS, books, WriteAs.NATURAL_PRIMATIVES, WriteAs.OBJECTS);
+		writer.writeMap(FIELD_BOOKS, books, WriteAs.STRING, WriteAs.OBJECT);
 	}
 	
 
