@@ -1,4 +1,4 @@
-package org.kane.base.immutability;
+package org.kane.base.exceptions;
 
 /**
  * A RuntimeException with the semantic meaning "hey! you just tried to modify

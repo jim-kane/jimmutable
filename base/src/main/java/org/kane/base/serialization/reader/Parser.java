@@ -5,8 +5,8 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.util.Stack;
 
+import org.kane.base.exceptions.SerializeException;
 import org.kane.base.serialization.FieldName;
-import org.kane.base.serialization.SerializeException;
 import org.kane.base.serialization.writer.Format;
 
 import com.fasterxml.jackson.core.JsonFactory;

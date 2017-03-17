@@ -1,5 +1,6 @@
 package org.kane.base.immutability;
 
+import org.kane.base.exceptions.ImmutableException;
 import org.kane.base.immutability.collections.Field;
 import org.kane.base.serialization.StandardObject;
 import org.kane.base.serialization.reader.ObjectReader;

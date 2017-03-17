@@ -12,6 +12,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.kane.base.exceptions.ValidationException;
 import org.kane.base.serialization.writer.Format;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;

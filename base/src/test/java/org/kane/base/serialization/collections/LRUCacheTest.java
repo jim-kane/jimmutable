@@ -1,6 +1,6 @@
 package org.kane.base.serialization.collections;
 
-import org.kane.base.serialization.collections.LRUCache;
+import org.kane.base.threading.LRUCache;
 
 import junit.framework.Test;
 import junit.framework.TestCase;

@@ -7,8 +7,8 @@ import java.util.Base64;
 
 import javax.xml.namespace.QName;
 
+import org.kane.base.exceptions.SerializeException;
 import org.kane.base.serialization.FieldName;
-import org.kane.base.serialization.SerializeException;
 import org.kane.base.serialization.TypeName;
 import org.kane.base.serialization.Validator;
 import org.kane.base.serialization.reader.ObjectReader;

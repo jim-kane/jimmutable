@@ -10,7 +10,7 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 
-import org.kane.base.immutability.ImmutableException;
+import org.kane.base.exceptions.ImmutableException;
 import org.kane.base.immutability.StandardImmutableObject;
 import org.kane.base.immutability.collections.FieldHashMap;
 import org.kane.base.immutability.collections.FieldCollectionTest.TestObject;

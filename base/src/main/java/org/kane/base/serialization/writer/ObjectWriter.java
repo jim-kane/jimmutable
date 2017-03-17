@@ -5,8 +5,8 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
+import org.kane.base.exceptions.SerializeException;
 import org.kane.base.serialization.FieldName;
-import org.kane.base.serialization.SerializeException;
 import org.kane.base.serialization.TypeName;
 import org.kane.base.serialization.Validator;
 

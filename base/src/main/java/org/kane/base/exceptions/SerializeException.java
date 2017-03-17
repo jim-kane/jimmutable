@@ -1,4 +1,4 @@
-package org.kane.base.serialization;
+package org.kane.base.exceptions;
 
 /**
  * A standard exception to throw when a "serialization" error is encounter (e.g.
