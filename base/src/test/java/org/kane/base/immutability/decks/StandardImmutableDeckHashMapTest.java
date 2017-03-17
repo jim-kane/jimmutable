@@ -8,6 +8,7 @@ import org.kane.base.examples.book.Book;
 import org.kane.base.examples.book.BookDeckMap;
 import org.kane.base.examples.book.BookDeckMap.Builder;
 import org.kane.base.serialization.StandardObject;
+import org.kane.base.serialization.writer.Format;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -66,7 +67,7 @@ public class StandardImmutableDeckHashMapTest extends TestCase
 		// Confirm that first library has not changed...
 		assertEquals(second_library.getSimpleContents().size(),3); 
 		
-		System.out.println(second_library.toJavaCode("obj"));
+		System.out.println(second_library.toJavaCode(Format.XML_PRETTY_PRINT,"obj"));
     }
     
     public void testSerialization()
@@ -123,7 +124,7 @@ public class StandardImmutableDeckHashMapTest extends TestCase
     		     , "</book-map>"
     		);
     	
-    		BookDeckMap obj = (BookDeckMap)StandardObject.deserialize(obj_as_xml_string,null);
+    		BookDeckMap obj = (BookDeckMap)StandardObject.deserialize(obj_as_xml_string);
     	
     	assertEquals(obj.getSimpleContents().size(),3); 
     	assert(obj.getSimpleContents().containsKey("jim_first_book"));

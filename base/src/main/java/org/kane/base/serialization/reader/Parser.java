@@ -212,24 +212,30 @@ public class Parser
 	
 	
 	
-	static public ReadTree parse(Reader r, ReadTree default_value)
+	static public ReadTree parse(Reader r) throws SerializeException
 	{
 		try
 		{
 			Parser p = new Parser(r);
-			if ( p.result == null ) return default_value;
+			
+			if ( p.result == null ) 
+				throw new SerializeException("Unknown error while parsing ReadTree (null result)");
+			
 			return p.result;
 		}
-		catch(Exception e)
+		catch(SerializeException e)
 		{
-			e.printStackTrace();
-			return default_value;
+			throw e;
+		}
+		catch(Exception e2)
+		{
+			throw new SerializeException("Error while parsing ReadTree",e2);
 		}
 	}
 	
-	static public ReadTree parse(String str, ReadTree default_value)
+	static public ReadTree parse(String str) throws SerializeException
 	{
 		StringReader r = new StringReader(str);
-		return parse(r,default_value);
+		return parse(r);
 	}
 }

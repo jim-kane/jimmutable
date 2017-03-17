@@ -1,11 +1,8 @@
 package org.kane.base.serialization;
 
 import org.kane.base.serialization.reader.ObjectReader;
-import org.kane.base.serialization.reader.Parser;
-import org.kane.base.serialization.reader.ReadTree;
 import org.kane.base.serialization.writer.Format;
-import org.kane.base.serialization.writer.LowLevelWriter;
-import org.kane.base.serialization.writer.ObjectWriterUtils;
+import org.kane.base.serialization.writer.ObjectWriter;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -154,7 +151,7 @@ public class PrimativeReadWriteTest extends TestCase
     	{
     		System.out.println(String.format("%s: %d", format, obj));
     	}*/
-    	String serialized_data = ObjectWriterUtils.writeObject(format, obj, null);
+    	String serialized_data = ObjectWriter.serialize(format, obj);
     	assert(serialized_data != null);
     	
     	if ( obj.equals("") )
@@ -162,7 +159,7 @@ public class PrimativeReadWriteTest extends TestCase
     		System.out.println(serialized_data);
     	}
     	
-    	Object from_reader = ObjectReader.readDocument(serialized_data, null);
+    	Object from_reader = ObjectReader.readDocument(serialized_data);
     	
     	assertEquals(obj,from_reader);
     }

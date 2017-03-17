@@ -9,6 +9,7 @@ import org.kane.base.examples.book.BookDeckList;
 import org.kane.base.examples.book.BookDeckList.Builder;
 import org.kane.base.serialization.JavaCodeUtils;
 import org.kane.base.serialization.StandardObject;
+import org.kane.base.serialization.writer.Format;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -77,7 +78,7 @@ public class StandardImmutableDeckArrayListTest extends TestCase
 		assertEquals(second_library.getSimpleContents().get(2).getSimpleTitle(),"O LOST");
 		
 		
-		System.out.println(second_library.toJavaCode("obj"));
+		System.out.println(second_library.toJavaCode(Format.XML_PRETTY_PRINT,"obj"));
     }
     
     public void testSerialization()
@@ -125,7 +126,7 @@ public class StandardImmutableDeckArrayListTest extends TestCase
     		     , "</book-list>"
     		);
 
-    		BookDeckList obj = (BookDeckList)StandardObject.deserialize(obj_as_xml_string, null);
+    		BookDeckList obj = (BookDeckList)StandardObject.deserialize(obj_as_xml_string);
     		
     		assertEquals(obj.getSimpleContents().size(),3);
     		

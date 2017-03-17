@@ -10,6 +10,7 @@ import org.kane.base.examples.book.BookDeckSet;
 import org.kane.base.examples.book.BookDeckSet.Builder;
 import org.kane.base.serialization.JavaCodeUtils;
 import org.kane.base.serialization.StandardObject;
+import org.kane.base.serialization.writer.Format;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -72,7 +73,7 @@ public class StandardImmutableDeckHashSetTest extends TestCase
 		assert(second_library.getSimpleContents().containsAll(test_books));
 		
 		
-		System.out.println(second_library.toJavaCode("obj"));
+		System.out.println(second_library.toJavaCode(Format.XML_PRETTY_PRINT,"obj"));
     }
     
     public void testSerialization()
@@ -120,7 +121,7 @@ public class StandardImmutableDeckHashSetTest extends TestCase
     		     , "</book-set>"
     		);
 
-    	BookDeckSet obj = (BookDeckSet)StandardObject.deserialize(obj_as_xml_string,null);
+    	BookDeckSet obj = (BookDeckSet)StandardObject.deserialize(obj_as_xml_string);
     	
     	
     	List<Book> test_books = new ArrayList();

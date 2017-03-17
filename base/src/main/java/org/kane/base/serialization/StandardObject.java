@@ -1,14 +1,10 @@
 package org.kane.base.serialization;
 
-import java.io.Reader;
-import java.io.StringReader;
-import java.io.Writer;
-
 import org.kane.base.immutability.StandardImmutableObject;
 import org.kane.base.serialization.reader.ObjectReader;
 import org.kane.base.serialization.writer.Format;
 import org.kane.base.serialization.writer.ObjectWriter;
-import org.kane.base.serialization.writer.ObjectWriterUtils;
+import org.kane.base.serialization.writer.StandardWritable;
 
 /**
  * The root for all "standard" objects. All data in the framework,
@@ -37,7 +33,7 @@ import org.kane.base.serialization.writer.ObjectWriterUtils;
  * 
  * @see StandardImmutableObject
  */
-abstract public class StandardObject<T extends StandardObject<T>> implements Comparable<T>
+abstract public class StandardObject<T extends StandardObject<T>> implements Comparable<T>, StandardWritable
 {
 	/**
 	 * Normalize the fields of the object. The idea is to clean up the values of
@@ -69,10 +65,6 @@ abstract public class StandardObject<T extends StandardObject<T>> implements Com
 	
 	@Override
 	abstract public boolean equals(Object obj);
-	
-	
-	abstract public TypeName getTypeName();
-	abstract public void write(ObjectWriter writer);
 	
 	/**
 	 * Declare that an object is ready to use. The practical effect is that
@@ -107,7 +99,7 @@ abstract public class StandardObject<T extends StandardObject<T>> implements Com
 	 */
 	public T deepClone()
 	{
-		return (T)ObjectReader.readDocument(serialize(Format.XML,null), null, true);
+		return (T)ObjectReader.readDocument(serialize(Format.XML), true);
 	}
 	
 	/**
@@ -117,17 +109,17 @@ abstract public class StandardObject<T extends StandardObject<T>> implements Com
 	@Override
 	public String toString()
 	{
-		return toJSON(true,"");
+		return toJSON(true);
 	}
 	
-	public String serialize(Format format, String default_value)
+	public String serialize(Format format)
 	{
-		return ObjectWriterUtils.writeObject(format, this, default_value);
+		return ObjectWriter.serialize(format, this);
 	}
 	
-	static public StandardObject deserialize(String serialized_data, Object default_value)
+	static public StandardObject deserialize(String serialized_data)
 	{
-		return (StandardObject)ObjectReader.readDocument(serialized_data, default_value);
+		return (StandardObject)ObjectReader.readDocument(serialized_data);
 	}
 
 	/**
@@ -135,9 +127,9 @@ abstract public class StandardObject<T extends StandardObject<T>> implements Com
 	 * 
 	 * @return The JSON serialized version of this object
 	 */
-	public String toJSON(boolean pretty_print, String default_value)
+	public String toJSON(boolean pretty_print) throws SerializeException
 	{
-		return serialize(pretty_print ? Format.JSON_PRETTY_PRINT : Format.JSON, default_value);
+		return serialize(pretty_print ? Format.JSON_PRETTY_PRINT : Format.JSON);
 	}
 	
 	/**
@@ -145,9 +137,9 @@ abstract public class StandardObject<T extends StandardObject<T>> implements Com
 	 * 
 	 * @return The XML serialized version of this object
 	 */
-	public String toXML(boolean pretty_print, String default_value)
+	public String toXML(boolean pretty_print) throws SerializeException
 	{
-		return serialize(pretty_print ? Format.XML_PRETTY_PRINT : Format.XML, default_value);
+		return serialize(pretty_print ? Format.XML_PRETTY_PRINT : Format.XML);
 	} 
 	
 	/**
@@ -161,39 +153,13 @@ abstract public class StandardObject<T extends StandardObject<T>> implements Com
 	 * <p>This is super useful when creating unit tests of serialization... Just
 	 * saying...
 	 * 
-	 * @return Java statements that will construct a copy of this object from XML
+	 * @return Java statements that will construct a copy of this object from the format specified
 	 */
-	public String toJavaCode(String variable_name)
+	public String toJavaCode(Format format, String variable_name)
 	{
 		return String.format("String %s_as_xml_string = %s;\n\n%s %s = (%s)StandardObject.fromXML(%s_as_xml_string);"
 				, variable_name
-				, JavaCodeUtils.toJavaStringLiteral(toXML(true, "could not serialize!"))
-				, getClass().getSimpleName()
-				, variable_name
-				, getClass().getSimpleName()
-				, variable_name
-			);
-	}
-	
-	
-	/**
-	 * Create Java source code that will construct an identical copy of this object.
-	 * 
-	 * <p>This is done by taking the pretty printed XML and properly escaping it (using
-	 * {@link JavaCodeUtils#toJavaStringLiteral(String) JavaCodeUtils}) so as to make
-	 * clean, easy to read Java source code that will construct the object. (Effectively
-	 * serializing the object to Java source code!)
-	 * 
-	 * <p>This is super useful when creating unit tests of serialization... Just
-	 * saying...
-	 * 
-	 * @return Java statements that will construct a copy of this object from JSON
-	 */
-	public String toJavaCodeUsingJSON(String variable_name)
-	{
-		return String.format("String %s_as_json_string = %s;\n\n%s %s = (%s)StandardObject.fromJSON(%s_as_json_string);"
-				, variable_name
-				, JavaCodeUtils.toJavaStringLiteral(toJSON(true, "could not serialize"))
+				, JavaCodeUtils.toJavaStringLiteral(serialize(format))
 				, getClass().getSimpleName()
 				, variable_name
 				, getClass().getSimpleName()

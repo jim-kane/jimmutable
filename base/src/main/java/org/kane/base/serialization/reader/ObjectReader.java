@@ -3,6 +3,7 @@ package org.kane.base.serialization.reader;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.kane.base.serialization.SerializeException;
 import org.kane.base.serialization.StandardObject;
 import org.kane.base.serialization.TypeName;
 import org.kane.base.serialization.Validator;
@@ -18,18 +19,19 @@ public class ObjectReader
 		this.t = t;
 	}
 	
-	static public Object readDocument(String document, Object default_value)
+	static public Object readDocument(String document) throws SerializeException
 	{
-		return readDocument(document, default_value,true);
+		return readDocument(document, true);
 	}
 	
-	static public Object readDocument(String document, Object default_value, boolean complete)
+	static public Object readDocument(String document, boolean complete) throws SerializeException
 	{
-		ReadTree t = Parser.parse(document, null);
+		ReadTree t = Parser.parse(document);
 		
-		if ( t == null ) return default_value;
+		Object ret = t.asObject(null);
 		
-		Object ret = t.asObject(default_value);
+		if ( ret == null ) 
+			throw new SerializeException("Unable to read document!");
 		
 		if ( complete && ret instanceof StandardObject ) 
 		{
@@ -45,5 +47,11 @@ public class ObjectReader
 		Validator.notNull(type, c);
 		
 		standard_object_types.put(type, c);
+	}
+	
+	static public boolean isTypeRegistered(TypeName type)
+	{
+		if ( type == null ) return false;
+		return standard_object_types.containsKey(type);
 	}
 }

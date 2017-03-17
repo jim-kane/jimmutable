@@ -6,7 +6,6 @@ import org.kane.base.examples.book.Person;
 import org.kane.base.serialization.reader.Parser;
 import org.kane.base.serialization.reader.ReadTree;
 import org.kane.base.serialization.writer.Format;
-import org.kane.base.serialization.writer.ObjectWriterUtils;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
@@ -66,5 +65,14 @@ public class TestApp
 		String str = (String)tree.asObject(null);
 		
 		System.out.println("Str = "+str);*/
+		
+		try
+		{
+			throw new NullPointerException();
+		}
+		catch(Exception e)
+		{
+			throw new Exception("Read error",e);
+		}
 	}
 }

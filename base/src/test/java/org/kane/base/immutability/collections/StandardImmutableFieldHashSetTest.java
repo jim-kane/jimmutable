@@ -6,22 +6,32 @@ import java.util.Set;
 
 import org.kane.base.immutability.ImmutableException;
 import org.kane.base.immutability.StandardImmutableObject;
-import org.kane.base.serialization.JavaCodeUtils;
+import org.kane.base.serialization.FieldName;
 import org.kane.base.serialization.StandardObject;
-
+import org.kane.base.serialization.TypeName;
+import org.kane.base.serialization.reader.ObjectReader;
+import org.kane.base.serialization.reader.ReadTree;
+import org.kane.base.serialization.writer.Format;
+import org.kane.base.serialization.writer.ObjectWriter;
+import org.kane.base.serialization.writer.WriteAs;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-public class StandardImmutableFieldHashSetTest  extends TestCase
+public class StandardImmutableFieldHashSetTest extends TestCase
 {
-	static abstract private class SetTestObject extends StandardImmutableObject
+	static private class SetTestObject extends StandardImmutableObject<SetTestObject>
 	{
+		static private final TypeName TYPE_NAME = new TypeName("jimmutable.test.SetTestObject"); public TypeName getTypeName() { return TYPE_NAME; }
+		static private final FieldName FIELD_SET = new FieldName("set");
+		
+		static public Class field_class_to_test = FieldHashSet.class;
+		
 		private FieldSet<String> set;
 		transient private Iterator old_iterator;
 		
-		public int compareTo(Object o) { return 0; }
+		public int compareTo(SetTestObject o) { return 0; }
 		public void normalize() {}
 		public void validate() {}
 		public void freeze() { set.freeze(); }
@@ -31,7 +41,7 @@ public class StandardImmutableFieldHashSetTest  extends TestCase
 		
 		public SetTestObject()
 		{
-			set = createEmptySet();
+			set = createEmtpySet();
 			old_iterator = set.iterator();
 			
 			verifyMutable();
@@ -44,11 +54,33 @@ public class StandardImmutableFieldHashSetTest  extends TestCase
 			verifyOldIteratorImmutable();
 		}
 		
-		abstract public FieldSet createEmptySet();
-		
 		public SetTestObject(Builder b)
 		{
 			set = new FieldHashSet();
+		}
+		
+		public SetTestObject(ReadTree t)
+		{
+			set = t.getCollectionOfObjects(FIELD_SET, createEmtpySet(), ReadTree.OnError.SKIP);
+		}
+		
+		public void write(ObjectWriter writer) 
+		{
+			writer.writeCollection(FIELD_SET, set, WriteAs.NATURAL_PRIMATIVES);
+		}
+		
+		public FieldSet<String> createEmtpySet()
+		{
+			try
+			{
+				return (FieldSet<String>)field_class_to_test.newInstance();
+			}
+			catch(Exception e)
+			{
+				e.printStackTrace();
+				assert(false);
+				return null;
+			}
 		}
 	
 		public boolean equals(Object obj) 
@@ -61,6 +93,8 @@ public class StandardImmutableFieldHashSetTest  extends TestCase
 			
 			return true;
 		}
+		
+		
 		
 		public void verifyMutable()
 		{
@@ -158,30 +192,23 @@ public class StandardImmutableFieldHashSetTest  extends TestCase
 		
 		static public class Builder
 		{
-			private DummyObject obj;
+			private SetTestObject obj;
 			
 			public Builder()
 			{
-				obj = new DummyObject(this);
+				obj = new SetTestObject(this);
 			}
 			
 			public void add(String el)
 			{
-				obj.assertNotComplete();
 				obj.set.add(el);
 			}
 			
-			public DummyObject create()
+			public SetTestObject create()
 			{
-				obj.assertNotComplete();
-				
-				obj.complete();
-				
-				return obj;
+				return obj.deepClone();
 			}
 		}
-		
-		
 	}
 	
 	
@@ -196,7 +223,45 @@ public class StandardImmutableFieldHashSetTest  extends TestCase
         return new TestSuite( StandardImmutableFieldHashSetTest.class );
     }
     
-    public void testCopyConstructor()
+    public void testCollections()
+    {
+    	ObjectReader.registerType(SetTestObject.TYPE_NAME, SetTestObject.class);
+    	testCollection(FieldHashSet.class, true);
+    }
+    
+    public void testCollection(Class c, boolean print_output)
+    {
+    	testImmutability(c);
+    	testBuilder(c, print_output);
+    }
+    
+    public void testImmutability(Class c)
+    {
+    	SetTestObject.field_class_to_test = c;
+    	new SetTestObject();
+    }
+    
+    public void testBuilder(Class c, boolean print_output)
+    {
+    	SetTestObject.field_class_to_test = c;
+    	SetTestObject.Builder builder = new SetTestObject.Builder();
+    	
+    	builder.add("foo");
+    	builder.add("bar");
+    	builder.add("jimmutable");
+    	
+    	
+    	
+    	SetTestObject obj = builder.create();
+    	obj.verifyImmutable();
+    	
+    	if ( print_output )
+    	{
+    		//System.out.println(obj.toJavaCode(Format.JSON_PRETTY_PRINT, "obj"));
+    	}
+    }
+    
+   /* public void testCopyConstructor()
     {
     	new DummyObject();
     }
@@ -236,7 +301,7 @@ public class StandardImmutableFieldHashSetTest  extends TestCase
     	assert(obj.set.contains("foo"));
     	
     	obj.verifyImmutable();
-    }
+    }*/
 	
    
    

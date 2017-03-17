@@ -1,10 +1,12 @@
 package org.kane.base.serialization.writer;
 
+import java.io.StringWriter;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
 import org.kane.base.serialization.FieldName;
+import org.kane.base.serialization.SerializeException;
 import org.kane.base.serialization.TypeName;
 import org.kane.base.serialization.Validator;
 
@@ -139,4 +141,41 @@ public class ObjectWriter
 	public Format getSimpleFormat() { return writer.getSimpleFormat(); }
 	public boolean isJSON() { return writer.isJSON(); }
 	public boolean isXML() { return writer.isXML(); }
+	
+	static public String serialize(Format format, Object obj)
+	{
+		try
+		{
+			if ( obj == null )
+			{
+				obj = NullPrimative.NULL_PRIMATIVE;
+			}
+			
+			StringWriter writer = new StringWriter();
+			LowLevelWriter low_level_writer = new LowLevelWriter(format,writer);
+			
+			if ( obj instanceof String )
+			{
+				low_level_writer.writeStringObject((String)obj);
+			}
+			else
+			{
+				low_level_writer.writeObject(obj);
+			}
+			
+			low_level_writer.close();
+			
+			writer.close();
+			
+			return writer.toString();
+		}
+		catch(SerializeException e)
+		{
+			throw e;
+		}
+		catch(Exception e2)
+		{
+			throw new SerializeException("Error while writing object: "+e2.getMessage(), e2);
+		}
+	}
 }

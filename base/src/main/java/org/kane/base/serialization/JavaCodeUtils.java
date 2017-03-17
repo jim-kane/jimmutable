@@ -136,7 +136,7 @@ public class JavaCodeUtils
 	{
 		Validator.notNull(obj);
 		
-		String xml = obj.toXML(true,null);
+		String xml = obj.toXML(true);
 		if ( xml == null ) throw new ValidationException("Obj did not serialize to valid XML");
 		
 		return toJavaStringLiteral(xml);

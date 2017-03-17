@@ -6,7 +6,6 @@ import org.kane.base.serialization.reader.ObjectReader;
 import org.kane.base.serialization.reader.ReadTree;
 import org.kane.base.serialization.writer.Format;
 import org.kane.base.serialization.writer.ObjectWriter;
-import org.kane.base.serialization.writer.ObjectWriterUtils;
 import org.kane.base.serialization.writer.StandardWritable;
 
 import junit.framework.Test;
@@ -129,7 +128,7 @@ public class ObjectFieldReadWriteTest extends TestCase
     private void testObject(Format format, Object obj, Format print_diagnostics_in_format)
     {
     	
-    	String serialized_data = ObjectWriterUtils.writeObject(format, obj, null);
+    	String serialized_data = ObjectWriter.serialize(format, obj);
     	assert(serialized_data != null);
     	
     	if ( format == print_diagnostics_in_format )
@@ -137,7 +136,7 @@ public class ObjectFieldReadWriteTest extends TestCase
     		System.out.println(serialized_data);
     	}
     	
-    	Object from_reader = ObjectReader.readDocument(serialized_data, null);
+    	Object from_reader = ObjectReader.readDocument(serialized_data);
     	
     	assertEquals(obj,from_reader);
     }

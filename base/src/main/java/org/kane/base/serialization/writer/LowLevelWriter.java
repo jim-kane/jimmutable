@@ -5,14 +5,15 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.Base64;
-import java.util.Map;
 
 import javax.xml.namespace.QName;
 
 import org.kane.base.serialization.FieldName;
 import org.kane.base.serialization.SerializeException;
+import org.kane.base.serialization.StandardObject;
 import org.kane.base.serialization.TypeName;
 import org.kane.base.serialization.Validator;
+import org.kane.base.serialization.reader.ObjectReader;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -21,9 +22,8 @@ import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 
 public class LowLevelWriter 
 {
-	private Format format; // required
-	
-	private JsonGenerator gen;
+	private Format format;  // required, the format being written,
+	private JsonGenerator gen; // required, the JSON geneator
 	
 	public LowLevelWriter(Format format, OutputStream out)
 	{
@@ -90,7 +90,7 @@ public class LowLevelWriter
 			if ( isXML() )
 			{
 				// in XML, we should basically never get there (as nulls are simply "omitted" from the output).  
-				// But, if some weird way, we wind up here, we need to explictly write the null object out...
+				// But, if some weird way, we wind up here, we need to explicitly write the null object out...
 				
 				gen.writeStartObject();
 				
@@ -165,8 +165,6 @@ public class LowLevelWriter
 		return Base64.getEncoder().encodeToString(str.getBytes());
 	}
 	
-	
-	
 	public void writeBoolean(boolean value)
 	{
 		try
@@ -207,7 +205,7 @@ public class LowLevelWriter
 		}
 		catch(Exception e)
 		{
-			throw new SerializeException("Serialization error", e);
+			throw new SerializeException("Low level write serialization error", e);
 		}
 	}
 	
@@ -219,7 +217,7 @@ public class LowLevelWriter
 		}
 		catch(Exception e)
 		{
-			throw new SerializeException("Serialization error", e);
+			throw new SerializeException("Low level write serialization error", e);
 		}
 	}
 	
@@ -231,7 +229,7 @@ public class LowLevelWriter
 		}
 		catch(Exception e)
 		{
-			throw new SerializeException("Serialization error", e);
+			throw new SerializeException("Low level write serialization error", e);
 		}
 	}
 	
@@ -243,7 +241,7 @@ public class LowLevelWriter
 		}
 		catch(Exception e)
 		{
-			throw new SerializeException("Serialization error", e);
+			throw new SerializeException("Low level write serialization error", e);
 		}
 	}
 	
@@ -255,7 +253,7 @@ public class LowLevelWriter
 		}
 		catch(Exception e)
 		{
-			throw new SerializeException("Serialization error", e);
+			throw new SerializeException("Low level write serialization error", e);
 		}
 	}
 	
@@ -287,7 +285,7 @@ public class LowLevelWriter
 		}
 		catch(Exception e)
 		{
-			throw new SerializeException("Serialization error", e);
+			throw new SerializeException("Low level write serialization error", e);
 		}
 	}
 	
@@ -314,8 +312,19 @@ public class LowLevelWriter
 				{
 					StandardWritable std = (StandardWritable)obj;
 					
+					TypeName type_name = std.getTypeName();
+					
+					if ( !ObjectReader.isTypeRegistered(type_name) )
+					{
+						System.err.println(String.format("WARNING! An object, %s, with type name %s is being written, but it is not registered with ObjectReader (meaning you will not be able to read/clone it)", 
+								obj.getClass().getSimpleName(), 
+								type_name.getSimpleName()));
+						
+						System.err.println("Register the class by calling ObjectReader.registerType");
+					}
+					
 					writeFieldName(FieldName.FIELD_NAME_TYPE_HINT);
-					writeString(std.getTypeName().getSimpleName());
+					writeString(type_name.getSimpleName());
 					
 					std.write(new ObjectWriter(this));
 				}
@@ -422,32 +431,8 @@ public class LowLevelWriter
 		}
 		catch(Exception e)
 		{
-			throw new SerializeException("Serialization error", e);
+			throw new SerializeException("Low level write serialization error", e);
 		}
-	}
-	
-	
-	
-	public void beginDocument(TypeName type) throws IOException
-	{
-		try
-		{
-			Validator.notNull(type);
-			
-			gen.writeStartObject();
-			gen.writeStringField(FieldName.FIELD_NAME_TYPE_HINT.getSimpleName(), type.getSimpleName());
-		}
-		catch(Exception e)
-		{
-			throw new SerializeException("Serialization error", e);
-		}
-	}
-	
-	
-	public void endDocument() throws IOException
-	{
-		gen.writeEndObject();
-		gen.close();
 	}
 	
 	public void openArray()
@@ -458,7 +443,7 @@ public class LowLevelWriter
 		}
 		catch(Exception e)
 		{
-			throw new SerializeException("Serialization error", e);
+			throw new SerializeException("Low level write serialization error", e);
 		}
 	}
 	
@@ -470,7 +455,7 @@ public class LowLevelWriter
 		}
 		catch(Exception e)
 		{
-			throw new SerializeException("Serialization error", e);
+			throw new SerializeException("Low level write serialization error", e);
 		}
 	}
 	
@@ -482,7 +467,7 @@ public class LowLevelWriter
 		}
 		catch(Exception e)
 		{
-			throw new SerializeException("Serialization error", e);
+			throw new SerializeException("Low level write serialization error", e);
 		}
 	}
 	
@@ -494,7 +479,7 @@ public class LowLevelWriter
 		}
 		catch(Exception e)
 		{
-			throw new SerializeException("Serialization error", e);
+			throw new SerializeException("Low level write serialization error", e);
 		}
 	}
 	

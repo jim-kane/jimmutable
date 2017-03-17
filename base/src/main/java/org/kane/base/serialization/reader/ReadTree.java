@@ -303,7 +303,7 @@ public class ReadTree implements Iterable<ReadTree>
 		}
 	}
 	
-	public Object asObject(Object default_value)
+	public Object asObject(Object default_value) throws SerializeException
 	{
 		// Special handling for null fields
 		if ( !hasChildren() && !hasValue() )
@@ -379,13 +379,22 @@ public class ReadTree implements Iterable<ReadTree>
 				return ret;
 			}
 			
-			return default_value; // unknown primative type? (should not be possible)
+			return default_value; // unknown primitive type? (should not be possible)
 		}
 		
-		if ( !hasTypeHint() ) return default_value;
+		TypeName type_name = getOptionalTypeHint(null);
 		
-		Class c = ObjectReader.standard_object_types.get(getOptionalTypeHint(null)); // type hint can't be null, because hasTypeHint is check above...
+		if ( type_name == null )
+			throw new SerializeException("Attempt to read object, but not a primative and not type hint present");
 		
+		Class c = ObjectReader.standard_object_types.get(type_name); 
+		
+		if ( c == null )
+		{
+			throw new SerializeException(String.format("The type name %s is not registered.  Register with ObjectReader.registerType",type_name.getSimpleName()));
+		}
+		
+		// Standard object converter...
 		if ( c != null )
 		{
 			try
@@ -407,7 +416,6 @@ public class ReadTree implements Iterable<ReadTree>
 			}
 		}
 		
-		// Standard object converter...
 		return default_value;
 	}
 	
