@@ -96,14 +96,14 @@ abstract public class WriteAs
 		{
 			if ( !(obj instanceof Map.Entry) ) return;
 			
-			writer.startObject(field_name, TypeName.TYPE_NAME_MAP_ENTRY);
+			writer.openObject(field_name, TypeName.TYPE_NAME_MAP_ENTRY);
 			{
 				Map.Entry entry = (Map.Entry)obj;
 				
 				key_type.writeObject(writer, FieldName.FIELD_KEY, entry.getKey());
 				value_type.writeObject(writer, FieldName.FIELD_VALUE, entry.getValue());
 			
-				writer.endObject();
+				writer.closeObject();
 			}
 		}
 	}

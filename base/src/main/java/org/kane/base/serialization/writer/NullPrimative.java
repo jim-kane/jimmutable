@@ -3,6 +3,12 @@ package org.kane.base.serialization.writer;
 import org.kane.base.serialization.FieldName;
 import org.kane.base.serialization.TypeName;
 
+/**
+ * A StandardWritable that will write a null in complete object encoding
+ * 
+ * @author jim.kane
+ *
+ */
 public class NullPrimative implements StandardWritable 
 {
 	static public final NullPrimative NULL_PRIMATIVE = new NullPrimative();
