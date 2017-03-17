@@ -43,9 +43,9 @@ public class ObjectReader implements Iterable<ObjectReader>
 		}
 		
 		// The base 64 primative values are handled quite gently...
-		if ( field_name.equals(FieldName.FIELD_NAME_PRIMATIVE_VALUE_BASE64) )
+		if ( field_name.equals(FieldName.FIELD_NAME_PRIMITIVE_VALUE_BASE64) )
 		{
-			field_name = FieldName.FIELD_NAME_PRIMATIVE_VALUE;
+			field_name = FieldName.FIELD_NAME_PRIMITIVE_VALUE;
 			this.value = new String(Base64.getDecoder().decode(value));
 		}
 	}
@@ -76,7 +76,7 @@ public class ObjectReader implements Iterable<ObjectReader>
 		
 		if ( isPrimativeObject() )
 		{
-			ObjectReader value = find(FieldName.FIELD_NAME_PRIMATIVE_VALUE, null);
+			ObjectReader value = find(FieldName.FIELD_NAME_PRIMITIVE_VALUE, null);
 			
 			if ( value == null ) return default_value;
 			

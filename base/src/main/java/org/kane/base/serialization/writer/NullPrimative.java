@@ -22,7 +22,7 @@ public class NullPrimative implements StandardWritable
 
 	public void write(ObjectWriter writer) 
 	{
-		writer.writeNull(FieldName.FIELD_NAME_PRIMATIVE_VALUE);
+		writer.writeNull(FieldName.FIELD_NAME_PRIMITIVE_VALUE);
 	}
 	
 }

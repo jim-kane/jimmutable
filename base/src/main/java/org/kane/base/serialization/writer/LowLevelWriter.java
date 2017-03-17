@@ -134,7 +134,7 @@ public class LowLevelWriter
 				writeFieldName(FieldName.FIELD_NAME_TYPE_HINT);
 				gen.writeString(TypeName.TYPE_NAME_NULL.getSimpleName());
 				
-				writeFieldName(FieldName.FIELD_NAME_PRIMATIVE_VALUE);
+				writeFieldName(FieldName.FIELD_NAME_PRIMITIVE_VALUE);
 				gen.writeNull();
 				
 				gen.writeEndObject();
@@ -376,12 +376,12 @@ public class LowLevelWriter
 			
 			if ( str != null && isBase64Required(str) )
 			{
-				writeFieldName(FieldName.FIELD_NAME_PRIMATIVE_VALUE_BASE64);
+				writeFieldName(FieldName.FIELD_NAME_PRIMITIVE_VALUE_BASE64);
 				gen.writeString(this.base64EncodeString(str));
 			}
 			else
 			{
-				writeFieldName(FieldName.FIELD_NAME_PRIMATIVE_VALUE);
+				writeFieldName(FieldName.FIELD_NAME_PRIMITIVE_VALUE);
 				
 				if ( str == null ) 
 					gen.writeNull();
@@ -453,7 +453,7 @@ public class LowLevelWriter
 					writeFieldName(FieldName.FIELD_NAME_TYPE_HINT);
 					writeString(TypeName.TYPE_NAME_BOOLEAN.getSimpleName());
 					
-					writeFieldName(FieldName.FIELD_NAME_PRIMATIVE_VALUE);
+					writeFieldName(FieldName.FIELD_NAME_PRIMITIVE_VALUE);
 					writeBoolean(value.booleanValue());
 				}
 				
@@ -464,7 +464,7 @@ public class LowLevelWriter
 					writeFieldName(FieldName.FIELD_NAME_TYPE_HINT);
 					writeString(TypeName.TYPE_NAME_CHAR.getSimpleName());
 					
-					writeFieldName(FieldName.FIELD_NAME_PRIMATIVE_VALUE);
+					writeFieldName(FieldName.FIELD_NAME_PRIMITIVE_VALUE);
 					writeString(value.toString());
 				}
 				
@@ -475,7 +475,7 @@ public class LowLevelWriter
 					writeFieldName(FieldName.FIELD_NAME_TYPE_HINT);
 					writeString(TypeName.TYPE_NAME_BYTE.getSimpleName());
 					
-					writeFieldName(FieldName.FIELD_NAME_PRIMATIVE_VALUE);
+					writeFieldName(FieldName.FIELD_NAME_PRIMITIVE_VALUE);
 					writeByte(value.byteValue());
 				}
 				
@@ -486,7 +486,7 @@ public class LowLevelWriter
 					writeFieldName(FieldName.FIELD_NAME_TYPE_HINT);
 					writeString(TypeName.TYPE_NAME_SHORT.getSimpleName());
 					
-					writeFieldName(FieldName.FIELD_NAME_PRIMATIVE_VALUE);
+					writeFieldName(FieldName.FIELD_NAME_PRIMITIVE_VALUE);
 					writeInt(value.shortValue());
 				}
 				
@@ -497,7 +497,7 @@ public class LowLevelWriter
 					writeFieldName(FieldName.FIELD_NAME_TYPE_HINT);
 					writeString(TypeName.TYPE_NAME_INT.getSimpleName());
 					
-					writeFieldName(FieldName.FIELD_NAME_PRIMATIVE_VALUE);
+					writeFieldName(FieldName.FIELD_NAME_PRIMITIVE_VALUE);
 					writeInt(value.intValue());
 				}
 				
@@ -508,7 +508,7 @@ public class LowLevelWriter
 					writeFieldName(FieldName.FIELD_NAME_TYPE_HINT);
 					writeString(TypeName.TYPE_NAME_LONG.getSimpleName());
 					
-					writeFieldName(FieldName.FIELD_NAME_PRIMATIVE_VALUE);
+					writeFieldName(FieldName.FIELD_NAME_PRIMITIVE_VALUE);
 					writeLong(value.longValue());
 				}
 				
@@ -519,7 +519,7 @@ public class LowLevelWriter
 					writeFieldName(FieldName.FIELD_NAME_TYPE_HINT);
 					writeString(TypeName.TYPE_NAME_FLOAT.getSimpleName());
 					
-					writeFieldName(FieldName.FIELD_NAME_PRIMATIVE_VALUE);
+					writeFieldName(FieldName.FIELD_NAME_PRIMITIVE_VALUE);
 					writeFloat(value.floatValue());
 				}
 				
@@ -530,7 +530,7 @@ public class LowLevelWriter
 					writeFieldName(FieldName.FIELD_NAME_TYPE_HINT);
 					writeString(TypeName.TYPE_NAME_DOUBLE.getSimpleName());
 					
-					writeFieldName(FieldName.FIELD_NAME_PRIMATIVE_VALUE);
+					writeFieldName(FieldName.FIELD_NAME_PRIMITIVE_VALUE);
 					writeDouble(value.doubleValue());
 				}
 				

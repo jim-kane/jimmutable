@@ -8,13 +8,65 @@ import org.kane.base.serialization.StandardObject;
 import org.kane.base.serialization.TypeName;
 import org.kane.base.utils.Validator;
 
+/**
+ * A "WriteAs" in an instruction write an Object in a certain way
+ * 
+ * For example, imagine that you are serializing a collection, List<Float> foo.
+ * Do you want to write:
+ * 
+ * foo : [0.2, 1.7, 0.8]
+ * 
+ * or
+ * 
+ * foo : ["0.2", "1.7", "0.8"]
+ * 
+ * or
+ * 
+ * foo : [ { type_hint: "float", primitive_value: 0.2 }, { type_hint: "float",
+ * primitive_value: 1.7 }, { type_hint: "float", primitive_value: 0.8 } ]
+ * 
+ * (The above are WriteAs.NUMBER, WriteAs.STRING, and WriteAs.OBJECT,
+ * respectively)
+ * 
+ * The issue of the write as type comes to the for when trying to make the
+ * output easy to work with in JavaScript, and when dealing with Collections and
+ * Maps of mixed primitive types.
+ * 
+ * @author jim.kane
+ *
+ */
 abstract public class WriteAs 
 {
+	/**
+	 * Write as an object (complete object form, with type_hint etc.)
+	 * 
+	 * This is the WriteAs to use for StandardObject(s) and, by extension,
+	 * StandardImmutableObject(s)
+	 */
 	static public final WriteAs OBJECT = new WriteAsObject();
+	
+	/**
+	 * Write a string (primitive, when possible)
+	 */
 	static public final WriteAs STRING = new WriteAsString();
+	
+	/**
+	 * Write as number (will be read by JavaScript code as a Number)
+	 */
 	static public final WriteAs NUMBER = new WriteAsNumber();
+	
+	/**
+	 * Write as a boolean (will be read by JavaScritp code as a boolean)
+	 */
 	static public final WriteAs BOOLEAN = new WriteAsBoolean();
 
+	/**
+	 * Write an object in the proper format
+	 * 
+	 * @param writer The writer to write obj to
+	 * @param field_name The field name to write obj to
+	 * @param obj The object to write
+	 */
 	abstract public void writeObject(ObjectWriter writer, FieldName field_name, Object obj);
 	
 	static private class WriteAsObject extends WriteAs
