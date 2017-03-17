@@ -1,7 +1,6 @@
 package org.kane.base.serialization;
 
 import org.kane.base.serialization.reader.ObjectReader;
-import org.kane.base.serialization.writer.Format;
 import org.kane.base.serialization.writer.ObjectWriter;
 
 import junit.framework.Test;

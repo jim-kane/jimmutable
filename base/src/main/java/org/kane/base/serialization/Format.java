@@ -1,4 +1,4 @@
-package org.kane.base.serialization.writer;
+package org.kane.base.serialization;
 
 public enum Format 
 {

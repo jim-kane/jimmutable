@@ -3,7 +3,6 @@ package org.kane.base.serialization;
 import java.util.Objects;
 
 import org.kane.base.serialization.reader.ObjectReader;
-import org.kane.base.serialization.writer.Format;
 import org.kane.base.serialization.writer.ObjectWriter;
 import org.kane.base.serialization.writer.StandardWritable;
 

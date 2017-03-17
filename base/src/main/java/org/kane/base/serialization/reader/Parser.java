@@ -7,7 +7,7 @@ import java.util.Stack;
 
 import org.kane.base.exceptions.SerializeException;
 import org.kane.base.serialization.FieldName;
-import org.kane.base.serialization.writer.Format;
+import org.kane.base.serialization.Format;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
