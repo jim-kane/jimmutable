@@ -18,7 +18,7 @@ import org.kane.base.serialization.writer.WriteAs;
 
 final public class BookDeckSet extends StandardImmutableSetDeck<BookDeckSet, Book>
 {
-	static private final TypeName TYPE_NAME = new TypeName("jimmutable.examples.BookDeckSet");
+	static public final TypeName TYPE_NAME = new TypeName("jimmutable.examples.BookDeckSet");
 	static private final FieldName FIELD_BOOKS = new FieldName("books");
 	
 	private FieldSet<Book> books;

@@ -18,7 +18,7 @@ import org.kane.base.serialization.writer.WriteAs;
 
 final public class BookDeckMap extends StandardImmutableMapDeck<BookDeckMap, String, Book>
 {
-	static private final TypeName TYPE_NAME = new TypeName("jimmutable.examples.BookDeckMap");
+	static public final TypeName TYPE_NAME = new TypeName("jimmutable.examples.BookDeckMap");
 	static private final FieldName FIELD_BOOKS = new FieldName("books");
 	
 	private FieldMap<String,Book> books;

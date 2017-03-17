@@ -16,11 +16,12 @@ import org.kane.base.serialization.Validator;
 import org.kane.base.serialization.reader.ReadAs;
 import org.kane.base.serialization.reader.ReadTree;
 import org.kane.base.serialization.writer.ObjectWriter;
+import org.kane.base.serialization.writer.WriteAs;
 
 
 final public class Book extends StandardImmutableObject<Book>
 {
-	static private final TypeName TYPE_NAME = new TypeName("jimmutable.examples.Book");
+	static public final TypeName TYPE_NAME = new TypeName("jimmutable.examples.Book");
 	
 	static private final FieldName FIELD_TITLE = new FieldName("title");
 	static private final FieldName FIELD_PAGE_COUNT = new FieldName("page_count");
@@ -63,7 +64,7 @@ final public class Book extends StandardImmutableObject<Book>
 		writer.writeInt(FIELD_PAGE_COUNT, getSimplePageCount());
 		writer.writeString(FIELD_ISBN, getOptionalISBN(null));
 		writer.writeString(FIELD_BINDING, getSimpleBinding().toString());
-		writer.writeObject(FIELD_AUTHORS, getSimpleAuthors());
+		writer.writeCollection(FIELD_AUTHORS, getSimpleAuthors(), WriteAs.STRING);
 	}
 	
 	// copy constructor...

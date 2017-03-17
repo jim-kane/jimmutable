@@ -49,6 +49,20 @@ public class ObjectReader
 		standard_object_types.put(type, c);
 	}
 	
+	static public void registerTypeName(Class c)
+	{
+		try
+		{
+			TypeName type_name = (TypeName)c.getField("TYPE_NAME").get(null);
+			registerType(type_name,c);
+		}
+		catch(Exception e)
+		{
+			System.err.println(String.format("Unable to register a type name for %s, could not read static public field %s.TYPE_NAME", c.getSimpleName(),c.getSimpleName()));
+			e.printStackTrace();
+		}
+	}
+	
 	static public boolean isTypeRegistered(TypeName type)
 	{
 		if ( type == null ) return false;

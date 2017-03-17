@@ -17,7 +17,7 @@ import org.kane.base.serialization.writer.WriteAs;
 
 final public class BookDeckList extends StandardImmutableListDeck<BookDeckList, Book>
 {
-	static private final TypeName TYPE_NAME = new TypeName("jimmutable.examples.BookDeckList");
+	static public final TypeName TYPE_NAME = new TypeName("jimmutable.examples.BookDeckList");
 	static private final FieldName FIELD_BOOKS = new FieldName("books");
 	
 	private FieldList<Book> books;

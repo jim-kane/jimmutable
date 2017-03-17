@@ -391,7 +391,7 @@ public class ReadTree implements Iterable<ReadTree>
 		
 		if ( c == null )
 		{
-			throw new SerializeException(String.format("The type name %s is not registered.  Register with ObjectReader.registerType",type_name.getSimpleName()));
+			throw new SerializeException(String.format("The type name %s is not registered.  Register with ObjectReader.registerTypeName",type_name.getSimpleName()));
 		}
 		
 		// Standard object converter...
