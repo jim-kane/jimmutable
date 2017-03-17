@@ -8,15 +8,15 @@ import java.util.Objects;
 import org.kane.base.immutability.StandardImmutableObject;
 import org.kane.base.immutability.collections.FieldArrayList;
 import org.kane.base.immutability.collections.FieldList;
-import org.kane.base.serialization.Comparison;
 import org.kane.base.serialization.FieldName;
-import org.kane.base.serialization.Normalizer;
 import org.kane.base.serialization.TypeName;
-import org.kane.base.serialization.Validator;
 import org.kane.base.serialization.reader.ReadAs;
 import org.kane.base.serialization.reader.ObjectReader;
 import org.kane.base.serialization.writer.ObjectWriter;
 import org.kane.base.serialization.writer.WriteAs;
+import org.kane.base.utils.Comparison;
+import org.kane.base.utils.Normalizer;
+import org.kane.base.utils.Validator;
 
 
 final public class Book extends StandardImmutableObject<Book>

@@ -9,7 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import org.kane.base.serialization.Validator;
+import org.kane.base.utils.Validator;
 
 final public class OperationPool extends OperationRunnable
 {

@@ -1,4 +1,4 @@
-package org.kane.base.serialization;
+package org.kane.base.utils;
 
 /**
  * Various static methods useful when normalizing objects

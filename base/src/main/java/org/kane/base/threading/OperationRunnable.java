@@ -4,8 +4,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import org.kane.base.serialization.Optional;
-import org.kane.base.serialization.Validator;
+import org.kane.base.utils.Optional;
+import org.kane.base.utils.Validator;
 
 /**
  * An abstract base class used to provide uniform behavior of runnable(s).

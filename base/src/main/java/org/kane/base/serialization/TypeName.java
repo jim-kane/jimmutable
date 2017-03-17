@@ -4,6 +4,7 @@ import org.kane.base.exceptions.ValidationException;
 import org.kane.base.immutability.StandardImmutableObject;
 import org.kane.base.serialization.reader.ObjectReader;
 import org.kane.base.serialization.writer.ObjectWriter;
+import org.kane.base.utils.Validator;
 
 public class TypeName extends StandardImmutableObject
 {

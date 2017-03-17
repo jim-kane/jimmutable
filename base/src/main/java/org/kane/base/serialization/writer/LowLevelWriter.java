@@ -10,8 +10,8 @@ import javax.xml.namespace.QName;
 import org.kane.base.exceptions.SerializeException;
 import org.kane.base.serialization.FieldName;
 import org.kane.base.serialization.TypeName;
-import org.kane.base.serialization.Validator;
 import org.kane.base.serialization.reader.ObjectReader;
+import org.kane.base.utils.Validator;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;

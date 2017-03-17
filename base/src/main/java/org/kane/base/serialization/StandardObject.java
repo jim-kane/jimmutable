@@ -6,6 +6,7 @@ import org.kane.base.serialization.reader.ObjectReader;
 import org.kane.base.serialization.writer.Format;
 import org.kane.base.serialization.writer.ObjectWriter;
 import org.kane.base.serialization.writer.StandardWritable;
+import org.kane.base.utils.Validator;
 
 /**
  * The root for all "standard" objects. All data in the framework,

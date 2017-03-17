@@ -1,4 +1,4 @@
-package org.kane.base.serialization;
+package org.kane.base.utils;
 
 public class Comparison 
 {

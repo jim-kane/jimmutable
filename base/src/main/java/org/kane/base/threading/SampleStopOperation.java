@@ -1,7 +1,7 @@
 package org.kane.base.threading;
 
-import org.kane.base.serialization.Validator;
 import org.kane.base.threading.OperationRunnable.Result;
+import org.kane.base.utils.Validator;
 
 
 /**

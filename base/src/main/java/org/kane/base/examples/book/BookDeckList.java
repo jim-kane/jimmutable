@@ -8,11 +8,11 @@ import org.kane.base.immutability.collections.FieldList;
 import org.kane.base.immutability.decks.StandardImmutableListDeck;
 import org.kane.base.serialization.FieldName;
 import org.kane.base.serialization.TypeName;
-import org.kane.base.serialization.Validator;
 import org.kane.base.serialization.reader.ReadAs;
 import org.kane.base.serialization.reader.ObjectReader;
 import org.kane.base.serialization.writer.ObjectWriter;
 import org.kane.base.serialization.writer.WriteAs;
+import org.kane.base.utils.Validator;
 
 
 final public class BookDeckList extends StandardImmutableListDeck<BookDeckList, Book>

@@ -19,12 +19,12 @@ import org.kane.base.serialization.FieldName;
 import org.kane.base.serialization.JavaCodeUtils;
 import org.kane.base.serialization.StandardObject;
 import org.kane.base.serialization.TypeName;
-import org.kane.base.serialization.Validator;
 import org.kane.base.serialization.reader.ReadAs;
 import org.kane.base.serialization.reader.ObjectReader;
 import org.kane.base.serialization.writer.Format;
 import org.kane.base.serialization.writer.ObjectWriter;
 import org.kane.base.serialization.writer.WriteAs;
+import org.kane.base.utils.Validator;
 
 import junit.framework.Test;
 import junit.framework.TestCase;

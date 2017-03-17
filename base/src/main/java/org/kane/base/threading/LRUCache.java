@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.kane.base.serialization.Validator;
+import org.kane.base.utils.Validator;
 
 
 /**

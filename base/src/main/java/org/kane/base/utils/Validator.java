@@ -1,4 +1,4 @@
-package org.kane.base.serialization;
+package org.kane.base.utils;
 
 import java.util.Collection;
 import java.util.Map;
