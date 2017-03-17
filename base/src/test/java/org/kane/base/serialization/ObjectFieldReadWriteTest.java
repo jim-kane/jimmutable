@@ -3,7 +3,6 @@ package org.kane.base.serialization;
 import java.util.Objects;
 
 import org.kane.base.serialization.reader.ObjectReader;
-import org.kane.base.serialization.reader.ReadTree;
 import org.kane.base.serialization.writer.Format;
 import org.kane.base.serialization.writer.ObjectWriter;
 import org.kane.base.serialization.writer.StandardWritable;
@@ -23,7 +22,7 @@ public class ObjectFieldReadWriteTest extends TestCase
     {
         super( testName );
         
-        ObjectReader.registerType(StringFieldBoundaryTest.TYPE_NAME, StringFieldBoundaryTest.class);
+        ObjectReader.registerTypeName(StringFieldBoundaryTest.class);
     }
 
     /**
@@ -47,7 +46,7 @@ public class ObjectFieldReadWriteTest extends TestCase
 		{
 		}
 		
-		public StringFieldBoundaryTest(ReadTree t) 
+		public StringFieldBoundaryTest(ObjectReader t) 
 		{
 			my_string = t.getString(FIELD_STRING_MY_STRING,null);
 			

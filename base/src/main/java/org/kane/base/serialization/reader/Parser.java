@@ -21,7 +21,7 @@ public class Parser
 	
 	private FieldName last_field_name = FieldName.FIELD_DOCUMENT_ROOT;
 
-	private ReadTree result;
+	private ObjectReader result;
 	
 	private JsonParser json_parser;
 	
@@ -48,11 +48,11 @@ public class Parser
 		result = processObjectTokens(FieldName.FIELD_DOCUMENT_ROOT);
 	}
 	
-	private ReadTree processObjectTokens(FieldName object_field_name) throws Exception
+	private ObjectReader processObjectTokens(FieldName object_field_name) throws Exception
 	{
-		Stack<ReadTree> stack = new Stack<>();
+		Stack<ObjectReader> stack = new Stack<>();
 		
-		ReadTree root = new ReadTree(object_field_name);
+		ObjectReader root = new ObjectReader(object_field_name);
 		stack.push(root);
 		
 		while(true)
@@ -90,7 +90,7 @@ public class Parser
 				
 			case FIELD_NAME:
 				
-				ReadTree new_object = new ReadTree(new FieldName(json_parser.getValueAsString()));
+				ObjectReader new_object = new ObjectReader(new FieldName(json_parser.getValueAsString()));
 				stack.peek().add(new_object);
 				
 				stack.push(new_object);
@@ -121,7 +121,7 @@ public class Parser
 		}
 	}
 	
-	private void processArrayTokens(FieldName array_name, ReadTree parent) throws Exception
+	private void processArrayTokens(FieldName array_name, ObjectReader parent) throws Exception
 	{
 		while(true)
 		{
@@ -160,7 +160,7 @@ public class Parser
 			case VALUE_FALSE:
 				
 				
-				ReadTree value_object = new ReadTree(array_name);
+				ObjectReader value_object = new ObjectReader(array_name);
 				value_object.setValue(json_parser.getValueAsString());
 				
 				parent.add(value_object);
@@ -169,7 +169,7 @@ public class Parser
 				
 			case VALUE_NULL:
 				
-				ReadTree null_object = new ReadTree(array_name);
+				ObjectReader null_object = new ObjectReader(array_name);
 				null_object.setValue(null);
 				
 				parent.add(null_object);
@@ -212,7 +212,7 @@ public class Parser
 	
 	
 	
-	static public ReadTree parse(Reader r) throws SerializeException
+	static public ObjectReader parse(Reader r) throws SerializeException
 	{
 		try
 		{
@@ -233,7 +233,7 @@ public class Parser
 		}
 	}
 	
-	static public ReadTree parse(String str) throws SerializeException
+	static public ObjectReader parse(String str) throws SerializeException
 	{
 		StringReader r = new StringReader(str);
 		return parse(r);

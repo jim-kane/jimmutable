@@ -10,7 +10,7 @@ import org.kane.base.serialization.FieldName;
 import org.kane.base.serialization.TypeName;
 import org.kane.base.serialization.Validator;
 import org.kane.base.serialization.reader.ReadAs;
-import org.kane.base.serialization.reader.ReadTree;
+import org.kane.base.serialization.reader.ObjectReader;
 import org.kane.base.serialization.writer.ObjectWriter;
 import org.kane.base.serialization.writer.WriteAs;
 
@@ -42,9 +42,9 @@ final public class BookDeckList extends StandardImmutableListDeck<BookDeckList, 
 		books = new FieldArrayList();
 	}
 	
-	public BookDeckList(ReadTree t)
+	public BookDeckList(ObjectReader t)
 	{
-		books = t.getCollection(FIELD_BOOKS, new FieldArrayList(), ReadAs.OBJECT, ReadTree.OnError.SKIP);
+		books = t.getCollection(FIELD_BOOKS, new FieldArrayList(), ReadAs.OBJECT, ObjectReader.OnError.SKIP);
 	}
 	
 	public TypeName getTypeName() 

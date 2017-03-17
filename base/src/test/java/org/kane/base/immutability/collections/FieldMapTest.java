@@ -20,9 +20,8 @@ import org.kane.base.serialization.JavaCodeUtils;
 import org.kane.base.serialization.StandardObject;
 import org.kane.base.serialization.TypeName;
 import org.kane.base.serialization.Validator;
-import org.kane.base.serialization.reader.ObjectReader;
 import org.kane.base.serialization.reader.ReadAs;
-import org.kane.base.serialization.reader.ReadTree;
+import org.kane.base.serialization.reader.ObjectReader;
 import org.kane.base.serialization.writer.Format;
 import org.kane.base.serialization.writer.ObjectWriter;
 import org.kane.base.serialization.writer.WriteAs;
@@ -35,7 +34,7 @@ public class FieldMapTest extends TestCase
 {
 	static public class TestObject extends StandardImmutableObject<TestObject>
 	{
-		static private final TypeName TYPE_NAME = new TypeName("jimmutable.test.field_map.dummy_object"); public TypeName getTypeName() { return TYPE_NAME; }
+		static public final TypeName TYPE_NAME = new TypeName("jimmutable.test.field_map.dummy_object"); public TypeName getTypeName() { return TYPE_NAME; }
 		
 		static private final FieldName FIELD_CLASS = new FieldName("field_class");
 		static private final FieldName FIELD_MAP = new FieldName("field_map");
@@ -68,7 +67,7 @@ public class FieldMapTest extends TestCase
 			map = createEmptyMap();
 		}
 		
-		public TestObject(ReadTree t)
+		public TestObject(ObjectReader t)
 		{
 			try 
 			{ 
@@ -81,7 +80,7 @@ public class FieldMapTest extends TestCase
 				assert(false);
 			}
 			
-			map = t.getMap(FIELD_MAP, createEmptyMap(), ReadAs.STRING, ReadAs.INTEGER, ReadTree.OnError.SKIP);
+			map = t.getMap(FIELD_MAP, createEmptyMap(), ReadAs.STRING, ReadAs.INTEGER, ObjectReader.OnError.SKIP);
 		}
 		
 		public void write(ObjectWriter writer) 
@@ -245,7 +244,7 @@ public class FieldMapTest extends TestCase
     
     public void testMaps()
     {
-    	ObjectReader.registerType(TestObject.TYPE_NAME, TestObject.class);
+    	ObjectReader.registerTypeName(TestObject.class);
     	
     	testMap(FieldHashMap.class, true);
     	testMap(FieldConcurrentHashMap.class, true);

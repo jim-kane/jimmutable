@@ -12,9 +12,8 @@ import org.kane.base.immutability.StandardImmutableObject;
 import org.kane.base.serialization.FieldName;
 import org.kane.base.serialization.TypeName;
 import org.kane.base.serialization.Validator;
-import org.kane.base.serialization.reader.ObjectReader;
 import org.kane.base.serialization.reader.ReadAs;
-import org.kane.base.serialization.reader.ReadTree;
+import org.kane.base.serialization.reader.ObjectReader;
 import org.kane.base.serialization.writer.Format;
 import org.kane.base.serialization.writer.ObjectWriter;
 import org.kane.base.serialization.writer.WriteAs;
@@ -27,7 +26,7 @@ public class FieldCollectionTest extends TestCase
 {
 	static public class TestObject extends StandardImmutableObject<TestObject>
 	{
-		static private final TypeName TYPE_NAME = new TypeName("jimmutable.test.field_collection.dummy_object"); public TypeName getTypeName() { return TYPE_NAME; }
+		static public final TypeName TYPE_NAME = new TypeName("jimmutable.test.field_collection.dummy_object"); public TypeName getTypeName() { return TYPE_NAME; }
 		
 		static private final FieldName FIELD_CLASS = new FieldName("field_class");
 		static private final FieldName FIELD_COLLECTION = new FieldName("field_collection");
@@ -66,7 +65,7 @@ public class FieldCollectionTest extends TestCase
 			collection = createEmtpyCollection();
 		}
 		
-		public TestObject(ReadTree t)
+		public TestObject(ObjectReader t)
 		{
 			try 
 			{ 
@@ -79,7 +78,7 @@ public class FieldCollectionTest extends TestCase
 				assert(false);
 			}
 			
-			collection = t.getCollection(FIELD_COLLECTION, createEmtpyCollection(), ReadAs.STRING, ReadTree.OnError.SKIP);
+			collection = t.getCollection(FIELD_COLLECTION, createEmtpyCollection(), ReadAs.STRING, ObjectReader.OnError.SKIP);
 		}
 		
 		public void write(ObjectWriter writer) 
@@ -313,7 +312,7 @@ public class FieldCollectionTest extends TestCase
     
     public void testCollections()
     {
-    	ObjectReader.registerType(TestObject.TYPE_NAME, TestObject.class);
+    	ObjectReader.registerTypeName(TestObject.class);
     	
     	testCollection(FieldArrayList.class, true);
     	testCollection(FieldConcurrentHashSet.class, true);

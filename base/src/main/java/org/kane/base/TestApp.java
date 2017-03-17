@@ -3,7 +3,7 @@ package org.kane.base;
 import java.io.StringReader;
 
 import org.kane.base.serialization.reader.Parser;
-import org.kane.base.serialization.reader.ReadTree;
+import org.kane.base.serialization.reader.ObjectReader;
 import org.kane.base.serialization.writer.Format;
 
 import com.fasterxml.jackson.core.JsonFactory;

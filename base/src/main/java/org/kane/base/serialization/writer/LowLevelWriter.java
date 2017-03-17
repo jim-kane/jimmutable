@@ -1,6 +1,5 @@
 package org.kane.base.serialization.writer;
 
-import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
@@ -10,7 +9,6 @@ import javax.xml.namespace.QName;
 
 import org.kane.base.serialization.FieldName;
 import org.kane.base.serialization.SerializeException;
-import org.kane.base.serialization.StandardObject;
 import org.kane.base.serialization.TypeName;
 import org.kane.base.serialization.Validator;
 import org.kane.base.serialization.reader.ObjectReader;

@@ -14,7 +14,7 @@ import org.kane.base.serialization.Normalizer;
 import org.kane.base.serialization.TypeName;
 import org.kane.base.serialization.Validator;
 import org.kane.base.serialization.reader.ReadAs;
-import org.kane.base.serialization.reader.ReadTree;
+import org.kane.base.serialization.reader.ObjectReader;
 import org.kane.base.serialization.writer.ObjectWriter;
 import org.kane.base.serialization.writer.WriteAs;
 
@@ -47,14 +47,14 @@ final public class Book extends StandardImmutableObject<Book>
 		this.authors = new FieldArrayList<>();
 	}
 	
-	public Book(ReadTree t)
+	public Book(ObjectReader t)
 	{
 		title = t.getString(FIELD_TITLE, null);
 		page_count = t.getInt(FIELD_PAGE_COUNT, -1);
 		isbn = t.getString(FIELD_ISBN, null);
 		binding = BindingType.fromCode(t.getString(FIELD_BINDING, null),null);
 		
-		authors = t.getCollection(FIELD_AUTHORS, new FieldArrayList(), ReadAs.STRING, ReadTree.OnError.SKIP);
+		authors = t.getCollection(FIELD_AUTHORS, new FieldArrayList(), ReadAs.STRING, ObjectReader.OnError.SKIP);
 	}
 	
 	@Override

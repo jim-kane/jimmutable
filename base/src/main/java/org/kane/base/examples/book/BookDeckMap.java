@@ -11,7 +11,7 @@ import org.kane.base.serialization.FieldName;
 import org.kane.base.serialization.TypeName;
 import org.kane.base.serialization.Validator;
 import org.kane.base.serialization.reader.ReadAs;
-import org.kane.base.serialization.reader.ReadTree;
+import org.kane.base.serialization.reader.ObjectReader;
 import org.kane.base.serialization.writer.ObjectWriter;
 import org.kane.base.serialization.writer.WriteAs;
 
@@ -47,9 +47,9 @@ final public class BookDeckMap extends StandardImmutableMapDeck<BookDeckMap, Str
 		complete();
 	}
 	
-	public BookDeckMap(ReadTree t)
+	public BookDeckMap(ObjectReader t)
 	{
-		books = t.getMap(FIELD_BOOKS, new FieldHashMap(), ReadAs.STRING, ReadAs.OBJECT, ReadTree.OnError.SKIP);
+		books = t.getMap(FIELD_BOOKS, new FieldHashMap(), ReadAs.STRING, ReadAs.OBJECT, ObjectReader.OnError.SKIP);
 	}
 	
 	public TypeName getTypeName() 

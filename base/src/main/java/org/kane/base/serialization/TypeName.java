@@ -1,7 +1,7 @@
 package org.kane.base.serialization;
 
 import org.kane.base.immutability.StandardImmutableObject;
-import org.kane.base.serialization.reader.ReadTree;
+import org.kane.base.serialization.reader.ObjectReader;
 import org.kane.base.serialization.writer.ObjectWriter;
 
 public class TypeName extends StandardImmutableObject
@@ -35,7 +35,7 @@ public class TypeName extends StandardImmutableObject
 		complete();
 	}
 	
-	public TypeName(ReadTree t)
+	public TypeName(ObjectReader t)
 	{
 		name = t.getString(FIELD_NAME, null);
 	}
