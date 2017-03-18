@@ -42,5 +42,7 @@ public class BrandCodeTest extends StringableTest
     	assertValid("AMN","AMN");
     	assertValid("amn","AMN");
     	assertValid("gE","GE");
+    	
+    	assertValid("ca_sny","CA_SNY");
     }
 }

@@ -32,8 +32,9 @@ public class BrandCode extends Stringable
 		{
 			if ( ch >= 'A' && ch <= 'Z' ) continue;
 			if ( ch >= '0' && ch <= '9' ) continue;
+			if ( ch == '_' ) continue;
 			
-			throw new ValidationException(String.format("Illegal character \'%c\' in brand code %s.  Only upper case letters and numbers are allowed", ch, getSimpleValue()));
+			throw new ValidationException(String.format("Illegal character \'%c\' in brand code %s.  Only upper case letters, numbers and underscore (_) are allowed", ch, getSimpleValue()));
 		}
 	}
 }
