@@ -76,6 +76,21 @@ abstract public class OperationRunnable implements Runnable
 	}
 	
 	/**
+	 * Get the current running time of the operation
+	 * 
+	 * @param default_value
+	 *            The value to return if the operation has not started yet
+	 *            (hence, no start time)
+	 * @return The current running time
+	 */
+	final public long getOptionalRunTime(long default_value) 
+	{ 
+		if ( !Optional.has(start_time, -1) ) return default_value;
+		return System.currentTimeMillis()-start_time; 
+	}
+	
+	
+	/**
 	 * Get the state of the operation
 	 * 
 	 * @return The state of the operation

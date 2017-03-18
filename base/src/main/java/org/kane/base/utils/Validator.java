@@ -173,6 +173,6 @@ public class Validator
 
 	static public <E extends Enum<E>> void notEqual(Enum<E> one, Enum<E> two)
 	{
-	    if (one != two) throw new ValidationException();
+	    if (one == two) throw new ValidationException();
 	}
 }

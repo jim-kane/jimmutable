@@ -16,6 +16,7 @@ import org.kane.base.utils.Validator;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.util.TokenBuffer;
 import com.fasterxml.jackson.dataformat.xml.XmlFactory;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 
@@ -90,6 +91,20 @@ public class LowLevelWriter
 		{
 			throw new SerializeException("Error creating low level writer", e);
 		}
+	}
+	
+	/**
+	 * Construct a LowLevelWriter that writes to a TokenBuffer
+	 * 
+	 * @param buffer
+	 *            The token buffer to write to
+	 */
+	
+	public LowLevelWriter(TokenBuffer buffer) 
+	{
+		this.format = Format.TOKEN_BUFFER;
+
+		gen = buffer;
 	}
 	
 	/**

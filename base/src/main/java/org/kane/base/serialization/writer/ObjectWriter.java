@@ -1,10 +1,8 @@
 package org.kane.base.serialization.writer;
 
-import java.io.OutputStream;
 import java.io.StringWriter;
 import java.util.Collection;
 import java.util.Map;
-import java.util.Set;
 
 import org.kane.base.exceptions.SerializeException;
 import org.kane.base.immutability.Stringable;
@@ -12,6 +10,8 @@ import org.kane.base.serialization.FieldName;
 import org.kane.base.serialization.Format;
 import org.kane.base.serialization.TypeName;
 import org.kane.base.utils.Validator;
+
+import com.fasterxml.jackson.databind.util.TokenBuffer;
 
 /**
  * A writer used to serialize Objects (supports primitives and objects that
@@ -358,6 +358,50 @@ public class ObjectWriter
 			writer.close();
 			
 			return writer.toString();
+		}
+		catch(SerializeException e)
+		{
+			throw e;
+		}
+		catch(Exception e2)
+		{
+			throw new SerializeException("Error while writing object: "+e2.getMessage(), e2);
+		}
+	}
+	
+	/**
+	 * Serialize an object, return a TokenBuffer
+	 * 
+	 * @param obj
+	 *            The object to serialize (can be null)
+	 *            
+	 * @return obj serialized in the specified format
+	 */
+	static public TokenBuffer serializeToTokenBuffer(Object obj)
+	{
+		try
+		{
+			if ( obj == null )
+			{
+				obj = NullPrimative.NULL_PRIMATIVE;
+			}
+			
+			TokenBuffer ret = new TokenBuffer(null,false);
+			
+			LowLevelWriter low_level_writer = new LowLevelWriter(ret);
+			
+			if ( obj instanceof String )
+			{
+				low_level_writer.writeStringObject((String)obj);
+			}
+			else
+			{
+				low_level_writer.writeObject(obj);
+			}
+			
+			low_level_writer.close();
+			
+			return ret;
 		}
 		catch(SerializeException e)
 		{

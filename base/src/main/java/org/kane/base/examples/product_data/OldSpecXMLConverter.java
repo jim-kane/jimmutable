@@ -3,21 +3,35 @@ package org.kane.base.examples.product_data;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamReader;
 
-import org.kane.base.immutability.collections.FieldArrayList;
-import org.kane.base.immutability.collections.FieldList;
+import org.kane.base.serialization.Format;
 import org.kane.base.serialization.JimmutableTypeNameRegister;
+import org.kane.base.serialization.StandardObject;
+import org.kane.base.serialization.reader.ObjectReader;
+import org.kane.base.serialization.reader.Parser;
+import org.kane.base.small_document.SmallDocumentBulkLoader;
+import org.kane.base.small_document.SmallDocumentReader;
+import org.kane.base.small_document.SmallDocumentSource;
+import org.kane.base.small_document.SmallDocumentWriter;
+import org.kane.base.threading.OperationMonitor;
+import org.kane.base.threading.OperationRunnable;
+import org.kane.base.threading.OperationRunnable.Result;
+
+import com.fasterxml.jackson.databind.util.TokenBuffer;
 
 public class OldSpecXMLConverter 
 {
-	private FieldList<ItemSpecifications> specs = new FieldArrayList();
+	static private final File FILE_TEST_SMALL_OBJECTS = new File("c:\\test_small_objects.dat");
 	
-	public OldSpecXMLConverter(File src) throws Exception
+	public OldSpecXMLConverter(File src, File dest, int max_objects) throws Exception
 	{
+		SmallDocumentWriter out = new SmallDocumentWriter(new FileWriter(dest));
+		
 		XMLInputFactory factory = XMLInputFactory.newInstance();
 
 		XMLStreamReader reader = factory.createXMLStreamReader(new BufferedReader(new FileReader(src)));
@@ -27,7 +41,11 @@ public class OldSpecXMLConverter
 		
 		String brand = null, pn = null;
 		
-		while(reader.hasNext())
+		int object_count = 0;
+		
+		long t1 = System.currentTimeMillis();
+		
+		outer_loop: while(reader.hasNext())
 		{
 			int event = reader.next();
 			
@@ -55,10 +73,21 @@ public class OldSpecXMLConverter
 				switch(reader.getLocalName().toLowerCase())
 				{
 				case "product_specs":
-					try { specs.add(builder.create()); } catch(Exception e) {}
+					try 
+					{ 
+						out.writeDocument(builder.create().serialize(Format.JSON));
+						object_count++;
+						
+						if ( object_count > max_objects ) break outer_loop;
+						
+						if (object_count % 1_000 == 0 ) 
+							System.out.println(String.format("%,d in %,d ms",object_count, System.currentTimeMillis()-t1));
+					} 
+					catch(Exception e) 
+					{
+						
+					}
 					
-					if ( specs.size() % 1_000 == 0 ) 
-						System.out.println(String.format("%,d",specs.size()));
 					
 					break;
 				case "product_data": 
@@ -89,11 +118,121 @@ public class OldSpecXMLConverter
 				}
 			}
 		}
+		
+		out.close();
+	}
+	
+	static public void timeReadSmallDocumentOnly() throws Exception
+	{
+		System.out.println("Timing the reading of the small documents only");
+		
+		SmallDocumentReader r = new SmallDocumentReader(new FileReader(FILE_TEST_SMALL_OBJECTS));
+		
+		long t1 = System.currentTimeMillis();
+		
+		int document_count = 0;
+		
+		while(r.readNextDocument() != SmallDocumentSource.State.NO_MORE_DOCUMENTS )
+		{
+			String doc = r.getCurrentDocument(null);
+			document_count++;
+			
+			if ( document_count % 1_000 == 0 )
+				System.out.println(String.format("%,d in %,d ms",document_count, System.currentTimeMillis()-t1));
+		}
+		
+		System.out.println();
+		
+		System.out.println(String.format("Finished! %,d in %,d ms",document_count, System.currentTimeMillis()-t1));
+	}
+	
+	static public void testParseTimeOnly() throws Exception
+	{
+		System.out.println("Timing the parsing of the small documents into ObjectReader(s)");
+		
+		SmallDocumentReader r = new SmallDocumentReader(new FileReader(FILE_TEST_SMALL_OBJECTS));
+		
+		long t1 = System.currentTimeMillis();
+		
+		int document_count = 0;
+		
+		while(r.readNextDocument() != SmallDocumentSource.State.NO_MORE_DOCUMENTS )
+		{
+			String doc = r.getCurrentDocument(null);
+			
+			ObjectReader obj_reader = Parser.parse(doc);
+			
+			document_count++;
+			
+			if ( document_count % 1_000 == 0 )
+				System.out.println(String.format("%,d in %,d ms",document_count, System.currentTimeMillis()-t1));
+		}
+		
+		System.out.println();
+		
+		System.out.println(String.format("Finished! %,d in %,d ms",document_count, System.currentTimeMillis()-t1));
+	}
+	
+	static public void testReadObjects() throws Exception
+	{
+		System.out.println("Timing the reading of objects");
+		
+		SmallDocumentReader r = new SmallDocumentReader(new FileReader(FILE_TEST_SMALL_OBJECTS));
+		
+		long t1 = System.currentTimeMillis();
+		
+		int document_count = 0;
+		
+		while(r.readNextDocument() != SmallDocumentSource.State.NO_MORE_DOCUMENTS )
+		{
+			String doc = r.getCurrentDocument(null);
+			
+			ItemSpecifications specs = (ItemSpecifications)StandardObject.deserialize(doc);
+			
+			document_count++;
+			
+			if ( document_count % 1_000 == 0 )
+				System.out.println(String.format("%,d in %,d ms",document_count, System.currentTimeMillis()-t1));
+		}
+		
+		System.out.println();
+		
+		System.out.println(String.format("Finished! %,d in %,d ms",document_count, System.currentTimeMillis()-t1));
+	}
+	
+	static private class MyListener implements SmallDocumentBulkLoader.Listener, OperationMonitor
+	{
+		private int object_count = 0;
+		
+		public void onObjectLoaded(StandardObject object) 
+		{
+			object_count++;
+		}
+
+		
+		public void onOperationMonitorHeartbeat(OperationRunnable runnable) 
+		{
+			System.out.println(String.format("Loaded %,d objects in %,d ms",object_count, runnable.getOptionalRunTime(0)));
+		}
+	}
+	
+	static public void testMultiThreadLoad() throws Exception
+	{
+		MyListener listener = new MyListener();
+		
+		SmallDocumentBulkLoader loader = new SmallDocumentBulkLoader(new FileReader(FILE_TEST_SMALL_OBJECTS),listener);
+		
+		OperationRunnable.executeWithMonitor(loader, 500, listener, Result.SUCCESS);
+		
 	}
 	
 	static public void main(String args[]) throws Exception
 	{
 		JimmutableTypeNameRegister.registerAllTypes();
-		new OldSpecXMLConverter(new File("c:\\spec_data_small.xml"));
+		//new OldSpecXMLConverter(new File("c:\\spec_data_small.xml"), FILE_TEST_SMALL_OBJECTS, 100_000);
+		
+		
+		testMultiThreadLoad();
 	}
+	
 }

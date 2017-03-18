@@ -5,6 +5,7 @@ import org.kane.base.immutability.collections.Field;
 import org.kane.base.serialization.Format;
 import org.kane.base.serialization.StandardObject;
 import org.kane.base.serialization.reader.ObjectReader;
+import org.kane.base.serialization.writer.ObjectWriter;
 
 /**
  * An abstract base class for {@link StandardObject standard} objects
@@ -86,6 +87,6 @@ abstract public class StandardImmutableObject<T extends StandardImmutableObject<
 	 */
 	protected T deepMutableCloneForBuilder()
 	{
-		return (T)ObjectReader.deserialize(serialize(Format.XML), false);
+		return (T)ObjectReader.deserialize(ObjectWriter.serializeToTokenBuffer(this), false);
 	}
 }

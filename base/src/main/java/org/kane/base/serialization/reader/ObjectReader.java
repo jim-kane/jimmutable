@@ -15,6 +15,8 @@ import org.kane.base.serialization.StandardObject;
 import org.kane.base.serialization.TypeName;
 import org.kane.base.utils.Validator;
 
+import com.fasterxml.jackson.databind.util.TokenBuffer;
+
 
 public class ObjectReader implements Iterable<ObjectReader>
 {
@@ -584,6 +586,18 @@ public class ObjectReader implements Iterable<ObjectReader>
 	}
 	
 	static public Object deserialize(String document, boolean complete_standard_object) throws SerializeException
+	{
+		ObjectReader t = Parser.parse(document);
+		
+		Object ret = t.asObject(null, complete_standard_object);
+		
+		if ( ret == null ) 
+			throw new SerializeException("Unable to read document!");
+		
+		return ret;
+	}
+	
+	static public Object deserialize(TokenBuffer document, boolean complete_standard_object) throws SerializeException
 	{
 		ObjectReader t = Parser.parse(document);
 		

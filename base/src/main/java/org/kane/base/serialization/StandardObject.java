@@ -100,7 +100,7 @@ abstract public class StandardObject<T extends StandardObject<T>> implements Com
 	 */
 	public T deepClone()
 	{
-		return (T)ObjectReader.deserialize(serialize(Format.XML), true);
+		return (T)ObjectReader.deserialize(ObjectWriter.serializeToTokenBuffer(this), true);
 	}
 	
 	/**
@@ -115,6 +115,7 @@ abstract public class StandardObject<T extends StandardObject<T>> implements Com
 	
 	public String serialize(Format format)
 	{
+		Validator.notEqual(format, Format.TOKEN_BUFFER);
 		return ObjectWriter.serialize(format, this);
 	}
 	

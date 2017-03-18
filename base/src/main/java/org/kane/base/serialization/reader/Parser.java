@@ -12,11 +12,14 @@ import org.kane.base.serialization.Format;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
+import com.fasterxml.jackson.databind.util.TokenBuffer;
 import com.fasterxml.jackson.dataformat.xml.XmlFactory;
 
 public class Parser 
 {
-	private Reader reader;
+	static private JsonFactory json_factory = null;
+	static private XmlFactory xml_factor = null;
+	
 	private Format format;
 	
 	private FieldName last_field_name = FieldName.FIELD_DOCUMENT_ROOT;
@@ -27,25 +30,35 @@ public class Parser
 	
 	private Parser(Reader r) throws Exception
 	{
-		this.reader = r;
-		
-		format = figureFormat();
+		format = figureFormat(r);
 		
 		if ( format == Format.JSON || format == Format.JSON_PRETTY_PRINT )
 		{
-			JsonFactory jfactory = new JsonFactory();
-			json_parser = jfactory.createJsonParser(reader);
+			if ( json_factory == null ) json_factory = new JsonFactory();
+			json_parser = json_factory.createJsonParser(r);
 		}
 		else
 		{
-			XmlFactory xfactory = new XmlFactory();
-			json_parser = xfactory.createJsonParser(reader);
+			if ( xml_factor == null ) xml_factor = new XmlFactory();
+			json_parser = xml_factor.createJsonParser(r);
 		}
 		
 		if ( json_parser == null )
 			throw new SerializeException("Could not create a parser for the format "+format);
 		
 		result = processObjectTokens(FieldName.FIELD_DOCUMENT_ROOT);
+		
+		json_parser.close();
+	}
+	
+	private Parser(TokenBuffer buffer) throws Exception
+	{
+		format = Format.TOKEN_BUFFER;
+		json_parser = buffer.asParser();
+		
+		result = processObjectTokens(FieldName.FIELD_DOCUMENT_ROOT);
+		
+		json_parser.close();
 	}
 	
 	private ObjectReader processObjectTokens(FieldName object_field_name) throws Exception
@@ -180,7 +193,7 @@ public class Parser
 	}
 
 	
-	private Format figureFormat()
+	private Format figureFormat(Reader reader)
 	{
 		try
 		{
@@ -210,8 +223,6 @@ public class Parser
 		}
 	}
 	
-	
-	
 	static public ObjectReader parse(Reader r) throws SerializeException
 	{
 		try
@@ -237,5 +248,26 @@ public class Parser
 	{
 		StringReader r = new StringReader(str);
 		return parse(r);
+	}
+	
+	static public ObjectReader parse(TokenBuffer buffer) throws SerializeException
+	{
+		try
+		{
+			Parser p = new Parser(buffer);
+			
+			if ( p.result == null ) 
+				throw new SerializeException("Unknown error while parsing ReadTree (null result)");
+			
+			return p.result;
+		}
+		catch(SerializeException e)
+		{
+			throw e;
+		}
+		catch(Exception e2)
+		{
+			throw new SerializeException("Error while parsing ReadTree",e2);
+		}
 	}
 }
