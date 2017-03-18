@@ -21,12 +21,12 @@ abstract public class ReadAs
 	 * @return A value in a uniform type, or null if the read tree t could not
 	 *         be converted into the target type.
 	 */
-	abstract Object readAs(ObjectReader t);
+	abstract public Object readAs(ObjectReader t);
 	
 	
 	static private class ReadAsObject extends ReadAs
 	{
-		Object readAs(ObjectReader t) 
+		public Object readAs(ObjectReader t) 
 		{
 			return t.asObject(null);
 		}

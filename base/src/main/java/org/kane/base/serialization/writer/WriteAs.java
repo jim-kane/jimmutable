@@ -3,6 +3,7 @@ package org.kane.base.serialization.writer;
 import java.util.Map;
 
 import org.kane.base.exceptions.SerializeException;
+import org.kane.base.immutability.Stringable;
 import org.kane.base.serialization.FieldName;
 import org.kane.base.serialization.StandardObject;
 import org.kane.base.serialization.TypeName;
@@ -86,6 +87,8 @@ abstract public class WriteAs
 				writer.writeNull(field_name);
 				return;
 			}
+			
+			if ( obj instanceof Stringable ) obj = obj.toString();
 			
 			if ( obj instanceof StandardObject ) throw new SerializeException("Attempt to write a standard object as a string");
 			if ( obj instanceof Map.Entry ) throw new SerializeException("Attempt to write a map entry as a string");

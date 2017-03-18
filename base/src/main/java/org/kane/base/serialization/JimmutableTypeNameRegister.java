@@ -4,6 +4,8 @@ import org.kane.base.examples.book.Book;
 import org.kane.base.examples.book.BookDeckList;
 import org.kane.base.examples.book.BookDeckMap;
 import org.kane.base.examples.book.BookDeckSet;
+import org.kane.base.examples.product_data.ItemKey;
+import org.kane.base.examples.product_data.ItemSpecifications;
 import org.kane.base.serialization.reader.ObjectReader;
 
 public class JimmutableTypeNameRegister
@@ -14,5 +16,8 @@ public class JimmutableTypeNameRegister
 		ObjectReader.registerTypeName(BookDeckList.class);
 		ObjectReader.registerTypeName(BookDeckMap.class);
 		ObjectReader.registerTypeName(BookDeckSet.class);
+		
+		ObjectReader.registerTypeName(ItemKey.class);
+		ObjectReader.registerTypeName(ItemSpecifications.class);
 	}
 }

@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.kane.base.exceptions.SerializeException;
+import org.kane.base.immutability.Stringable;
 import org.kane.base.serialization.FieldName;
 import org.kane.base.serialization.Format;
 import org.kane.base.serialization.TypeName;
@@ -96,6 +97,22 @@ public class ObjectWriter
 		{
 			writer.writeString(value);
 		}
+	}
+	
+	
+	/**
+	 * Convenience method for writing stringables. Equivalent to
+	 * writeString(field_name, stringable.toString())
+	 * 
+	 * @param field_name
+	 *            The field name of the stringable to be written
+	 * @param stringable
+	 *            The stringable to write.
+	 */
+	public void writeStringable(FieldName field_name, Stringable stringable)
+	{
+		Validator.notNull(field_name, stringable);
+		writeString(field_name, stringable.toString());
 	}
 	
 	/**

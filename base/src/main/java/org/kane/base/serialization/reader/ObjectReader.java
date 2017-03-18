@@ -308,7 +308,12 @@ public class ObjectReader implements Iterable<ObjectReader>
 		}
 	}
 	
-	public Object asObject(Object default_value) throws SerializeException
+	public Object asObject(Object default_value) 
+	{
+		return asObject(default_value,true);
+	}
+	
+	private Object asObject(Object default_value, boolean complete_standard_object) 
 	{
 		// Special handling for null fields
 		if ( !hasChildren() && !hasValue() )
@@ -405,7 +410,14 @@ public class ObjectReader implements Iterable<ObjectReader>
 			try
 			{
 				Constructor constructor = c.getConstructor(ObjectReader.class);
-				return constructor.newInstance(this);
+				Object ret = constructor.newInstance(this);
+				
+				if ( complete_standard_object && ret instanceof StandardObject )
+				{
+					((StandardObject)ret).complete();
+				}
+				
+				return ret;
 			}
 			catch(NoSuchMethodException e)
 			{
@@ -487,7 +499,7 @@ public class ObjectReader implements Iterable<ObjectReader>
 		return child.asDouble(default_value);
 	}
 	
-	public Object readObject(FieldName field_name, Object default_value)
+	public Object getObject(FieldName field_name, Object default_value)
 	{
 		ObjectReader child = find(field_name, null);
 		if ( child == null ) return default_value;
@@ -575,16 +587,10 @@ public class ObjectReader implements Iterable<ObjectReader>
 	{
 		ObjectReader t = Parser.parse(document);
 		
-		Object ret = t.asObject(null);
+		Object ret = t.asObject(null, complete_standard_object);
 		
 		if ( ret == null ) 
 			throw new SerializeException("Unable to read document!");
-		
-		if ( complete_standard_object && ret instanceof StandardObject ) 
-		{
-			StandardObject immutable_object = (StandardObject)ret;
-			immutable_object.complete();
-		}
 		
 		return ret;
 	}
@@ -594,6 +600,7 @@ public class ObjectReader implements Iterable<ObjectReader>
 		try
 		{
 			TypeName type_name = (TypeName)c.getField("TYPE_NAME").get(null);
+			if ( type_name.isPrimative() ) throw new SerializeException("Attempt to register a primative type name using registerTypeName.  Did you try to register a Stringable?");
 			standard_object_types.put(type_name, c);
 		}
 		catch(Exception e)

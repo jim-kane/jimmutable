@@ -15,12 +15,22 @@ import org.kane.base.utils.Normalizer;
  * 
  * writer.writeString(FIELD_BRAND_CODE, brand_code.getSimpleValue())
  * 
+ * for convenience, ObjectWriter provides a writeStringable method, so you can
+ * write:
+ * 
+ * writer.writeStringable(FIELD_BRAND_CODE, brand_code)
+ * 
+ * instead and it is equivilent
+ * 
  * You read Stringable(s) as String(s). For example:
  * 
  * brand_code = new BrandCode(reader.getString(FIELD_BRAND_CODE,null));
  * 
  * Attempting to read or write a Stringable as an a object will result in a
  * SerializeException being thrown
+ * 
+ * Stringable's DO NOT (and should not) be registered with
+ * ObjectReader.registerTypeName (doing so will cause an exception to be thrown)
  * 
  * @author jim.kane
  *
