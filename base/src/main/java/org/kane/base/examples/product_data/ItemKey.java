@@ -20,6 +20,10 @@ public class ItemKey extends StandardImmutableObject<ItemKey>
 	private BrandCode brand; // required
 	private PartNumber pn; // required
 	
+	public ItemKey(String brand, String pn)
+	{
+		this(new BrandCode(brand),new PartNumber(pn));
+	}
 	
 	public ItemKey(BrandCode brand, PartNumber pn)
 	{

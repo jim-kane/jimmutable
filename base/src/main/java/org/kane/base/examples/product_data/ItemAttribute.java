@@ -10,6 +10,10 @@ public class ItemAttribute extends Stringable
 {
 	static public final ReadAs READ_AS = new ReadAsItemAttribute();
 	
+	static public final ItemAttribute ATTRIBUTE_BRAND = new ItemAttribute("BRAND");
+	static public final ItemAttribute ATTRIBUTE_PN = new ItemAttribute("PN");
+	
+	
 	public ItemAttribute(String code)
 	{
 		super(code);

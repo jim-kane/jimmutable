@@ -4,6 +4,7 @@ import org.kane.base.immutability.StandardImmutableObject;
 import org.kane.base.immutability.collections.FieldHashMap;
 import org.kane.base.immutability.collections.FieldMap;
 import org.kane.base.serialization.FieldName;
+import org.kane.base.serialization.Format;
 import org.kane.base.serialization.TypeName;
 import org.kane.base.serialization.reader.ObjectReader;
 import org.kane.base.serialization.reader.ReadAs;
@@ -49,7 +50,14 @@ public class ItemSpecifications extends StandardImmutableObject<ItemSpecificatio
 	}
 
 	
-	public void normalize() {}
+	public void normalize() 
+	{
+		// These are attributes in the PKV, but in the object they are expressed in the item key
+		// If they happen to ahve been set, remove them
+		
+		attributes.remove(ItemAttribute.ATTRIBUTE_BRAND);
+		attributes.remove(ItemAttribute.ATTRIBUTE_PN);
+	}
 
 	public void validate() 
 	{
@@ -83,7 +91,7 @@ public class ItemSpecifications extends StandardImmutableObject<ItemSpecificatio
 		
 		public Builder(ItemSpecifications starting_point)
 		{
-			under_construction = (ItemSpecifications)under_construction.deepMutableCloneForBuilder();
+			under_construction = (ItemSpecifications)starting_point.deepMutableCloneForBuilder();
 		}
 		
 		public void setItemKey(ItemKey key)
@@ -105,4 +113,6 @@ public class ItemSpecifications extends StandardImmutableObject<ItemSpecificatio
 	}
 	
 	public ItemKey getSimpleItemKey() { return item_key; }
+	
+	public FieldMap<ItemAttribute,String> getSimpleAttributes() { return attributes; }
 }

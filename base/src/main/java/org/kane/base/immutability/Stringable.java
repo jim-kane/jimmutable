@@ -40,7 +40,7 @@ abstract public class Stringable extends StandardImmutableObject<Stringable>
 {
 	static public TypeName TYPE_NAME = new TypeName("string"); public TypeName getTypeName() { return TYPE_NAME; }
 
-	static public String value;
+	private String value;
 	
 	public Stringable(String value)
 	{
