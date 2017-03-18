@@ -11,7 +11,7 @@ import org.kane.base.exceptions.SerializeException;
 import org.kane.base.serialization.FieldName;
 import org.kane.base.serialization.Format;
 import org.kane.base.serialization.TypeName;
-import org.kane.base.serialization.reader.ObjectReader;
+import org.kane.base.serialization.reader.ObjectParseTree;
 import org.kane.base.utils.Validator;
 
 import com.fasterxml.jackson.core.JsonFactory;
@@ -446,7 +446,7 @@ public class LowLevelWriter
 					
 					TypeName type_name = std.getTypeName();
 					
-					if ( !ObjectReader.isTypeRegistered(type_name) )
+					if ( !ObjectParseTree.isTypeRegistered(type_name) )
 					{
 						System.err.println(String.format("WARNING! An object, %s, with type name %s is being written, but it is not registered with ObjectReader (meaning you will not be able to read/clone it)", 
 								obj.getClass().getSimpleName(), 

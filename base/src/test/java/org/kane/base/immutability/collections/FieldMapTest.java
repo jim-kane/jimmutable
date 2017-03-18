@@ -21,7 +21,7 @@ import org.kane.base.serialization.JavaCodeUtils;
 import org.kane.base.serialization.StandardObject;
 import org.kane.base.serialization.TypeName;
 import org.kane.base.serialization.reader.ReadAs;
-import org.kane.base.serialization.reader.ObjectReader;
+import org.kane.base.serialization.reader.ObjectParseTree;
 import org.kane.base.serialization.writer.ObjectWriter;
 import org.kane.base.serialization.writer.WriteAs;
 import org.kane.base.utils.Validator;
@@ -67,7 +67,7 @@ public class FieldMapTest extends TestCase
 			map = createEmptyMap();
 		}
 		
-		public TestObject(ObjectReader t)
+		public TestObject(ObjectParseTree t)
 		{
 			try 
 			{ 
@@ -80,7 +80,7 @@ public class FieldMapTest extends TestCase
 				assert(false);
 			}
 			
-			map = t.getMap(FIELD_MAP, createEmptyMap(), ReadAs.STRING, ReadAs.INTEGER, ObjectReader.OnError.SKIP);
+			map = t.getMap(FIELD_MAP, createEmptyMap(), ReadAs.STRING, ReadAs.INTEGER, ObjectParseTree.OnError.SKIP);
 		}
 		
 		public void write(ObjectWriter writer) 
@@ -244,7 +244,7 @@ public class FieldMapTest extends TestCase
     
     public void testMaps()
     {
-    	ObjectReader.registerTypeName(TestObject.class);
+    	ObjectParseTree.registerTypeName(TestObject.class);
     	
     	testMap(FieldHashMap.class, true);
     	testMap(FieldConcurrentHashMap.class, true);

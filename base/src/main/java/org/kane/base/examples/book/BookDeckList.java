@@ -9,11 +9,17 @@ import org.kane.base.immutability.decks.StandardImmutableListDeck;
 import org.kane.base.serialization.FieldName;
 import org.kane.base.serialization.TypeName;
 import org.kane.base.serialization.reader.ReadAs;
-import org.kane.base.serialization.reader.ObjectReader;
+import org.kane.base.serialization.reader.ObjectParseTree;
 import org.kane.base.serialization.writer.ObjectWriter;
 import org.kane.base.serialization.writer.WriteAs;
 import org.kane.base.utils.Validator;
 
+/**
+ * An example of a list based deck
+ * 
+ * @author jim.kane
+ *
+ */
 
 final public class BookDeckList extends StandardImmutableListDeck<BookDeckList, Book>
 {
@@ -42,9 +48,9 @@ final public class BookDeckList extends StandardImmutableListDeck<BookDeckList, 
 		books = new FieldArrayList();
 	}
 	
-	public BookDeckList(ObjectReader t)
+	public BookDeckList(ObjectParseTree t)
 	{
-		books = t.getCollection(FIELD_BOOKS, new FieldArrayList(), ReadAs.OBJECT, ObjectReader.OnError.SKIP);
+		books = t.getCollection(FIELD_BOOKS, new FieldArrayList(), ReadAs.OBJECT, ObjectParseTree.OnError.SKIP);
 	}
 	
 	public TypeName getTypeName() 

@@ -2,7 +2,7 @@ package org.kane.base.serialization;
 
 import org.kane.base.exceptions.ValidationException;
 import org.kane.base.immutability.StandardImmutableObject;
-import org.kane.base.serialization.reader.ObjectReader;
+import org.kane.base.serialization.reader.ObjectParseTree;
 import org.kane.base.serialization.writer.ObjectWriter;
 import org.kane.base.serialization.writer.StandardWritable;
 import org.kane.base.utils.Validator;
@@ -100,7 +100,7 @@ abstract public class StandardObject<T extends StandardObject<T>> implements Com
 	 */
 	public T deepClone()
 	{
-		return (T)ObjectReader.deserialize(ObjectWriter.serializeToTokenBuffer(this), true);
+		return (T)ObjectParseTree.deserialize(ObjectWriter.serializeToTokenBuffer(this), true);
 	}
 	
 	/**
@@ -121,7 +121,7 @@ abstract public class StandardObject<T extends StandardObject<T>> implements Com
 	
 	static public StandardObject deserialize(String serialized_data)
 	{
-		return (StandardObject)ObjectReader.deserialize(serialized_data);
+		return (StandardObject)ObjectParseTree.deserialize(serialized_data);
 	}
 	
 	/**

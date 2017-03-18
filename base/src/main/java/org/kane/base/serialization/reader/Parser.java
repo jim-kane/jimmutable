@@ -24,7 +24,7 @@ public class Parser
 	
 	private FieldName last_field_name = FieldName.FIELD_DOCUMENT_ROOT;
 
-	private ObjectReader result;
+	private ObjectParseTree result;
 	
 	private JsonParser json_parser;
 	
@@ -61,11 +61,11 @@ public class Parser
 		json_parser.close();
 	}
 	
-	private ObjectReader processObjectTokens(FieldName object_field_name) throws Exception
+	private ObjectParseTree processObjectTokens(FieldName object_field_name) throws Exception
 	{
-		Stack<ObjectReader> stack = new Stack<>();
+		Stack<ObjectParseTree> stack = new Stack<>();
 		
-		ObjectReader root = new ObjectReader(object_field_name);
+		ObjectParseTree root = new ObjectParseTree(object_field_name);
 		stack.push(root);
 		
 		while(true)
@@ -103,7 +103,7 @@ public class Parser
 				
 			case FIELD_NAME:
 				
-				ObjectReader new_object = new ObjectReader(new FieldName(json_parser.getValueAsString()));
+				ObjectParseTree new_object = new ObjectParseTree(new FieldName(json_parser.getValueAsString()));
 				stack.peek().add(new_object);
 				
 				stack.push(new_object);
@@ -134,7 +134,7 @@ public class Parser
 		}
 	}
 	
-	private void processArrayTokens(FieldName array_name, ObjectReader parent) throws Exception
+	private void processArrayTokens(FieldName array_name, ObjectParseTree parent) throws Exception
 	{
 		while(true)
 		{
@@ -173,7 +173,7 @@ public class Parser
 			case VALUE_FALSE:
 				
 				
-				ObjectReader value_object = new ObjectReader(array_name);
+				ObjectParseTree value_object = new ObjectParseTree(array_name);
 				value_object.setValue(json_parser.getValueAsString());
 				
 				parent.add(value_object);
@@ -182,7 +182,7 @@ public class Parser
 				
 			case VALUE_NULL:
 				
-				ObjectReader null_object = new ObjectReader(array_name);
+				ObjectParseTree null_object = new ObjectParseTree(array_name);
 				null_object.setValue(null);
 				
 				parent.add(null_object);
@@ -223,7 +223,7 @@ public class Parser
 		}
 	}
 	
-	static public ObjectReader parse(Reader r) throws SerializeException
+	static public ObjectParseTree parse(Reader r) throws SerializeException
 	{
 		try
 		{
@@ -244,13 +244,13 @@ public class Parser
 		}
 	}
 	
-	static public ObjectReader parse(String str) throws SerializeException
+	static public ObjectParseTree parse(String str) throws SerializeException
 	{
 		StringReader r = new StringReader(str);
 		return parse(r);
 	}
 	
-	static public ObjectReader parse(TokenBuffer buffer) throws SerializeException
+	static public ObjectParseTree parse(TokenBuffer buffer) throws SerializeException
 	{
 		try
 		{

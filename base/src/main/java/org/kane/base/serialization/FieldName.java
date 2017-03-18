@@ -2,7 +2,7 @@ package org.kane.base.serialization;
 
 import org.kane.base.exceptions.ValidationException;
 import org.kane.base.immutability.StandardImmutableObject;
-import org.kane.base.serialization.reader.ObjectReader;
+import org.kane.base.serialization.reader.ObjectParseTree;
 import org.kane.base.serialization.writer.ObjectWriter;
 import org.kane.base.utils.Validator;
 
@@ -31,7 +31,7 @@ final public class FieldName extends StandardImmutableObject
 		complete();
 	}
 	
-	public FieldName(ObjectReader t)
+	public FieldName(ObjectParseTree t)
 	{
 		name = t.getString(FIELD_NAME, null);
 	}

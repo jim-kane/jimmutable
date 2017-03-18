@@ -7,6 +7,12 @@ import org.kane.base.serialization.TypeName;
 import org.kane.base.utils.Normalizer;
 import org.kane.base.utils.Validator;
 
+/**
+ * An example of a simple, Stringable object
+ * 
+ * @author jim.kane
+ *
+ */
 public class BrandCode extends Stringable
 {
 	public BrandCode(String code)

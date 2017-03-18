@@ -21,12 +21,12 @@ abstract public class ReadAs
 	 * @return A value in a uniform type, or null if the read tree t could not
 	 *         be converted into the target type.
 	 */
-	abstract public Object readAs(ObjectReader t);
+	abstract public Object readAs(ObjectParseTree t);
 	
 	
 	static private class ReadAsObject extends ReadAs
 	{
-		public Object readAs(ObjectReader t) 
+		public Object readAs(ObjectParseTree t) 
 		{
 			return t.asObject(null);
 		}
@@ -35,7 +35,7 @@ abstract public class ReadAs
 	
 	static private class ReadAsString extends ReadAs
 	{
-		public Object readAs(ObjectReader t) 
+		public Object readAs(ObjectParseTree t) 
 		{
 			return t.asString(null);
 		}
@@ -43,7 +43,7 @@ abstract public class ReadAs
 	
 	static private class ReadAsBoolean extends ReadAs
 	{
-		public Object readAs(ObjectReader t) 
+		public Object readAs(ObjectParseTree t) 
 		{
 			return t.asBoolean(null);
 		}
@@ -51,7 +51,7 @@ abstract public class ReadAs
 	
 	static private class ReadAsCharacter extends ReadAs
 	{
-		public Object readAs(ObjectReader t) 
+		public Object readAs(ObjectParseTree t) 
 		{
 			return t.asCharacter(null);
 		}
@@ -59,7 +59,7 @@ abstract public class ReadAs
 	
 	static private class ReadAsByte extends ReadAs
 	{
-		public Object readAs(ObjectReader t) 
+		public Object readAs(ObjectParseTree t) 
 		{
 			return t.asByte(null);
 		}
@@ -67,7 +67,7 @@ abstract public class ReadAs
 	
 	static private class ReadAsShort extends ReadAs
 	{
-		public Object readAs(ObjectReader t) 
+		public Object readAs(ObjectParseTree t) 
 		{
 			return t.asShort(null);
 		}
@@ -75,7 +75,7 @@ abstract public class ReadAs
 	
 	static private class ReadAsInt extends ReadAs
 	{
-		public Object readAs(ObjectReader t) 
+		public Object readAs(ObjectParseTree t) 
 		{
 			return t.asInteger(null);
 		}
@@ -83,7 +83,7 @@ abstract public class ReadAs
 	
 	static private class ReadAsLong extends ReadAs
 	{
-		public Object readAs(ObjectReader t) 
+		public Object readAs(ObjectParseTree t) 
 		{
 			return t.asLong(null);
 		}
@@ -91,7 +91,7 @@ abstract public class ReadAs
 	
 	static private class ReadAsFloat extends ReadAs
 	{
-		public Object readAs(ObjectReader t) 
+		public Object readAs(ObjectParseTree t) 
 		{
 			return t.asFloat(null);
 		}
@@ -99,7 +99,7 @@ abstract public class ReadAs
 	
 	static private class ReadAsDouble extends ReadAs
 	{
-		public Object readAs(ObjectReader t) 
+		public Object readAs(ObjectParseTree t) 
 		{
 			return t.asDouble(null);
 		}

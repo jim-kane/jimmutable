@@ -4,6 +4,12 @@ import org.kane.base.exceptions.ValidationException;
 import org.kane.base.immutability.Stringable;
 import org.kane.base.utils.Validator;
 
+/**
+ * An example of a simple, Stringable object
+ * 
+ * @author jim.kane
+ *
+ */
 public class PartNumber extends Stringable
 {
 	public PartNumber(String code)

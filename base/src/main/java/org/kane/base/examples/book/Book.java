@@ -11,17 +11,22 @@ import org.kane.base.immutability.collections.FieldList;
 import org.kane.base.serialization.FieldName;
 import org.kane.base.serialization.TypeName;
 import org.kane.base.serialization.reader.ReadAs;
-import org.kane.base.serialization.reader.ObjectReader;
+import org.kane.base.serialization.reader.ObjectParseTree;
 import org.kane.base.serialization.writer.ObjectWriter;
 import org.kane.base.serialization.writer.WriteAs;
 import org.kane.base.utils.Comparison;
 import org.kane.base.utils.Normalizer;
 import org.kane.base.utils.Validator;
 
-
+/**
+ * A simple example StandardImmutableObject
+ * 
+ * @author jim.kane
+ *
+ */
 final public class Book extends StandardImmutableObject<Book>
 {
-	static public final TypeName TYPE_NAME = new TypeName("jimmutable.examples.Book");
+	static public final TypeName TYPE_NAME = new TypeName("jimmutable.examples.Book"); public TypeName getTypeName() { return TYPE_NAME; }
 	
 	static private final FieldName FIELD_TITLE = new FieldName("title");
 	static private final FieldName FIELD_PAGE_COUNT = new FieldName("page_count");
@@ -47,14 +52,14 @@ final public class Book extends StandardImmutableObject<Book>
 		this.authors = new FieldArrayList<>();
 	}
 	
-	public Book(ObjectReader t)
+	public Book(ObjectParseTree t)
 	{
 		title = t.getString(FIELD_TITLE, null);
 		page_count = t.getInt(FIELD_PAGE_COUNT, -1);
 		isbn = t.getString(FIELD_ISBN, null);
 		binding = BindingType.fromCode(t.getString(FIELD_BINDING, null),null);
 		
-		authors = t.getCollection(FIELD_AUTHORS, new FieldArrayList(), ReadAs.STRING, ObjectReader.OnError.SKIP);
+		authors = t.getCollection(FIELD_AUTHORS, new FieldArrayList(), ReadAs.STRING, ObjectParseTree.OnError.SKIP);
 	}
 	
 	@Override
@@ -89,13 +94,6 @@ final public class Book extends StandardImmutableObject<Book>
 		this(title,page_count,isbn,binding,toCollection(author));
 	} 
 	
-	public TypeName getTypeName() 
-	{
-		return TYPE_NAME;
-	}
-
-	
-
 	static private Collection<String> toCollection(String author)
 	{
 		List<String> ret = new ArrayList<>();

@@ -17,24 +17,48 @@ import org.kane.base.utils.Validator;
 
 import com.fasterxml.jackson.databind.util.TokenBuffer;
 
+/**
+ * ObjectParseTree is created by Parser and used by StandardObject(s) to
+ * instantiate themselves from serialized data.
+ * 
+ * Outside of the reader package, ObjectParseTree is an immutable object
+ * 
+ * @author jim.kane
+ *
+ */
 
-public class ObjectReader implements Iterable<ObjectReader>
+final public class ObjectParseTree implements Iterable<ObjectParseTree>
 {
-	static protected Map<TypeName,Class> standard_object_types = new ConcurrentHashMap();
+	static private Map<TypeName,Class> standard_object_types = new ConcurrentHashMap();
 	
 	private FieldName field_name; // required
 	private String value; // optional
 	private TypeName type_hint; // optional
-	private LinkedList<ObjectReader> children; // optional
+	private LinkedList<ObjectParseTree> children; // optional
 	
-	public ObjectReader(FieldName field_name)
+	/**
+	 * Construct an ObjectParseTree.
+	 * 
+	 * ObjectParseTree(s) are only made via Parser
+	 * 
+	 * @param field_name
+	 *            The field name of this node in the parse tree. The root of a
+	 *            document has the special field name FieldName
+	 *            FIELD_DOCUMENT_ROOT
+	 */
+	protected ObjectParseTree(FieldName field_name)
 	{
 		Validator.notNull(field_name);
 		
 		this.field_name = field_name;
 	}
 	
-	public void setValue(String value)
+	/**
+	 * Set the value 
+	 * 
+	 * @param value The value to set
+	 */
+	protected void setValue(String value)
 	{
 		this.value = value;
 		
@@ -52,12 +76,48 @@ public class ObjectReader implements Iterable<ObjectReader>
 		}
 	}
 	
-	public FieldName getSimpleFieldName() { return field_name; }
+	/**
+	 * Get the field name of this node in the parse tree
+	 * 
+	 * @return The field name
+	 */
+	public FieldName getSimpleFieldName() 
+	{ 
+		return field_name; 
+	}
 
-	public boolean hasChildren() { return children != null && !children.isEmpty(); }
+	/**
+	 * Does this node in the parse tree have any children?
+	 * 
+	 * @return True if this node has children, false otherwise
+	 */
+	public boolean hasChildren() 
+	{ 
+		return children != null && !children.isEmpty(); 
+	}
 	
-	public boolean hasValue() { return value != null; }
+	/**
+	 * Does this node have a value?
+	 * 
+	 * Use of this method is not recommended: use the various asXXX or getXXX
+	 * methods
+	 */
+	public boolean hasValue() 
+	{ 
+		return value != null; 
+	}
 	
+	/**
+	 * Get value associated with this node in the parse tree
+	 * 
+	 * Use of this method is not recommended: use the various asXXX or getXXX
+	 * methods
+	 * 
+	 * @param default_value
+	 *            The value to return if this node has no value
+	 * @return The contents of the value field, or default_value if this node
+	 *         has no value
+	 */
 	private String getOptionalValue(String default_value) 
 	{ 
 		if ( !hasValue() ) return default_value;
@@ -78,7 +138,7 @@ public class ObjectReader implements Iterable<ObjectReader>
 		
 		if ( isPrimativeObject() )
 		{
-			ObjectReader value = find(FieldName.FIELD_NAME_PRIMITIVE_VALUE, null);
+			ObjectParseTree value = findChild(FieldName.FIELD_NAME_PRIMITIVE_VALUE, null);
 			
 			if ( value == null ) return default_value;
 			
@@ -91,22 +151,44 @@ public class ObjectReader implements Iterable<ObjectReader>
 		return default_value;
 	}
 	
-	public Iterator<ObjectReader> iterator() 
+	/**
+	 * get an iterator over all children
+	 */
+	public Iterator<ObjectParseTree> iterator() 
 	{
 		if ( children == null ) return Collections.emptyIterator();
 		
 		return children.iterator();
 	}
 	
-	public void add(ObjectReader child)
+	/**
+	 * Add a child.  Only called from Parser
+	 * 
+	 * @param child The child to add
+	 */
+	protected void add(ObjectParseTree child)
 	{
+		Validator.notNull(child);
 		if ( children == null ) children = new LinkedList();
 		children.add(child);
 	}
 	
-	public ObjectReader find(FieldName field_name, ObjectReader default_value)
+	/**
+	 * Find a child with the specified field_name
+	 * 
+	 * @param field_name
+	 *            The field name to search for
+	 * @param default_value
+	 *            The ObjectParseTree to return if no child with the field name
+	 *            specified could be found
+	 * @return The first child with the specified field name, or default_value
+	 *         if no such child exists
+	 */
+	public ObjectParseTree findChild(FieldName field_name, ObjectParseTree default_value)
 	{
-		for ( ObjectReader child : this )
+		if ( field_name == null ) return default_value;
+		
+		for ( ObjectParseTree child : this )
 		{
 			if ( child.getSimpleFieldName().equals(field_name) )
 			{
@@ -117,23 +199,41 @@ public class ObjectReader implements Iterable<ObjectReader>
 		return default_value;
 	}
 	
+	/**
+	 * Does this tree have a type hint?
+	 * 
+	 * @return True if this reader has a type hint, false otherwise
+	 */
+	public boolean hasTypeHint() 
+	{
+		return getOptionalTypeHint(null) != null;
+	}
+	
+	/**
+	 * Get the type hint
+	 * 
+	 * @param default_value
+	 *            The value to return if this node does not have a type hint
+	 * @return The type hint associated with this node, or default_value if no
+	 *         type hint is present
+	 */
 	public TypeName getOptionalTypeHint(TypeName default_value)
 	{
 		if ( type_hint != null ) return type_hint;
 		
-		ObjectReader t = find(FieldName.FIELD_NAME_TYPE_HINT,null);
+		ObjectParseTree t = findChild(FieldName.FIELD_NAME_TYPE_HINT,null);
 		
 		if ( t == null || t.type_hint == null ) return default_value;
 		
 		type_hint = t.type_hint;
 		return type_hint;
 	}
-	
-	public boolean hasTypeHint() 
-	{
-		return getOptionalTypeHint(null) != null;
-	}
-	
+
+	/**
+	 * Is this a primitive object? (i.e. String, Float, etc.) in either full
+	 * object or primitive form
+	 * 
+	 */
 	public boolean isPrimativeObject()
 	{
 		TypeName tn = getOptionalTypeHint(null);
@@ -141,6 +241,14 @@ public class ObjectReader implements Iterable<ObjectReader>
 		return tn.isPrimative();
 	}
 	
+	/**
+	 * Test to see if the type hint is equal to the specified value
+	 * 
+	 * @param name_to_test
+	 *            The type name to test
+	 * @return True if the type hint for this reader equals the name_to_test,
+	 *         false otherwise
+	 */
 	public boolean isTypeHint(TypeName name_to_test)
 	{
 		Validator.notNull(name_to_test);
@@ -150,6 +258,9 @@ public class ObjectReader implements Iterable<ObjectReader>
 		return tn.equals(name_to_test);
 	}
 	
+	/**
+	 * Called by Parser only
+	 */
 	protected void removeLast()
 	{
 		if ( children == null ) return;
@@ -157,7 +268,9 @@ public class ObjectReader implements Iterable<ObjectReader>
 		children.removeLast();
 	}
 	
-	
+	/**
+	 * Perform a diagnostic printout of this parse tree
+	 */
 	public String toString()
 	{
 		StringBuilder b = new StringBuilder();
@@ -182,17 +295,36 @@ public class ObjectReader implements Iterable<ObjectReader>
 		
 		builder.append("\n");
 		
-		for ( ObjectReader child : this )
+		for ( ObjectParseTree child : this )
 		{
 			child.diagnosticPrint(builder, indent+1);
 		}
 	}
+	
+	/**
+	 * Interpret the current node as a String
+	 * 
+	 * @param default_value
+	 *            The value to return if this node can not be interpreted as a
+	 *            String
+	 * @return This node, interpreted as a String, or default_value if this is
+	 *         not possible.
+	 */
 	
 	public String asString(String default_value)
 	{
 		return getPrimativeValueAsString(default_value);
 	}
 	
+	/**
+	 * Interpret the current node as a Character
+	 * 
+	 * @param default_value
+	 *            The value to return if this node can not be interpreted as a
+	 *            Character
+	 * @return This node, interpreted as a Character, or default_value if this is
+	 *         not possible.
+	 */
 	public Character asCharacter(Character default_value)
 	{
 		String primative_value =  getPrimativeValueAsString(null);
@@ -203,6 +335,15 @@ public class ObjectReader implements Iterable<ObjectReader>
 		return primative_value.charAt(0);
 	}
 	
+	/**
+	 * Interpret the current node as a Boolean
+	 * 
+	 * @param default_value
+	 *            The value to return if this node can not be interpreted as a
+	 *            Boolean
+	 * @return This node, interpreted as a Boolean, or default_value if this is
+	 *         not possible.
+	 */
 	public Boolean asBoolean(Boolean default_value)
 	{
 		String primative_value =  getPrimativeValueAsString(null);
@@ -220,6 +361,15 @@ public class ObjectReader implements Iterable<ObjectReader>
 		return default_value;
 	}
 	
+	/**
+	 * Interpret the current node as a byte
+	 * 
+	 * @param default_value
+	 *            The value to return if this node can not be interpreted as a
+	 *            byte
+	 * @return This node, interpreted as a byte, or default_value if this is
+	 *         not possible.
+	 */
 	public Byte asByte(Byte default_value)
 	{
 		String primative_value =  getPrimativeValueAsString(null);
@@ -235,6 +385,15 @@ public class ObjectReader implements Iterable<ObjectReader>
 		}
 	}
 	
+	/**
+	 * Interpret the current node as a short
+	 * 
+	 * @param default_value
+	 *            The value to return if this node can not be interpreted as a
+	 *            short
+	 * @return This node, interpreted as a short, or default_value if this is
+	 *         not possible.
+	 */
 	public Short asShort(Short default_value)
 	{
 		String primative_value =  getPrimativeValueAsString(null);
@@ -250,6 +409,15 @@ public class ObjectReader implements Iterable<ObjectReader>
 		}
 	}
 	
+	/**
+	 * Interpret the current node as a int
+	 * 
+	 * @param default_value
+	 *            The value to return if this node can not be interpreted as a
+	 *            int
+	 * @return This node, interpreted as a int, or default_value if this is
+	 *         not possible.
+	 */
 	public Integer asInteger(Integer default_value)
 	{
 		String primative_value =  getPrimativeValueAsString(null);
@@ -264,6 +432,16 @@ public class ObjectReader implements Iterable<ObjectReader>
 			return default_value;
 		}
 	}
+	
+	/**
+	 * Interpret the current node as a long
+	 * 
+	 * @param default_value
+	 *            The value to return if this node can not be interpreted as a
+	 *            long
+	 * @return This node, interpreted as a long, or default_value if this is
+	 *         not possible.
+	 */
 	
 	public Long asLong(Long default_value)
 	{
@@ -280,6 +458,16 @@ public class ObjectReader implements Iterable<ObjectReader>
 		}
 	}
 	
+	/**
+	 * Interpret the current node as a float
+	 * 
+	 * @param default_value
+	 *            The value to return if this node can not be interpreted as a
+	 *            float
+	 * @return This node, interpreted as a float, or default_value if this is
+	 *         not possible.
+	 */
+	
 	public Float asFloat(Float default_value)
 	{
 		String primative_value =  getPrimativeValueAsString(null);
@@ -295,6 +483,16 @@ public class ObjectReader implements Iterable<ObjectReader>
 		}
 	}
 	
+	/**
+	 * Interpret the current node as a double
+	 * 
+	 * @param default_value
+	 *            The value to return if this node can not be interpreted as a
+	 *            double
+	 * @return This node, interpreted as a double, or default_value if this is
+	 *         not possible.
+	 */
+	
 	public Double asDouble(Double default_value)
 	{
 		String primative_value =  getPrimativeValueAsString(null);
@@ -309,6 +507,17 @@ public class ObjectReader implements Iterable<ObjectReader>
 			return default_value;
 		}
 	}
+	 
+	/**
+	 * Interpret the current node as an Object (either StandardObject or a
+	 * primative object)
+	 * 
+	 * @param default_value
+	 *            The value to return if this node can not be interpreted as a
+	 *            object
+	 * @return This node, interpreted as an object, or default_value if this is
+	 *         not possible.
+	 */
 	
 	public Object asObject(Object default_value) 
 	{
@@ -411,7 +620,7 @@ public class ObjectReader implements Iterable<ObjectReader>
 		{
 			try
 			{
-				Constructor constructor = c.getConstructor(ObjectReader.class);
+				Constructor constructor = c.getConstructor(ObjectParseTree.class);
 				Object ret = constructor.newInstance(this);
 				
 				if ( complete_standard_object && ret instanceof StandardObject )
@@ -438,72 +647,102 @@ public class ObjectReader implements Iterable<ObjectReader>
 		return default_value;
 	}
 	
+	/**
+	 * Get the value of a given child (field_name) as a String
+	 */
 	public String getString(FieldName field_name, String default_value)
 	{
-		ObjectReader child = find(field_name, null);
+		ObjectParseTree child = findChild(field_name, null);
 		if ( child == null ) return default_value;
 		return child.asString(default_value);
 	}
 	
+	/**
+	 * Get the value of a given child (field_name) as a boolean
+	 */
 	public Boolean getBoolean(FieldName field_name, Boolean default_value)
 	{
-		ObjectReader child = find(field_name, null);
+		ObjectParseTree child = findChild(field_name, null);
 		if ( child == null ) return default_value;
 		return child.asBoolean(default_value);
 	}
 	
+	/**
+	 * Get the value of a given child (field_name) as a char
+	 */
 	public Character getCharacter(FieldName field_name, Character default_value)
 	{
-		ObjectReader child = find(field_name, null);
+		ObjectParseTree child = findChild(field_name, null);
 		if ( child == null ) return default_value;
 		return child.asCharacter(default_value);
 	}
 	
+	/**
+	 * Get the value of a given child (field_name) as a byte
+	 */
 	public Byte getByte(FieldName field_name, Byte default_value)
 	{
-		ObjectReader child = find(field_name, null);
+		ObjectParseTree child = findChild(field_name, null);
 		if ( child == null ) return default_value;
 		return child.asByte(default_value);
 	}
 	
+	/**
+	 * Get the value of a given child (field_name) as a short
+	 */
 	public Short getShort(FieldName field_name, Short default_value)
 	{
-		ObjectReader child = find(field_name, null);
+		ObjectParseTree child = findChild(field_name, null);
 		if ( child == null ) return default_value;
 		return child.asShort(default_value);
 	}
 	
+	/**
+	 * Get the value of a given child (field_name) as a int
+	 */
 	public Integer getInt(FieldName field_name, Integer default_value)
 	{
-		ObjectReader child = find(field_name, null);
+		ObjectParseTree child = findChild(field_name, null);
 		if ( child == null ) return default_value;
 		return child.asInteger(default_value);
 	}
 	
+	/**
+	 * Get the value of a given child (field_name) as a long
+	 */
 	public Long getInt(FieldName field_name, Long default_value)
 	{
-		ObjectReader child = find(field_name, null);
+		ObjectParseTree child = findChild(field_name, null);
 		if ( child == null ) return default_value;
 		return child.asLong(default_value);
 	}
 	
+	/**
+	 * Get the value of a given child (field_name) as a float
+	 */
 	public Float getFloat(FieldName field_name, Float default_value)
 	{
-		ObjectReader child = find(field_name, null);
+		ObjectParseTree child = findChild(field_name, null);
 		if ( child == null ) return default_value;
 		return child.asFloat(default_value);
 	}
 	
+	/**
+	 * Get the value of a given child (field_name) as a double
+	 */
 	public Double getDouble(FieldName field_name, Double default_value)
 	{
-		ObjectReader child = find(field_name, null);
+		ObjectParseTree child = findChild(field_name, null);
 		if ( child == null ) return default_value;
 		return child.asDouble(default_value);
 	}
 	
+	/**
+	 * Get the value of a given child (field_name) as a object
+	 */
 	public Object getObject(FieldName field_name, Object default_value)
 	{
-		ObjectReader child = find(field_name, null);
+		ObjectParseTree child = findChild(field_name, null);
 		if ( child == null ) return default_value;
 		return child.asObject(default_value);
 	}
@@ -522,7 +761,7 @@ public class ObjectReader implements Iterable<ObjectReader>
 		
 		C ret = empty_collection;
 		
-		for ( ObjectReader child : children )
+		for ( ObjectParseTree child : children )
 		{
 			if ( child.getSimpleFieldName().equals(field_name) ) 
 			{
@@ -551,12 +790,12 @@ public class ObjectReader implements Iterable<ObjectReader>
 		
 		M ret = empty_map;
 		
-		for ( ObjectReader entry : children )
+		for ( ObjectParseTree entry : children )
 		{
 			if ( entry.getSimpleFieldName().equals(field_name) ) 
 			{
-				ObjectReader key_tree = entry.find(FieldName.FIELD_KEY, null);
-				ObjectReader value_tree = entry.find(FieldName.FIELD_VALUE, null);
+				ObjectParseTree key_tree = entry.findChild(FieldName.FIELD_KEY, null);
+				ObjectParseTree value_tree = entry.findChild(FieldName.FIELD_VALUE, null);
 				
 				if ( key_tree == null || value_tree == null ) 
 				{
@@ -587,7 +826,7 @@ public class ObjectReader implements Iterable<ObjectReader>
 	
 	static public Object deserialize(String document, boolean complete_standard_object) throws SerializeException
 	{
-		ObjectReader t = Parser.parse(document);
+		ObjectParseTree t = Parser.parse(document);
 		
 		Object ret = t.asObject(null, complete_standard_object);
 		
@@ -599,7 +838,7 @@ public class ObjectReader implements Iterable<ObjectReader>
 	
 	static public Object deserialize(TokenBuffer document, boolean complete_standard_object) throws SerializeException
 	{
-		ObjectReader t = Parser.parse(document);
+		ObjectParseTree t = Parser.parse(document);
 		
 		Object ret = t.asObject(null, complete_standard_object);
 		

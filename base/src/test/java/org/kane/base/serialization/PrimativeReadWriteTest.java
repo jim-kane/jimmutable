@@ -1,6 +1,6 @@
 package org.kane.base.serialization;
 
-import org.kane.base.serialization.reader.ObjectReader;
+import org.kane.base.serialization.reader.ObjectParseTree;
 import org.kane.base.serialization.writer.ObjectWriter;
 
 import junit.framework.Test;
@@ -158,7 +158,7 @@ public class PrimativeReadWriteTest extends TestCase
     		System.out.println(serialized_data);
     	}
     	
-    	Object from_reader = ObjectReader.deserialize(serialized_data);
+    	Object from_reader = ObjectParseTree.deserialize(serialized_data);
     	
     	assertEquals(obj,from_reader);
     }

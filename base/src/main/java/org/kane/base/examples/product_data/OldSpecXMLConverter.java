@@ -12,7 +12,7 @@ import javax.xml.stream.XMLStreamReader;
 import org.kane.base.serialization.Format;
 import org.kane.base.serialization.JimmutableTypeNameRegister;
 import org.kane.base.serialization.StandardObject;
-import org.kane.base.serialization.reader.ObjectReader;
+import org.kane.base.serialization.reader.ObjectParseTree;
 import org.kane.base.serialization.reader.Parser;
 import org.kane.base.small_document.SmallDocumentBulkLoader;
 import org.kane.base.small_document.SmallDocumentReader;
@@ -160,7 +160,7 @@ public class OldSpecXMLConverter
 		{
 			String doc = r.getCurrentDocument(null);
 			
-			ObjectReader obj_reader = Parser.parse(doc);
+			ObjectParseTree obj_reader = Parser.parse(doc);
 			
 			document_count++;
 			

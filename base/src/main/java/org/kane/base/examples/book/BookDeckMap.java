@@ -10,12 +10,17 @@ import org.kane.base.immutability.decks.StandardImmutableMapDeck;
 import org.kane.base.serialization.FieldName;
 import org.kane.base.serialization.TypeName;
 import org.kane.base.serialization.reader.ReadAs;
-import org.kane.base.serialization.reader.ObjectReader;
+import org.kane.base.serialization.reader.ObjectParseTree;
 import org.kane.base.serialization.writer.ObjectWriter;
 import org.kane.base.serialization.writer.WriteAs;
 import org.kane.base.utils.Validator;
 
-
+/**
+ * An example of a map based deck
+ * 
+ * @author jim.kane
+ *
+ */
 final public class BookDeckMap extends StandardImmutableMapDeck<BookDeckMap, String, Book>
 {
 	static public final TypeName TYPE_NAME = new TypeName("jimmutable.examples.BookDeckMap");
@@ -47,9 +52,9 @@ final public class BookDeckMap extends StandardImmutableMapDeck<BookDeckMap, Str
 		complete();
 	}
 	
-	public BookDeckMap(ObjectReader t)
+	public BookDeckMap(ObjectParseTree t)
 	{
-		books = t.getMap(FIELD_BOOKS, new FieldHashMap(), ReadAs.STRING, ReadAs.OBJECT, ObjectReader.OnError.SKIP);
+		books = t.getMap(FIELD_BOOKS, new FieldHashMap(), ReadAs.STRING, ReadAs.OBJECT, ObjectParseTree.OnError.SKIP);
 	}
 	
 	public TypeName getTypeName() 

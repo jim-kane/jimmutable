@@ -13,7 +13,7 @@ import org.kane.base.serialization.FieldName;
 import org.kane.base.serialization.Format;
 import org.kane.base.serialization.TypeName;
 import org.kane.base.serialization.reader.ReadAs;
-import org.kane.base.serialization.reader.ObjectReader;
+import org.kane.base.serialization.reader.ObjectParseTree;
 import org.kane.base.serialization.writer.ObjectWriter;
 import org.kane.base.serialization.writer.WriteAs;
 import org.kane.base.utils.Validator;
@@ -65,7 +65,7 @@ public class FieldCollectionTest extends TestCase
 			collection = createEmtpyCollection();
 		}
 		
-		public TestObject(ObjectReader t)
+		public TestObject(ObjectParseTree t)
 		{
 			try 
 			{ 
@@ -78,7 +78,7 @@ public class FieldCollectionTest extends TestCase
 				assert(false);
 			}
 			
-			collection = t.getCollection(FIELD_COLLECTION, createEmtpyCollection(), ReadAs.STRING, ObjectReader.OnError.SKIP);
+			collection = t.getCollection(FIELD_COLLECTION, createEmtpyCollection(), ReadAs.STRING, ObjectParseTree.OnError.SKIP);
 		}
 		
 		public void write(ObjectWriter writer) 
@@ -312,7 +312,7 @@ public class FieldCollectionTest extends TestCase
     
     public void testCollections()
     {
-    	ObjectReader.registerTypeName(TestObject.class);
+    	ObjectParseTree.registerTypeName(TestObject.class);
     	
     	testCollection(FieldArrayList.class, true);
     	testCollection(FieldConcurrentHashSet.class, true);

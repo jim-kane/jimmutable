@@ -3,7 +3,7 @@ package org.kane.base.immutability;
 import org.kane.base.exceptions.ImmutableException;
 import org.kane.base.exceptions.SerializeException;
 import org.kane.base.serialization.TypeName;
-import org.kane.base.serialization.reader.ObjectReader;
+import org.kane.base.serialization.reader.ObjectParseTree;
 import org.kane.base.serialization.writer.ObjectWriter;
 import org.kane.base.utils.Normalizer;
 
@@ -48,7 +48,7 @@ abstract public class Stringable extends StandardImmutableObject<Stringable>
 		complete();
 	}
 
-	public Stringable(ObjectReader reader)
+	public Stringable(ObjectParseTree reader)
 	{
 		throw new SerializeException("Attempt to read a stringable object using asObject. Should always be read using getString");
 	}

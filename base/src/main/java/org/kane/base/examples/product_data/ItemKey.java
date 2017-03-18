@@ -5,11 +5,20 @@ import java.util.Objects;
 import org.kane.base.immutability.StandardImmutableObject;
 import org.kane.base.serialization.FieldName;
 import org.kane.base.serialization.TypeName;
-import org.kane.base.serialization.reader.ObjectReader;
+import org.kane.base.serialization.reader.ObjectParseTree;
 import org.kane.base.serialization.writer.ObjectWriter;
 import org.kane.base.utils.Comparison;
 import org.kane.base.utils.Validator;
 
+/**
+ * An example of a simple StandardImmutableObject
+ * 
+ * Note: This implementation is not a Stringable key patterned class, rather it
+ * is coded as a plain old StandardImmutableObject
+ * 
+ * @author jim.kane
+ *
+ */
 public class ItemKey extends StandardImmutableObject<ItemKey>
 {
 	static public final TypeName TYPE_NAME = new TypeName("jimmutable.examples.ItemKey"); public TypeName getTypeName() { return TYPE_NAME; }
@@ -33,7 +42,7 @@ public class ItemKey extends StandardImmutableObject<ItemKey>
 		complete();
 	}
 	
-	public ItemKey(ObjectReader r)
+	public ItemKey(ObjectParseTree r)
 	{
 		brand = new BrandCode(r.getString(FIELD_BRAND_CODE, null));
 		pn = new PartNumber(r.getString(FIELD_PN, null));

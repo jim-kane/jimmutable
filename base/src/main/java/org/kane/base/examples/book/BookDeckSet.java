@@ -10,12 +10,17 @@ import org.kane.base.immutability.decks.StandardImmutableSetDeck;
 import org.kane.base.serialization.FieldName;
 import org.kane.base.serialization.TypeName;
 import org.kane.base.serialization.reader.ReadAs;
-import org.kane.base.serialization.reader.ObjectReader;
+import org.kane.base.serialization.reader.ObjectParseTree;
 import org.kane.base.serialization.writer.ObjectWriter;
 import org.kane.base.serialization.writer.WriteAs;
 import org.kane.base.utils.Validator;
 
-
+/**
+ * An example of a set based deck
+ * 
+ * @author jim.kane
+ *
+ */
 final public class BookDeckSet extends StandardImmutableSetDeck<BookDeckSet, Book>
 {
 	static public final TypeName TYPE_NAME = new TypeName("jimmutable.examples.BookDeckSet");
@@ -43,9 +48,9 @@ final public class BookDeckSet extends StandardImmutableSetDeck<BookDeckSet, Boo
 		books = new FieldHashSet<>();
 	}
 	
-	public BookDeckSet(ObjectReader t)
+	public BookDeckSet(ObjectParseTree t)
 	{
-		books = t.getCollection(FIELD_BOOKS, new FieldHashSet(), ReadAs.OBJECT, ObjectReader.OnError.SKIP);
+		books = t.getCollection(FIELD_BOOKS, new FieldHashSet(), ReadAs.OBJECT, ObjectParseTree.OnError.SKIP);
 	}
 	
 	public TypeName getTypeName() 

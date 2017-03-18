@@ -6,12 +6,18 @@ import org.kane.base.immutability.collections.FieldMap;
 import org.kane.base.serialization.FieldName;
 import org.kane.base.serialization.Format;
 import org.kane.base.serialization.TypeName;
-import org.kane.base.serialization.reader.ObjectReader;
+import org.kane.base.serialization.reader.ObjectParseTree;
 import org.kane.base.serialization.reader.ReadAs;
 import org.kane.base.serialization.writer.ObjectWriter;
 import org.kane.base.serialization.writer.WriteAs;
 import org.kane.base.utils.Validator;
 
+/**
+ * An example StandardImmutableObject (roughly an abstraction for PKV)
+ * 
+ * @author jim.kane
+ *
+ */
 public class ItemSpecifications extends StandardImmutableObject<ItemSpecifications>
 {
 	static public final TypeName TYPE_NAME = new TypeName("jimmutable.examples.ItemSpecifications"); public TypeName getTypeName() { return TYPE_NAME; }
@@ -27,10 +33,10 @@ public class ItemSpecifications extends StandardImmutableObject<ItemSpecificatio
 		this.attributes = new FieldHashMap();
 	}
 	
-	public ItemSpecifications(ObjectReader reader)
+	public ItemSpecifications(ObjectParseTree reader)
 	{
 		item_key = (ItemKey)reader.getObject(FIELD_ITEM_KEY, null);
-		attributes = reader.getMap(FIELD_ATTRIBUTES, new FieldHashMap(), ItemAttribute.READ_AS, ReadAs.STRING, ObjectReader.OnError.SKIP);
+		attributes = reader.getMap(FIELD_ATTRIBUTES, new FieldHashMap(), ItemAttribute.READ_AS, ReadAs.STRING, ObjectParseTree.OnError.SKIP);
 	}
 
 	public void write(ObjectWriter writer) 

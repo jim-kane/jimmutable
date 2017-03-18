@@ -2,9 +2,17 @@ package org.kane.base.examples.product_data;
 
 import org.kane.base.exceptions.ValidationException;
 import org.kane.base.immutability.Stringable;
-import org.kane.base.serialization.reader.ObjectReader;
+import org.kane.base.serialization.reader.ObjectParseTree;
 import org.kane.base.serialization.reader.ReadAs;
 import org.kane.base.utils.Validator;
+
+
+/**
+ * An example of a simple, Stringable object
+ * 
+ * @author jim.kane
+ *
+ */
 
 public class ItemAttribute extends Stringable
 {
@@ -45,7 +53,7 @@ public class ItemAttribute extends Stringable
 	
 	static private class ReadAsItemAttribute extends ReadAs
 	{
-		public Object readAs(ObjectReader t) 
+		public Object readAs(ObjectParseTree t) 
 		{
 			return new ItemAttribute(t.asString(null));
 		}
