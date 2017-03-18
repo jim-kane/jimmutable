@@ -87,6 +87,7 @@ abstract public class Stringable extends StandardImmutableObject<Stringable>
 	final protected void setValue(String new_value)
 	{
 		if ( isComplete() ) throw new ImmutableException("Attempt to set the value of a Stringable after the object was frozen.");
+		this.value = new_value;
 	}
 	
 	final protected void normalizeTrim() 

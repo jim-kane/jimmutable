@@ -78,4 +78,5 @@ public class ItemKey extends StandardImmutableObject<ItemKey>
 	
 	public BrandCode getSimpleBrand() { return brand; }
 	public PartNumber getSimplePN() { return pn; }
+	public String toString() { return String.format("%s:%s", brand.getSimpleValue(), pn.getSimpleValue()); }
 }

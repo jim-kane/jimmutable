@@ -33,7 +33,7 @@ public class ItemAttribute extends Stringable
 		{
 			if ( ch >= 'A' && ch <= 'Z' ) continue;
 			if ( ch >= '0' && ch <= '9' ) continue;
-			if ( ch == '_')
+			if ( ch == '_' ) continue;
 			
 			throw new ValidationException(String.format("Illegal character \'%c\' in item attribute %s.  Only upper case letters, numbers, and underscores are allowed", ch, getSimpleValue()));
 		}
