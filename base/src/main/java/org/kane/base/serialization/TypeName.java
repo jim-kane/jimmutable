@@ -6,6 +6,15 @@ import org.kane.base.serialization.reader.ObjectParseTree;
 import org.kane.base.serialization.writer.ObjectWriter;
 import org.kane.base.utils.Validator;
 
+/**
+ * A nice encapsulation of a TypeName. TypeName(s) may only contain letters,
+ * numbers, underscores, periods (.) and dollar signs ($). This matches legal
+ * Java class names, BTW.
+ * 
+ * @author jim.kane
+ *
+ */
+
 public class TypeName extends StandardImmutableObject
 {
 	static private final TypeName TYPE_NAME = new TypeName("jimmutable.TypeName");

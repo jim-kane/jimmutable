@@ -6,9 +6,16 @@ import org.kane.base.serialization.reader.ObjectParseTree;
 import org.kane.base.serialization.writer.ObjectWriter;
 import org.kane.base.utils.Validator;
 
+/**
+ * A nice encapsulation of a FieldName. FieldName(s) may only contain lower case
+ * letters, numbers and underscores
+ * 
+ * @author jim.kane
+ *
+ */
 final public class FieldName extends StandardImmutableObject
 {
-	static private final TypeName TYPE_NAME = new TypeName("jimmutable.FieldName");
+	static public final TypeName TYPE_NAME = new TypeName("jimmutable.FieldName");
 	static private final FieldName FIELD_NAME = new FieldName("name");
 	
 	static public FieldName FIELD_NAME_TYPE_HINT = new FieldName("type_hint");

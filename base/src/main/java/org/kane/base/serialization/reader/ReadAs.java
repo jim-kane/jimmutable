@@ -1,5 +1,21 @@
 package org.kane.base.serialization.reader;
 
+/**
+ * The ReadAs system allows code to specify the type information while reading
+ * collections and maps from previously serialized data.
+ * 
+ * Where does this problem come up? Well, imagine that we are reading a List
+ * from JSON:
+ * 
+ * my_list : [ 1, 2, 3 ]
+ * 
+ * Is the contents of my_list bytes, integers, longs? You can't tell by just
+ * looking at the data. You need to say something like, read my_list *as*
+ * Integers. To do this you use ReadAs.INTEGER (easy, right?)
+ * 
+ * @author jim.kane
+ *
+ */
 abstract public class ReadAs 
 {
 	static public ReadAs OBJECT = new ReadAsObject();
