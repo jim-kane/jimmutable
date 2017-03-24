@@ -229,8 +229,6 @@ public class OldSpecXMLConverter
 	static public void main(String args[]) throws Exception
 	{
 		JimmutableTypeNameRegister.registerAllTypes();
-		//new OldSpecXMLConverter(new File("c:\\spec_data_small.xml"), FILE_TEST_SMALL_OBJECTS, 100_000);
-		
 		
 		testMultiThreadLoad();
 	}

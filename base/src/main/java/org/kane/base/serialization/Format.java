@@ -1,5 +1,11 @@
 package org.kane.base.serialization;
 
+/**
+ * The formats supported by jimmutable
+ * 
+ * @author jim.kane
+ *
+ */
 public enum Format 
 {
 	JSON,

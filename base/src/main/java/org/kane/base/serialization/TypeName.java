@@ -17,7 +17,7 @@ import org.kane.base.utils.Validator;
 
 public class TypeName extends StandardImmutableObject
 {
-	static private final TypeName TYPE_NAME = new TypeName("jimmutable.TypeName");
+	static public final TypeName TYPE_NAME = new TypeName("jimmutable.TypeName");
 	static private final FieldName FIELD_NAME = new FieldName("name");
 	
 	static public TypeName TYPE_NAME_OBJECT = new TypeName("object");
