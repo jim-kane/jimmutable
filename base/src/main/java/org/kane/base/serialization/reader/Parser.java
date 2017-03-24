@@ -15,6 +15,17 @@ import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.util.TokenBuffer;
 import com.fasterxml.jackson.dataformat.xml.XmlFactory;
 
+/**
+ * The job of the Parser class is to convert XML/JSON/TokenBuffer data back into
+ * ObjectParseTree objects as quickly as possible.
+ * 
+ * Generally speaking, unless you are working on Jimmutable itself, you do not
+ * need to do anything with this class (perhaps, other than calling the static
+ * convenience methods)
+ * 
+ * @author jim.kane
+ *
+ */
 public class Parser 
 {
 	static private JsonFactory json_factory = null;
@@ -223,6 +234,19 @@ public class Parser
 		}
 	}
 	
+	/**
+	 * Create an ObjectParseTree from a Reader
+	 * 
+	 * @param r
+	 *            The reader to consume raw data from
+	 * 
+	 * @return The ObjectParseTree created from the data
+	 * 
+	 * @throws SerializeException
+	 *             Any read errors (IO, parse, etc.) will be thrown as
+	 *             SerializeException (the only exception that can come out of
+	 *             this function)
+	 */
 	static public ObjectParseTree parse(Reader r) throws SerializeException
 	{
 		try
@@ -244,12 +268,38 @@ public class Parser
 		}
 	}
 	
+	/**
+	 * Create an ObjectParseTree from a String
+	 * 
+	 * @param str
+	 *            The string to consume raw data from
+	 * 
+	 * @return The ObjectParseTree created from the data
+	 * 
+	 * @throws SerializeException
+	 *             Any read errors (IO, parse, etc.) will be thrown as
+	 *             SerializeException (the only exception that can come out of
+	 *             this function)
+	 */
 	static public ObjectParseTree parse(String str) throws SerializeException
 	{
 		StringReader r = new StringReader(str);
 		return parse(r);
 	}
 	
+	/**
+	 * Create an ObjectParseTree from a TokenBuffer
+	 * 
+	 * @param buffer
+	 *            The TokenBuffer to consume raw data from
+	 * 
+	 * @return The ObjectParseTree created from the data
+	 * 
+	 * @throws SerializeException
+	 *             Any read errors (IO, parse, etc.) will be thrown as
+	 *             SerializeException (the only exception that can come out of
+	 *             this function)
+	 */
 	static public ObjectParseTree parse(TokenBuffer buffer) throws SerializeException
 	{
 		try
