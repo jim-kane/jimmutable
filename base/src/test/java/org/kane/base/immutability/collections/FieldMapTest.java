@@ -132,6 +132,9 @@ public class FieldMapTest extends TestCase
 				map.put("baz", 3);
 				map.put("baz", 4);
 				
+				map.put(null, 5); // should skip
+				map.put("zztop",null); // should skip
+				
 				assertEquals(map.size(),3);
 				
 				assert(map.get("foo") == 1);
@@ -289,6 +292,33 @@ public class FieldMapTest extends TestCase
     	assertEquals(obj.map.get("jimmutable"),new Integer(300));
     	
     	assertEquals(obj.field_class.getName(),c.getName());
+    }
+    
+    public void testNulls()
+    {
+    	Map<String,String> src_with_nulls = new HashMap();
+    	
+    	src_with_nulls.put("foo", "a");
+    	src_with_nulls.put("bar", "b");
+    	src_with_nulls.put(null,"c");
+    	src_with_nulls.put("baz", null);
+    	
+    	FieldMap<String,String> test_one = new FieldHashMap(src_with_nulls);
+    	
+    	assertEquals(test_one.size(),2);
+    	
+    	FieldMap<String,String> test_two = new FieldHashMap();
+    	
+    	test_two.put("1", "one");
+    	test_two.put("2", "two");
+    	test_two.put(null, "three");
+    	test_two.put("4", null);
+    	
+    	assertEquals(test_two.size(),2);
+    	
+    	test_two.putAll(src_with_nulls);
+    	
+    	assertEquals(test_two.size(),4);
     }
 }
 

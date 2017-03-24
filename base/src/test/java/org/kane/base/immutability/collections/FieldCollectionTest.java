@@ -130,6 +130,8 @@ public class FieldCollectionTest extends TestCase
 				collection.add("baz");
 				collection.add("quz");
 				collection.add("quuz");
+				
+				collection.add(null);  // should just skip
 
 				assertEquals(collection.size(),5);
 
@@ -353,6 +355,30 @@ public class FieldCollectionTest extends TestCase
     	assert(obj.collection.contains("jimmutable"));
     	assertEquals(obj.collection.size(),3);
     	assertEquals(obj.field_class.getName(),c.getName());
+    }
+    
+    public void testBulkAddNulls()
+    {
+    	List<String> src_with_nulls = new ArrayList();
+    	
+    	src_with_nulls.add(null);
+    	src_with_nulls.add("foo");
+    	src_with_nulls.add("bar");
+    	src_with_nulls.add(null);
+    	
+    	FieldList<String> test_list = new FieldArrayList(src_with_nulls);
+    	
+    	assertEquals(test_list.size(),2);
+    	
+    	FieldList<String> test_two = new FieldArrayList();
+    	
+    	test_two.add("a");
+    	test_two.add("b");
+    	test_two.add(null);
+    	test_two.addAll(src_with_nulls);
+    	
+    	assertEquals(test_two.size(),4);
+    	
     }
 }
 
