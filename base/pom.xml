@@ -2,13 +2,30 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>org.kane</groupId>
-  <artifactId>base</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <groupId>org.jimmutable</groupId>
+  <artifactId>core</artifactId>
+  <version>0.0.2</version>
   <packaging>jar</packaging>
 
-  <name>base</name>
-  <url>http://maven.apache.org</url>
+  <name>jimmutable core</name>
+  <description>The core classes of the jimmutable project</description>
+  <url>http://www.jimmutable.org</url>
+  
+  
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>http://unlicense.org/index.html</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+ 
+  
+  <scm>
+	<url>https://github.com/jim-kane/jimmutable</url>
+	<connection>scm:git:git://github.com/jim-kane/jimmutable.git</connection>
+	<developerConnection>scm:git:git@github.com:jim-kane/jimmutable.git</developerConnection>
+</scm>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -45,7 +62,7 @@
 	<configuration>
 		<archive>
 		<manifest>
-			<mainClass> org.kane.base.io.benchmark.IOBenchmark</mainClass>
+			<mainClass>org.jimmutable.core.examples.product_data.OldSpecXMLConverter</mainClass>
 		</manifest>
 		</archive>
 	</configuration>
