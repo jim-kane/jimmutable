@@ -8,6 +8,13 @@ import java.util.ListIterator;
 import java.util.Set;
 
 import org.kane.base.exceptions.ImmutableException;
+import org.kane.base.fields.FieldArrayList;
+import org.kane.base.fields.FieldCollection;
+import org.kane.base.fields.FieldConcurrentHashSet;
+import org.kane.base.fields.FieldConcurrentSkipListSet;
+import org.kane.base.fields.FieldHashSet;
+import org.kane.base.fields.FieldList;
+import org.kane.base.fields.FieldTreeSet;
 import org.kane.base.objects.StandardImmutableObject;
 import org.kane.base.serialization.FieldName;
 import org.kane.base.serialization.Format;

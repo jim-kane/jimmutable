@@ -1,8 +1,8 @@
-package org.kane.base.immutability.decks;
+package org.kane.base.decks;
 
 import java.util.Iterator;
 
-import org.kane.base.immutability.collections.FieldCollection;
+import org.kane.base.fields.FieldCollection;
 import org.kane.base.objects.StandardImmutableObject;
 
 

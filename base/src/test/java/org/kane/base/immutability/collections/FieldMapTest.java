@@ -11,7 +11,9 @@ import java.util.Map;
 import java.util.Set;
 
 import org.kane.base.exceptions.ImmutableException;
-import org.kane.base.immutability.collections.FieldHashMap;
+import org.kane.base.fields.FieldConcurrentHashMap;
+import org.kane.base.fields.FieldHashMap;
+import org.kane.base.fields.FieldMap;
 import org.kane.base.immutability.collections.FieldCollectionTest.TestObject;
 import org.kane.base.immutability.collections.FieldCollectionTest.TestObject.Builder;
 import org.kane.base.objects.StandardImmutableObject;

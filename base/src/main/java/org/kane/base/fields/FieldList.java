@@ -1,4 +1,4 @@
-package org.kane.base.immutability.collections;
+package org.kane.base.fields;
 
 import java.util.ArrayList;
 import java.util.Collection;

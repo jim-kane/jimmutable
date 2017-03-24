@@ -3,10 +3,10 @@ package org.kane.base.examples.book;
 import java.util.Collections;
 import java.util.Map;
 
-import org.kane.base.immutability.collections.FieldHashMap;
-import org.kane.base.immutability.collections.FieldHashSet;
-import org.kane.base.immutability.collections.FieldMap;
-import org.kane.base.immutability.decks.StandardImmutableMapDeck;
+import org.kane.base.decks.StandardImmutableMapDeck;
+import org.kane.base.fields.FieldHashMap;
+import org.kane.base.fields.FieldHashSet;
+import org.kane.base.fields.FieldMap;
 import org.kane.base.serialization.FieldName;
 import org.kane.base.serialization.TypeName;
 import org.kane.base.serialization.reader.ReadAs;

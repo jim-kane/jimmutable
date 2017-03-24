@@ -1,19 +1,20 @@
-package org.kane.base.immutability.collections;
+package org.kane.base.fields;
 
-import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
+
 
 /**
- * An implementation of a {@link HashSet} that begins life as mutable but can,
+ * An implementation of a {@link TreeSet} that begins life as mutable but can,
  * at any time, be "{@link #freeze() frozen}" (made immutable). In other
- * words, a wrapper for a {@link HashSet} that implements {@link Field}.
+ * words, a wrapper for a {@link TreeSet} that implements {@link Field}.
  * 
- * <p><b>Note:</b> {@link HashSet}, and consequently {@code FieldHashSet} is
+ * <p><b>Note:</b> {@link TreeSet}, and consequently {@code FieldTreeSet} is
  * not thread safe. This is generally not a concern once "{@link #freeze() frozen}"
  * but if the construction process is multi-threaded, consider
- * {@link FieldConcurrentHashSet}.
+ * {@link FieldConcurrentSkipListSet}.
  * 
- * <p>In the standard case (construction in one thread), {@code FieldHashSet} will
+ * <p>In the standard case (construction in one thread), {@code FieldTreeSet} will
  * work well.
  * 
  * @author Jim Kane
@@ -21,14 +22,14 @@ import java.util.Set;
  * @param <E> The type of elements in this set
  * 
  * @see FieldSet
- * @see FieldConcurrentHashSet
+ * @see FieldConcurrentSkipListSet
  */
-final public class FieldHashSet<E> extends FieldSet<E>
+final public class FieldTreeSet<E> extends FieldSet<E>
 {
 	/**
 	 * Default constructor (for an empty set)
 	 */
-	public FieldHashSet()
+	public FieldTreeSet()
 	{
 		super();
 	}
@@ -40,7 +41,7 @@ final public class FieldHashSet<E> extends FieldSet<E>
      * 
      * @throws NullPointerException if the specified {@code Iterable} is {@code null}
 	 */
-	public FieldHashSet(Iterable<E> objs)
+	public FieldTreeSet(Iterable<E> objs)
 	{
 		super(objs);
 	}
@@ -48,6 +49,6 @@ final public class FieldHashSet<E> extends FieldSet<E>
 	@Override
 	protected Set<E> createNewMutableInstance()
 	{
-		return new HashSet<>();
+		return new TreeSet<>();
 	}
 }

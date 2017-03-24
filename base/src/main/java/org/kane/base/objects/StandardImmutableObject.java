@@ -1,7 +1,7 @@
 package org.kane.base.objects;
 
 import org.kane.base.exceptions.ImmutableException;
-import org.kane.base.immutability.collections.Field;
+import org.kane.base.fields.Field;
 import org.kane.base.serialization.Format;
 import org.kane.base.serialization.reader.ObjectParseTree;
 import org.kane.base.serialization.writer.ObjectWriter;

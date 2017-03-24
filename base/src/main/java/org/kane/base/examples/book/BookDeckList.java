@@ -3,9 +3,9 @@ package org.kane.base.examples.book;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.kane.base.immutability.collections.FieldArrayList;
-import org.kane.base.immutability.collections.FieldList;
-import org.kane.base.immutability.decks.StandardImmutableListDeck;
+import org.kane.base.decks.StandardImmutableListDeck;
+import org.kane.base.fields.FieldArrayList;
+import org.kane.base.fields.FieldList;
 import org.kane.base.serialization.FieldName;
 import org.kane.base.serialization.TypeName;
 import org.kane.base.serialization.reader.ReadAs;

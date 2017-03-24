@@ -1,6 +1,6 @@
-package org.kane.base.immutability.decks;
+package org.kane.base.decks;
 
-import org.kane.base.immutability.collections.FieldMap;
+import org.kane.base.fields.FieldMap;
 import org.kane.base.objects.StandardImmutableObject;
 
 

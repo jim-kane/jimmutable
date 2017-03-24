@@ -1,7 +1,7 @@
 package org.kane.base.examples.product_data;
 
-import org.kane.base.immutability.collections.FieldHashMap;
-import org.kane.base.immutability.collections.FieldMap;
+import org.kane.base.fields.FieldHashMap;
+import org.kane.base.fields.FieldMap;
 import org.kane.base.objects.StandardImmutableObject;
 import org.kane.base.serialization.FieldName;
 import org.kane.base.serialization.Format;
