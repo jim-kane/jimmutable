@@ -2,8 +2,8 @@ package org.kane.base.immutability.decks;
 
 import java.util.Iterator;
 
-import org.kane.base.immutability.StandardImmutableObject;
 import org.kane.base.immutability.collections.FieldCollection;
+import org.kane.base.objects.StandardImmutableObject;
 
 
 abstract public class StandardImmutableDeck<T extends StandardImmutableDeck<T, E>, E> extends StandardImmutableObject<T> implements Iterable<E>

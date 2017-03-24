@@ -8,7 +8,7 @@ import java.util.ListIterator;
 import java.util.Set;
 
 import org.kane.base.exceptions.ImmutableException;
-import org.kane.base.immutability.StandardImmutableObject;
+import org.kane.base.objects.StandardImmutableObject;
 import org.kane.base.serialization.FieldName;
 import org.kane.base.serialization.Format;
 import org.kane.base.serialization.TypeName;

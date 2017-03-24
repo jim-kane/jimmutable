@@ -1,6 +1,6 @@
 package org.kane.base.examples.product_data;
 
-import org.kane.base.immutability.Stringable;
+import org.kane.base.objects.Stringable;
 import org.kane.base.serialization.StringableTest;
 
 import junit.framework.Test;

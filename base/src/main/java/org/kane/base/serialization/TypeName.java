@@ -1,7 +1,7 @@
 package org.kane.base.serialization;
 
 import org.kane.base.exceptions.ValidationException;
-import org.kane.base.immutability.StandardImmutableObject;
+import org.kane.base.objects.StandardImmutableObject;
 import org.kane.base.serialization.reader.ObjectParseTree;
 import org.kane.base.serialization.writer.ObjectWriter;
 import org.kane.base.utils.Validator;

@@ -5,9 +5,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
-import org.kane.base.immutability.StandardImmutableObject;
 import org.kane.base.immutability.collections.FieldArrayList;
 import org.kane.base.immutability.collections.FieldList;
+import org.kane.base.objects.StandardImmutableObject;
 import org.kane.base.serialization.FieldName;
 import org.kane.base.serialization.TypeName;
 import org.kane.base.serialization.reader.ReadAs;

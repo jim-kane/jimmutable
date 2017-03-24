@@ -11,14 +11,14 @@ import java.util.Map;
 import java.util.Set;
 
 import org.kane.base.exceptions.ImmutableException;
-import org.kane.base.immutability.StandardImmutableObject;
 import org.kane.base.immutability.collections.FieldHashMap;
 import org.kane.base.immutability.collections.FieldCollectionTest.TestObject;
 import org.kane.base.immutability.collections.FieldCollectionTest.TestObject.Builder;
+import org.kane.base.objects.StandardImmutableObject;
+import org.kane.base.objects.StandardObject;
 import org.kane.base.serialization.FieldName;
 import org.kane.base.serialization.Format;
 import org.kane.base.serialization.JavaCodeUtils;
-import org.kane.base.serialization.StandardObject;
 import org.kane.base.serialization.TypeName;
 import org.kane.base.serialization.reader.ReadAs;
 import org.kane.base.serialization.reader.ObjectParseTree;

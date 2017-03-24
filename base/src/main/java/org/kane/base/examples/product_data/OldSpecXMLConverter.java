@@ -9,9 +9,9 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamReader;
 
+import org.kane.base.objects.StandardObject;
 import org.kane.base.serialization.Format;
 import org.kane.base.serialization.JimmutableTypeNameRegister;
-import org.kane.base.serialization.StandardObject;
 import org.kane.base.serialization.reader.ObjectParseTree;
 import org.kane.base.serialization.reader.Parser;
 import org.kane.base.small_document.SmallDocumentBulkLoader;

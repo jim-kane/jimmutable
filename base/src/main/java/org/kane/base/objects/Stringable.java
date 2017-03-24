@@ -1,4 +1,4 @@
-package org.kane.base.immutability;
+package org.kane.base.objects;
 
 import org.kane.base.exceptions.ImmutableException;
 import org.kane.base.exceptions.SerializeException;

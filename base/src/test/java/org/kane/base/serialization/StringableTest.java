@@ -2,7 +2,7 @@ package org.kane.base.serialization;
 
 import org.kane.base.examples.product_data.BrandCode;
 import org.kane.base.exceptions.ValidationException;
-import org.kane.base.immutability.Stringable;
+import org.kane.base.objects.Stringable;
 
 import junit.framework.TestCase;
 

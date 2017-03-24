@@ -2,7 +2,7 @@ package org.kane.base.examples.product_data;
 
 import java.util.Objects;
 
-import org.kane.base.immutability.StandardImmutableObject;
+import org.kane.base.objects.StandardImmutableObject;
 import org.kane.base.serialization.FieldName;
 import org.kane.base.serialization.TypeName;
 import org.kane.base.serialization.reader.ObjectParseTree;

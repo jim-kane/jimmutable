@@ -2,7 +2,7 @@ package org.kane.base.small_document;
 
 import java.io.Reader;
 
-import org.kane.base.serialization.StandardObject;
+import org.kane.base.objects.StandardObject;
 import org.kane.base.serialization.reader.Parser;
 import org.kane.base.threading.OperationPool;
 import org.kane.base.threading.OperationRunnable;

@@ -7,9 +7,9 @@ import org.kane.base.examples.book.BindingType;
 import org.kane.base.examples.book.Book;
 import org.kane.base.examples.book.BookDeckMap;
 import org.kane.base.examples.book.BookDeckMap.Builder;
+import org.kane.base.objects.StandardObject;
 import org.kane.base.serialization.Format;
 import org.kane.base.serialization.JimmutableTypeNameRegister;
-import org.kane.base.serialization.StandardObject;
 
 import junit.framework.Test;
 import junit.framework.TestCase;

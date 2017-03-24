@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.Map;
 
 import org.kane.base.exceptions.SerializeException;
-import org.kane.base.immutability.Stringable;
+import org.kane.base.objects.Stringable;
 import org.kane.base.serialization.FieldName;
 import org.kane.base.serialization.Format;
 import org.kane.base.serialization.TypeName;

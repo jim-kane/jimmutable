@@ -3,7 +3,7 @@ package org.kane.base.immutability.collections;
 import java.util.Collection;
 
 import org.kane.base.exceptions.ImmutableException;
-import org.kane.base.immutability.StandardImmutableObject;
+import org.kane.base.objects.StandardImmutableObject;
 
 /**
  * An interface to represent a member of a {@link StandardImmtuableObject} that

@@ -11,8 +11,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.kane.base.exceptions.SerializeException;
 import org.kane.base.exceptions.ValidationException;
+import org.kane.base.objects.StandardObject;
 import org.kane.base.serialization.FieldName;
-import org.kane.base.serialization.StandardObject;
 import org.kane.base.serialization.TypeName;
 import org.kane.base.utils.Validator;
 

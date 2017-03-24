@@ -3,9 +3,9 @@ package org.kane.base.serialization.writer;
 import java.util.Map;
 
 import org.kane.base.exceptions.SerializeException;
-import org.kane.base.immutability.Stringable;
+import org.kane.base.objects.StandardObject;
+import org.kane.base.objects.Stringable;
 import org.kane.base.serialization.FieldName;
-import org.kane.base.serialization.StandardObject;
 import org.kane.base.serialization.TypeName;
 import org.kane.base.utils.Validator;
 

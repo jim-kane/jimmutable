@@ -1,7 +1,7 @@
 package org.kane.base.immutability.decks;
 
-import org.kane.base.immutability.StandardImmutableObject;
 import org.kane.base.immutability.collections.FieldMap;
+import org.kane.base.objects.StandardImmutableObject;
 
 
 abstract public class StandardImmutableMapDeck<T extends StandardImmutableMapDeck<T, K, V>, K, V> extends StandardImmutableObject<T>

@@ -1,7 +1,7 @@
 package org.kane.base.examples.product_data;
 
 import org.kane.base.exceptions.ValidationException;
-import org.kane.base.immutability.Stringable;
+import org.kane.base.objects.Stringable;
 import org.kane.base.utils.Validator;
 
 /**
