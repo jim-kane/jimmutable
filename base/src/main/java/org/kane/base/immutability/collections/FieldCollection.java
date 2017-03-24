@@ -41,6 +41,8 @@ import java.util.LinkedList;
  * principles involved and to write careful unit tests to make sure that the implementations
  * are as strictly immutable as possible.
  * 
+ * Null(s) are not allowed in fields (they are skipped when added)
+ * 
  * @author Jim Kane
  *
  * @param <E> The type of elements in this collection
@@ -124,6 +126,7 @@ abstract public class FieldCollection<E> implements Field, Collection<E>
 	public boolean add(E e)
 	{
 		assertNotFrozen();
+		if ( e == null ) return false;
 		return getContents().add(e);
 	}
 	
@@ -138,7 +141,13 @@ abstract public class FieldCollection<E> implements Field, Collection<E>
 	public boolean addAll(Collection<? extends E> c)
 	{
 		assertNotFrozen();
-		return getContents().addAll(c);
+		
+		for ( E obj : c )
+		{
+			add(obj);
+		}
+		
+		return true;
 	}
 	
 	@Override

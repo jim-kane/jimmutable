@@ -7,23 +7,29 @@ import java.util.Set;
 import java.util.TreeMap;
 
 
-
 /**
- * An implementation of a {@link Collection} that begins life as mutable but can,
- * at any time, be "{@link #freeze() frozen}" (made immutable). In other
+ * An implementation of a {@link Collection} that begins life as mutable but
+ * can, at any time, be "{@link #freeze() frozen}" (made immutable). In other
  * words, a wrapper for a {@link Collection} that implements {@link Field}.
  * 
- * <p>This class is designed to be extended. Most of the <em>collection hierarchy</em>
- * is already wrapped as part of the standard <em>jimmutable</em> library, but further
- * extensions should go quickly as the base class does nearly all of the work. However,
- * extension implementors should take time to carefully understand the immutability
- * principles involved and to write careful unit tests to make sure that the implementations
- * are as strictly immutable as possible.
+ * <p>
+ * This class is designed to be extended. Most of the <em>collection
+ * hierarchy</em> is already wrapped as part of the standard <em>jimmutable</em>
+ * library, but further extensions should go quickly as the base class does
+ * nearly all of the work. However, extension implementors should take time to
+ * carefully understand the immutability principles involved and to write
+ * careful unit tests to make sure that the implementations are as strictly
+ * immutable as possible.
+ * 
+ * Null keys and/or values are not allowed (attempts to put either will result
+ * in no action being taken)
  * 
  * @author Jim Kane
  *
- * @param <K> the type of keys maintained by this map
- * @param <V> the type of mapped values
+ * @param <K>
+ *            the type of keys maintained by this map
+ * @param <V>
+ *            the type of mapped values
  */
 abstract public class FieldMap<K,V> implements Map<K,V>, Field
 {
@@ -78,7 +84,12 @@ abstract public class FieldMap<K,V> implements Map<K,V>, Field
 		this();
 		
 		if ( initial_values != null )
-			contents.putAll(initial_values);
+		{
+			for ( Map.Entry<K, V> e : initial_values.entrySet() )
+			{
+				put(e.getKey(),e.getValue());
+			}
+		}
 	}
 	
 	@Override
@@ -106,6 +117,8 @@ abstract public class FieldMap<K,V> implements Map<K,V>, Field
 	public V put(K key, V value)
 	{
 		assertNotFrozen();
+		if ( key == null ) return null;
+		if ( value == null ) return null;
 		return getContents().put(key, value);
 	}
 	
@@ -120,7 +133,11 @@ abstract public class FieldMap<K,V> implements Map<K,V>, Field
 	public void putAll(Map<? extends K, ? extends V> m)
 	{
 		assertNotFrozen();
-		getContents().putAll(m);
+		
+		for ( Map.Entry e : m.entrySet() )
+		{
+			put((K)e.getKey(),(V)e.getValue());
+		}
 	}
 	
 	@Override
