@@ -747,12 +747,27 @@ final public class ObjectParseTree implements Iterable<ObjectParseTree>
 		return child.asObject(default_value);
 	}
 	
+	/**
+	 * An enum used by getCollection and getMap as an instruction on what to do
+	 * when an error is encountered
+	 * 
+	 * @author jim.kane
+	 *
+	 */
 	static public enum OnError
 	{
 		SKIP,
 		THROW_EXCEPTION;
 	}
 	
+	/**
+	 * 
+	 * @param field_name
+	 * @param empty_collection
+	 * @param type
+	 * @param on_error
+	 * @return
+	 */
 	public <C extends Collection> C getCollection(FieldName field_name, C empty_collection, ReadAs type, OnError on_error)
 	{
 		Validator.notNull(field_name);
