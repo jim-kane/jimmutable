@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.kane.base.exceptions.SerializeException;
+import org.kane.base.exceptions.ValidationException;
 import org.kane.base.serialization.FieldName;
 import org.kane.base.serialization.StandardObject;
 import org.kane.base.serialization.TypeName;
@@ -761,12 +762,21 @@ final public class ObjectParseTree implements Iterable<ObjectParseTree>
 	}
 	
 	/**
+	 * Get (read) a collection
 	 * 
 	 * @param field_name
+	 *            The field name that contains the collection
 	 * @param empty_collection
+	 *            A mutable, empty collection (will be returned "filled", but
+	 *            still mutable)
 	 * @param type
+	 *            A ReadAs object that specifies the type to read as. If you are
+	 *            working with a collection of StandardObject(s), use
+	 *            ReadAs.OBJECT
 	 * @param on_error
-	 * @return
+	 *            What to do if an error is encountered while reading an element
+	 *            of the collection (skip it, throw a SerializeException)
+	 * @return empty_collection "filled"
 	 */
 	public <C extends Collection> C getCollection(FieldName field_name, C empty_collection, ReadAs type, OnError on_error)
 	{
@@ -795,6 +805,23 @@ final public class ObjectParseTree implements Iterable<ObjectParseTree>
 		return ret;
 	}
 	
+	/**
+	 * Get (read) a Map
+	 * 
+	 * @param field_name
+	 *            The field name to read the map from
+	 * @param empty_map
+	 *            A mutable, empty map (will be returned "filled", but still
+	 *            mutable)
+	 * @param key_type
+	 *            A ReadAs object that specifies the type to read keys as
+	 * @param value_type
+	 *            A ReadAs object that specifies the type read values as
+	 * @param on_error
+	 *            What to do when an error (reading a key or value) occours
+	 *            (skip, throw and exception)
+	 * @return empty_map "filled"
+	 */
 	public <M extends Map> M getMap(FieldName field_name, M empty_map, ReadAs key_type, ReadAs value_type, OnError on_error)
 	{
 		Validator.notNull(field_name);
@@ -834,12 +861,51 @@ final public class ObjectParseTree implements Iterable<ObjectParseTree>
 		return ret;
 	}
 	
-	static public Object deserialize(String document) throws SerializeException
+	/**
+	 * Construct an object from previously serialized data. The format is
+	 * automatically detected.
+	 * 
+	 * This version of the function completes StandardObject(s) 
+	 * 
+	 * There are two common exceptions that can occur when constructing an
+	 * object from previously serialized data, SerializeException (trouble
+	 * reading) and ValidationException (object read was not valid). Both extend
+	 * RuntimeException, so you are not required to handle them explicitly. That
+	 * being said, most (nee all) well designed readers of serialized data
+	 * "trap" errors: thought must be given as to what to do when this happens.
+	 * 
+	 * @param serialized_data
+	 *            The data to read from
+	 * @return The object previously serialized
+	 * 
+	 */
+	static public Object deserialize(String serialized_data) 
 	{
-		return deserialize(document, true);
+		return deserialize(serialized_data, true);
 	}
 	
-	static public Object deserialize(String document, boolean complete_standard_object) throws SerializeException
+	/**
+	 * Construct an object from previously serialized data. The format is
+	 * automatically detected. 
+	 * 
+	 * This version of the function allows the user to
+	 * specify if StandardObjects are to be completed prior to being returned.
+	 * The default is that StandardObjects are completed.
+	 * 
+	 * There are two common exceptions that can occur when constructing an
+	 * object from previously serialized data, SerializeException (trouble
+	 * reading) and ValidationException (object read was not valid). Both extend
+	 * RuntimeException, so you are not required to handle them explicitly. That
+	 * being said, most (nee all) well designed readers of serialized data
+	 * "trap" errors: thought must be given as to what to do when this happens.
+	 * 
+	 * @param serialized_data
+	 *            The data to read from
+	 * @return The object previously serialized
+	 * 
+	 */
+	
+	static public Object deserialize(String document, boolean complete_standard_object)
 	{
 		ObjectParseTree t = Parser.parse(document);
 		
@@ -851,6 +917,15 @@ final public class ObjectParseTree implements Iterable<ObjectParseTree>
 		return ret;
 	}
 	
+	/**
+	 * Construct an object from previously serialized data.
+	 * 
+	 * This version of the function reads from a TokenBuffer and is used to
+	 * clone objects etc.
+	 * 
+	 * @return The object previously serialized
+	 * 
+	 */
 	static public Object deserialize(TokenBuffer document, boolean complete_standard_object) throws SerializeException
 	{
 		ObjectParseTree t = Parser.parse(document);
@@ -863,6 +938,20 @@ final public class ObjectParseTree implements Iterable<ObjectParseTree>
 		return ret;
 	}
 	
+	/**
+	 * Register a type name. TypeName(s) must be registered *prior* to readign
+	 * any instances of the type. It is safe to register a TypeName multiple
+	 * times (last registration wins). The function is thread safe.
+	 * 
+	 * Typically, each Jimmtuable VM implements a register class (See
+	 * JimmutableTypeNameRegister). Rember to invoke this (pretty much first
+	 * thing) at boot time.
+	 * 
+	 * Classes must have a static public method named TYPE_NAME to be registered
+	 * 
+	 * @param c
+	 *            The class to register
+	 */
 	static public void registerTypeName(Class c)
 	{
 		try
@@ -878,6 +967,13 @@ final public class ObjectParseTree implements Iterable<ObjectParseTree>
 		}
 	}
 	
+	/**
+	 * Check to see if a given TypeName object is registered
+	 * 
+	 * @param type
+	 *            The TypeName to check
+	 * @return true if the TypeName is registered, false otherwise
+	 */
 	static public boolean isTypeRegistered(TypeName type)
 	{
 		if ( type == null ) return false;

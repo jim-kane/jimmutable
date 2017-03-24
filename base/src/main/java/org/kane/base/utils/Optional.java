@@ -2,6 +2,13 @@ package org.kane.base.utils;
 
 import java.util.Objects;
 
+/**
+ * Implementation of various convenience methods for working with Optional
+ * values
+ * 
+ * @author jim.kane
+ *
+ */
 public class Optional
 {
 	static public String getOptional(String value, String unset_value, String default_value)

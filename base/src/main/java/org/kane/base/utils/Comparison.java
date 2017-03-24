@@ -95,7 +95,7 @@ public class Comparison
 	{
 		if ( null_comparator == null ) null_comparator = NULL_LAST;
 		
-		if ( ret != 0 ) return ret; // only do the compare if a preceding compare has not resolved the whole comarison
+		if ( ret != 0 ) return ret; // only do the compare if a preceding compare has not resolved the whole comparison
 		
 		// Do we need to use the null comparator?
 		if ( one == null || two == null ) return null_comparator.compare(one,two);

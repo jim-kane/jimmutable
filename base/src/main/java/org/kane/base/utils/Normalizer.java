@@ -46,6 +46,14 @@ public class Normalizer
 		return str.toLowerCase();
 	}
 	
+	/**
+	 * Trim a string (if it is not-null)
+	 * 
+	 * @param str
+	 *            The string to trim
+	 * 
+	 * @return The trimmed string (if str is not null) or null (if str is null)
+	 */
 	static public String trim(String str)
 	{
 	    if (null == str) return null;
